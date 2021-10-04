@@ -1,9 +1,8 @@
-# WriteMe
-# Website concept
-![ ](/Images/PresentationSmall.png)
-![ ](/Images/Registration.png)
-![ ](/Images/Authorization.png)
-![ ](/Images/Welcome.png)
-![ ](/Images/Profile.png)
-![ ](/Images/News.png)
-![ ](/Images/Messages.png)
+# WriteMe website concept
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/PresentationSmall.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Registration.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Authorization.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Welcome.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Profile.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/News.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Messages.png)
