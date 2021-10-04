@@ -6,3 +6,4 @@
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Profile.png)
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/News.png)
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Messages.png)
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Friends.png)
