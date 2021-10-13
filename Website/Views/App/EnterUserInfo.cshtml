@@ -1,0 +1,48 @@
+﻿@model Website.ViewModels.RegistrationViewModel
+@{
+    Layout = null;
+}
+<h3>Регистрация</h3>
+<form asp-action="EnterPassword" asp-controller="App" asp-anti-forgery="true">
+    <input type="hidden" asp-for="IsAuth" />
+    <input type="hidden" asp-for="MailAddress" />
+    <div>
+        <h4>Данные для входа</h4>
+        <div>
+            <input id="inputPassword" placeholder="Пароль" type="text" asp-for="Password" />
+            <span></span>
+        </div>
+        <div>
+            <input id="inputConfirmPassword" placeholder="Повторите пароль" type="text" />
+            <span></span>
+        </div>
+    </div>
+    <div>
+        <h4>Личные данные</h4>
+        <div>
+            <input placeholder="Фамилия" type="text" asp-for="Surname" />
+            <span></span>
+        </div>
+        <div>
+            <input placeholder="Имя" type="text" asp-for="Name" />
+            <span></span>
+        </div>
+        <div>
+            <input placeholder="Отчество" type="text" asp-for="Patronymic" />
+            <span></span>
+        </div>
+        <div>
+            <select placeholder="Отчество" asp-for="Country">
+                <option value="ru">Не выбрано</option>
+                <option value="ru">Россия</option>
+            </select>
+            <span></span>
+        </div>
+        <div>
+            <input placeholder="Дата рождения" type="date" asp-for="Birthday" />
+            <span></span>
+        </div>
+    </div>
+    <input type="submit" value="Зарегистрироваться" />
+</form>
+<div asp-validation-summary="All"></div>
