@@ -1,116 +1,52 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Security.Claims;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
-using Website.ViewModels.Base;
+using WriteMe.Database.DAL.Entities;
 
 namespace Website.Controllers
 {
+    [CustomizedAuthorize]
     public class AppController : Controller
     {
-        private readonly IAuthorizationService AuthorizationService;
+        private readonly IProfileService ProfileService;
 
-        public AppController(IAuthorizationService authorizationService)
+        public AppController(IProfileService profileService)
         {
-            AuthorizationService = authorizationService;
+            ProfileService = profileService;
         }
 
-        [HttpGet]
-        [Route("app/auth")]
-        [Route("app/reg")]
-        public IActionResult ConfirmMail()
+        public IActionResult Welcome()
         {
-            var requestPath = HttpContext.Request.Path.Value;
-            bool isAuth = requestPath.Contains("auth");
-            return View(new ConfirmMailViewModel{ IsAuth = isAuth});
+            var t = HttpContext;
+            
+            return View();
         }
-        
-        [Route("app/auth")]
-        [Route("app/reg")]
-        public async Task<IActionResult>  ConfirmMail(ConfirmMailViewModel confirmMailViewModel)
+        public async Task<IActionResult>  Profile(int? id)
         {
-            if (ModelState.IsValid)
+            User user;
+            if (id == null)
             {
-                if (confirmMailViewModel.IsAuth)
+                var userID = User.Claims.First(claim => claim.Type == "id").Value;
+                user = await ProfileService.GetUserAsync(Int32.Parse(userID));
+                return View(new ProfileViewModel
                 {
-                    if(await AuthorizationService.IsUserExistAsync(confirmMailViewModel.MailAddress))
-                        return View("EnterPassword", new AuthorizationViewModel 
-                            { MailAddress = confirmMailViewModel.MailAddress });
-                    ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress),"Неверный адрес");
-                }
-                else
-                {
-                    if(!await AuthorizationService.IsUserExistAsync(confirmMailViewModel.MailAddress))
-                        return View("EnterUserInfo", new RegistrationViewModel 
-                            { MailAddress = confirmMailViewModel.MailAddress });
-                    ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress),"Адрес занят");
-                }
+                    User=user
+                });
             }
-            return View(confirmMailViewModel);
-        }
-        [Route("app/auth/log")]
-        public async Task<IActionResult> EnterPassword(AuthorizationViewModel authorizationViewModel )
-        {
-            if (authorizationViewModel.MailAddress is null) return RedirectToAction("AuthWarning");
-            if (ModelState.IsValid)
+            else
             {
-                if (await AuthorizationService.ConfirmUserAsync(authorizationViewModel.MailAddress,authorizationViewModel.Password))
-                {
-                    await Authenticate(authorizationViewModel.MailAddress);
-                    return Redirect("/");
-                }
-                authorizationViewModel.Password = string.Empty;
-                ModelState.AddModelError(nameof(authorizationViewModel.Password), "Неверный пароль");
-                return View("ConfirmMail", authorizationViewModel);
+
+                user = await ProfileService.GetUserAsync(Int32.Parse(id.ToString()));
             }
-            return View("ConfirmMail", authorizationViewModel);;
-        }
-        private async Task Authenticate(string userName)
-        {
-            // создаем один claim
-            var claims = new List<Claim>
+            if (user == null) return RedirectToAction("Profile");
+            return View(new ProfileViewModel
             {
-                new(ClaimsIdentity.DefaultNameClaimType, userName)
-            };
-            // создаем объект ClaimsIdentity
-            ClaimsIdentity id = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            // установка аутентификационных куки
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
+                User=user
+            });
         }
-        [Route("exit")]
-        public async Task<IActionResult> Logout()
-        {
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return RedirectToAction("Index", "Home");
-        }
-
-        public IActionResult CheckMail() => View();
-
-        [HttpPost]
-        public async Task<IActionResult> CheckMail(ConfirmMailViewModel confirmMailViewModel)
-        {
-            if (ModelState.IsValid)
-            {
-                if(await AuthorizationService.IsUserExistAsync(confirmMailViewModel.MailAddress))
-                    return View("EnterPassword", new AuthorizationViewModel 
-                        { MailAddress = confirmMailViewModel.MailAddress });
-                ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress),"Неверный адрес");
-            }
-            return View(confirmMailViewModel);
-        }
-
-        public async Task<bool> IsMailExist(string mailAddress) =>
-            await AuthorizationService.IsUserExistAsync(mailAddress);
-
-        public IActionResult EnterUserInfo() => View();
-
-        [Route("/app/authwarn")]
-        public IActionResult AuthWarning() => View();
-
     }
 }
