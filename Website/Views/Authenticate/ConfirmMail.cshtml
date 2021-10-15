@@ -1,18 +1,87 @@
 ﻿@model Website.ViewModels.Base.ConfirmMailViewModel
-
 @{
     Layout = null;
+    string title = "Регистрация";
+    string redirectUrl = "/auth";
+    string redirectDescription = "Авторизация";
+
+    if (Model.IsAuth)
+    {
+        title = "Авторизация";
+        redirectUrl = "/reg";
+        redirectDescription = "Регистрация";
+    }
 }
 
-<!DOCTYPE html>
-
-<html>
-<head>
-    <title>title</title>
-</head>
-<body>
-<div>
-      ETwtsets
+<div id="auth-block">
+    <h3>@title</h3>
+    <form id="auth-form" asp-action="ConfirmMail" asp-controller="Authenticate" asp-anti-forgery="true">
+        <input type="hidden" asp-for="IsAuth" />
+        <div>
+            <input placeholder="Почта" type="text" asp-for="MailAddress" />
+            <input id="btn" type="submit" value="Продолжить" />
+        </div>
+    </form>
+    <a href="@redirectUrl">@redirectDescription</a>
 </div>
-</body>
-</html>
+
+<div asp-validation-summary="All"></div>
+<div id="te"></div>
+<script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>
+@*<script>
+            function ConfirmMail() {
+                var url = "@Url.Action("ConfirmMail", "Authenticate")";
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: $('#auth-form').serializeArray(),
+                    success: function(view) {
+                        //var authBlock = document.getElementById('te');
+                        //authBlock.append(view);
+                        document.body.innerHTML = view;
+                    }
+                });
+            };
+
+
+        <script>
+            function ConfirmPassword() {
+                var url = "@Url.Action("EnterPassword", "Authenticate")";
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: $('#auth-form').serializeArray(),
+                    success: function (view) {
+                        document.body.innerHTML = view;
+                    }
+                });
+            };
+        </script>
+    </script>*@
+@if (!Model.IsAuth)
+{
+    <script>
+        $('#mailInput').on('keyup',
+            function () {
+                var url = "@Url.Action("IsMailExist","Authenticate")";
+                var mail = document.getElementById('mailInput').value;
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        "mailAddress": mail
+                    },
+                    success:
+                        function(result) {
+                            var warn = document.getElementById('mailAccess');
+                            if (mail == "") {
+                                warn.textContent = "";
+                                return;
+                            }
+                            if (result) warn.textContent='Занят';
+                            else warn.textContent='Свободен';
+                        }
+                });
+            });
+    </script>
+}

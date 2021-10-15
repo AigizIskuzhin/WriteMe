@@ -25,20 +25,13 @@ namespace Website
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) => services
             .AddDatabase(Configuration.GetSection("Database"))
-            .AddTransient<IAuthorizationService, AuthorizationService>()
+            .AddServices()
             .AddControllersWithViews().Services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie();
-            //.AddLocalization(options => options.ResourcesPath = "Resources")
-            //.AddViewLocalization();
-            //services.AddLocalization(options=>options.ResourcesPath="Infrastructure/Localization");
-
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options => //CookieAuthenticationOptions
-            //    {
-            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/App/Logintest");
-            //    });
+        //.AddLocalization(options => options.ResourcesPath = "Resources")
+        //.AddViewLocalization();
+        //services.AddLocalization(options=>options.ResourcesPath="Infrastructure/Localization");
         
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  
@@ -77,7 +70,7 @@ namespace Website
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=About}/{action=Index}/{id?}");
             });
         }
     }
