@@ -3,8 +3,11 @@ using WriteMe.Database.DAL.Entities.Base;
 
 namespace WriteMe.Database.DAL.Entities
 {
-    public class User : UserEntity
+    public class User : PersonEntity
     {
+        public string MailAddress { get; set; }
+        public string Password { get; set; }
+        public Role Role { get; set; }
         public User()
         {
             ConnectionIdentifiers = new HashSet<UserConnection>();

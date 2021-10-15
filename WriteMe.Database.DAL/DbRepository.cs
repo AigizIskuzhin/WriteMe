@@ -20,7 +20,7 @@ namespace WriteMe.Database.DAL
             Set = db.Set<T>();
         }
 
-        public IQueryable<T> Items => Set;
+        public virtual IQueryable<T> Items => Set;
         public T Get(int id) => Items.SingleOrDefault(item => item.Id.Equals(id));
 
         public async Task<T> GetAsync(int id, CancellationToken cancel = default) => await Items
