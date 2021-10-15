@@ -7,6 +7,7 @@ namespace WriteMe.Database.DAL.Context
     {
 
         public DbSet<User> Users { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         public WriteMeDatabase(DbContextOptions<WriteMeDatabase> options) : base(options)
         {
