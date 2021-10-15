@@ -7,6 +7,7 @@ namespace WriteMe.Database.DAL
     public static class RepositoryRegistrator
     {
         public static IServiceCollection AddRepositoriesInDB(this IServiceCollection services) => services
-            .AddTransient<IRepository<User>, DbRepository<User>>();
+            .AddTransient<IRepository<User>, UsersRepository>()
+            .AddTransient<IRepository<Role>, DbRepository<Role>>();
     }
 }
