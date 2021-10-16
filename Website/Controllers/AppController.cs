@@ -1,11 +1,9 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
-using WriteMe.Database.DAL.Entities;
 
 namespace Website.Controllers
 {
@@ -19,34 +17,19 @@ namespace Website.Controllers
             ProfileService = profileService;
         }
 
-        public IActionResult Welcome()
-        {
-            var t = HttpContext;
-            
-            return View();
-        }
-        public async Task<IActionResult>  Profile(int? id)
-        {
-            User user;
-            if (id == null)
-            {
-                var userID = User.Claims.First(claim => claim.Type == "id").Value;
-                user = await ProfileService.GetUserAsync(Int32.Parse(userID));
-                return View(new ProfileViewModel
-                {
-                    User=user
-                });
-            }
-            else
-            {
+        public IActionResult Welcome() => View();
 
-                user = await ProfileService.GetUserAsync(Int32.Parse(id.ToString()));
-            }
+        public async Task<IActionResult>  Profile(int id)
+        {
+            id = id == 0 ? GetConnectedUserID : id;
+            var user = await ProfileService.GetUserAsync(id);
             if (user == null) return RedirectToAction("Profile");
             return View(new ProfileViewModel
             {
                 User=user
             });
         }
+
+        private int GetConnectedUserID => int.Parse(User.Claims.First(claim => claim.Type.Equals("id")).Value);
     }
 }

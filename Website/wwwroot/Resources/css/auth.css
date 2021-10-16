@@ -1,0 +1,122 @@
+:root{
+    --main-foreground-color: rgb(240,240,240);
+}
+body{
+    margin: 0;
+    padding: 0;
+    font-family: 'Nunito';
+    font-size: 16px;
+}
+.center-screen {
+    display: flex;  
+    justify-content: center;  
+    align-items: center;  
+    text-align: center;  
+    min-height: 100vh;
+}
+.auth{
+    flex-direction: column;
+}
+.auth h3{
+    font-size: 30px;
+    margin: 0;
+}
+.link{
+
+}
+.auth a, a:link, a:visited {
+    position: absolute;
+    transform: translateX(-50%);
+    text-decoration: none;
+    color: rgb(180,180,180);
+    transition: .1s linear;
+}
+.auth a:hover{
+    color: rgb(100,100,100);
+}
+.auth-form{
+    display: flex;
+    flex-direction: column;
+}
+.auth-input{
+    height: 40px;
+    box-sizing: border-box;
+    outline: none;
+    border-style: none;
+    border-radius: 10px;
+    padding: 6px 18px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 16px;
+    background-color: rgb(242,242,242);
+    box-shadow: 0 0 14px 1px rgba(232,232,232, 0.7);
+}
+.auth-input::placeholder{
+
+}
+.auth-row{
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 40px;
+}
+.validation-summary-errors, .validation-summary-valid {
+    position: absolute;
+    left: 100%;
+}
+.rightOf{
+    position: absolute;
+    left: 100%;
+}
+.validation-summary-errors ul, .validation-summary-valid ul {
+    padding: 0;
+}
+
+.auth-error{
+    text-align: left;
+    color: rgb(255, 119, 119);
+    margin-left: 10px;
+    overflow: hidden;
+    transition: .5s linear;
+    white-space: nowrap;
+    width: 0;
+}
+.span-error{
+
+}
+.auth-error-visible{
+    width: 150px;
+}
+.auth-btn {
+    font-size: 16px;
+    font-family: 'Nunito', sans-serif;
+    border-radius: 13px;
+    padding: 8px 30px;
+    box-sizing: border-box;
+    border: none;
+    outline: none;
+    background-color: rgb(50,50,50);
+    box-shadow: 0 0 6px 1px rgba(50,50,50);
+    color: rgb(220,220,220);
+    margin: 0 30px;
+    width: 100%;
+    transition: .2s linear;
+}
+.auth-btn:disabled{
+    background-color: transparent;
+    color: rgb(200,200,200);
+    box-shadow: 0 0 10px rgb(200,200,200);
+}
+.auth-btn:hover:enabled{
+    background-color: rgb(20,20,20);
+    box-shadow: 0 0 6px 1px rgba(20,20,20);
+    color: rgb(242,242,242);
+}
+.input-warn{
+    border-color: red;
+}
+.pointer{
+    cursor: pointer;
+}

@@ -5,29 +5,112 @@
     string redirectUrl = "/auth";
     string redirectDescription = "Авторизация";
 
-    if (Model.IsAuth)
+    if (Model.IsAuth.Value)
     {
         title = "Авторизация";
         redirectUrl = "/reg";
         redirectDescription = "Регистрация";
     }
 }
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
 
-<div id="auth-block">
+<div class="center-screen auth">
     <h3>@title</h3>
-    <form id="auth-form" asp-action="ConfirmMail" asp-controller="Authenticate" asp-anti-forgery="true">
+    <form class="auth-form" asp-anti-forgery="true">
         <input type="hidden" asp-for="IsAuth" />
-        <div>
-            <input placeholder="Почта" type="text" asp-for="MailAddress" />
-            <input id="btn" type="submit" value="Продолжить" />
+        <div class="auth-row">
+            <input id="MailAddress" autocomplete="off" onkeyup="IsInputEmpty()" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />
+            <div asp-validation-summary="All"></div>
+            @*<div asp-validation-summary="ModelOnly" class="validation-summary-errors">
+                    <ul>
+                        <li class="auth-error">Неверная почта</li>
+                    </ul>
+                </div>*@
+        </div>
+        <div class="auth-row">
+            <input id="sumbit" class="auth-btn pointer" disabled onmousemove="IsDisabled()" onmouseleave="HideError()" type="submit" value="Продолжить" />
+            <span id="submit-error" class="auth-error rightOf">Введите почту</span>
         </div>
     </form>
-    <a href="@redirectUrl">@redirectDescription</a>
+    <div style="position: relative">
+        <a href="@redirectUrl">@redirectDescription</a>
+    </div>
 </div>
+<script>
+    let inputHasError = false;
+    let inputValidationList = document.getElementsByClassName('validation-summary-errors')[0];
+    document.addEventListener("DOMContentLoaded", function (event) {
+        if (inputValidationList != undefined)
+            if (inputValidationList.hasChildNodes)
+                if (inputValidationList.children[0].hasChildNodes) {
+                    inputHasError = true;
+                    let inputError = inputValidationList.children[0].children[0];
+                    inputError.className = "auth-error";
+                    setTimeout(function () {
+                        AddShowClass(inputError);
+                    }, 500);
+                }
+    });
 
-<div asp-validation-summary="All"></div>
-<div id="te"></div>
-<script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>
+    let submitBtn = document.getElementById('sumbit');
+    function IsInputEmpty() {
+        let input = document.getElementById('MailAddress');
+
+        if (input.value == "") {
+            submitBtn.setAttribute("disabled", "");
+        }
+        else {
+            HideError();
+            submitBtn.removeAttribute("disabled");
+        }
+        if (inputHasError) {
+            let inputError = inputValidationList.children[0].children[0];
+            RemoveVisibleClass(inputError);
+            inputHasError = false;
+        }
+    }
+    IsInputEmpty();
+    function IsDisabled() {
+        if (!submitBtn.hasAttribute("disabled")) {
+            HideError();
+            return;
+        }
+        ShowError();
+    }
+    function ShowError() {
+        if (!submitBtn.hasAttribute("disabled")) {
+            HideError();
+            return;
+        }
+        setTimeout(function () {
+            let submitError = document.getElementById('submit-error');
+            AddShowClass(submitError);
+        }, 150);
+    }
+    function HideError() {
+        setTimeout(function () {
+            let submitError = document.getElementById('submit-error');
+            let className = submitError.classList[0];
+            let visibleClassName = className + "-visible";
+            if (submitError.classList.contains(visibleClassName))
+                submitError.classList.remove(visibleClassName);
+        }, 150);
+    }
+    function AddShowClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (!element.classList.contains(visibleClassName))
+            element.classList.add(visibleClassName);
+    }
+    function RemoveVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (element.classList.contains(visibleClassName))
+            element.classList.remove(visibleClassName);
+    }
+</script>
+@*<script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>*@
 @*<script>
             function ConfirmMail() {
                 var url = "@Url.Action("ConfirmMail", "Authenticate")";
@@ -58,7 +141,7 @@
             };
         </script>
     </script>*@
-@if (!Model.IsAuth)
+@if (!Model.IsAuth.Value)
 {
     <script>
         $('#mailInput').on('keyup',
