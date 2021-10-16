@@ -3,12 +3,10 @@ using Website.ViewModels.Base;
 
 namespace Website.ViewModels
 {
-    public class AuthorizationViewModel : ConfirmMailViewModel
+    public class AuthorizationViewModel
     {        
-        //[Required(ErrorMessage ="Не указана почта")]
-        //public string MailAddress { get; set; }
-        [Required(ErrorMessage = "Не указан пароль")]
-        [DataType(DataType.Password)]
+        public string MailAddress { get; set; }
+        [Required(ErrorMessage = " ")]
         public string Password { get; set; }
     }
 }

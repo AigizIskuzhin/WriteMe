@@ -20,34 +20,37 @@ namespace Website.Controllers
         {
             AuthenticateService = authenticateService;
         }
-
-        [HttpGet]
-        [Route("reg")]
-        [Route("auth")]
-        public IActionResult ConfirmMail()
-        {
-            var t = Request.Path.Value;
-            bool isAuth = t.Contains("auth");
-            return View(new ConfirmMailViewModel { IsAuth = isAuth });
-        }
+        
+        //[Route("reg")]
+        //[Route("auth")]
+        //public IActionResult ConfirmMail()
+        //{
+        //    return RedirectToAction("ConfirmMail",new ConfirmMailViewModel { IsAuth = isAuth });
+        //}
         
         [Route("reg")]
         [Route("auth")]
         public async Task<IActionResult> ConfirmMail(ConfirmMailViewModel confirmMailViewModel)
         {
+            var t = Request.Path.Value;
+            bool isAuth = t.Contains("auth");
+            if (confirmMailViewModel.IsAuth is null)
+                return View(new ConfirmMailViewModel { IsAuth = isAuth });
+
             if (ModelState.IsValid)
             {
-                if (confirmMailViewModel.IsAuth)
+                bool isUserExist = await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress);
+                if (confirmMailViewModel.IsAuth.Value)
                 {
-                    if (await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress))
-                        return View("EnterPassword", new AuthorizationViewModel
+                    if (isUserExist)
+                        return RedirectToAction("EnterPassword", new AuthorizationViewModel
                         { MailAddress = confirmMailViewModel.MailAddress });
                     ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Неверный адрес");
                 }
                 else
                 {
-                    if (!await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress))
-                        return View("EnterUserInfo", new RegistrationViewModel
+                    if (!isUserExist)
+                        return RedirectToAction("EnterUserInfo", new RegistrationViewModel
                         { MailAddress = confirmMailViewModel.MailAddress });
                     ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Адрес занят");
                 }
@@ -57,7 +60,7 @@ namespace Website.Controllers
         [Route("auth/log")]
         public async Task<IActionResult> EnterPassword(AuthorizationViewModel authorizationViewModel)
         {
-            if (authorizationViewModel.MailAddress is null) return RedirectToAction("AuthWarning");
+            if (authorizationViewModel.MailAddress is null) return RedirectToAction("ConfirmMail");
             if (ModelState.IsValid)
             {
                 var user = await AuthenticateService.ConfirmUserAsync(authorizationViewModel.MailAddress,
@@ -70,9 +73,8 @@ namespace Website.Controllers
                 
                 authorizationViewModel.Password = string.Empty;
                 ModelState.AddModelError(nameof(authorizationViewModel.Password), "Неверный пароль");
-                return View("ConfirmMail", authorizationViewModel);
             }
-            return View("ConfirmMail", authorizationViewModel); ;
+            return View(authorizationViewModel);
         }
         private async Task Authenticate(User user)
         {
