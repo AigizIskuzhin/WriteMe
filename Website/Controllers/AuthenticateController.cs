@@ -33,23 +33,26 @@ namespace Website.Controllers
         public async Task<IActionResult> ConfirmMail(ConfirmMailViewModel confirmMailViewModel)
         {
             var t = Request.Path.Value;
-            bool isAuth = t.Contains("auth");
+            bool isAuth = t!.Contains("auth");
             if (confirmMailViewModel.IsAuth is null)
                 return View(new ConfirmMailViewModel { IsAuth = isAuth });
 
             if (ModelState.IsValid)
             {
-                bool isUserExist = await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress);
+                var user = await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress);
                 if (confirmMailViewModel.IsAuth.Value)
                 {
-                    if (isUserExist)
-                        return RedirectToAction("EnterPassword", new AuthorizationViewModel
-                        { MailAddress = confirmMailViewModel.MailAddress });
+                    if (user!=null)
+                        return View("EnterPassword", new AuthorizationViewModel
+                        {
+                            MailAddress = confirmMailViewModel.MailAddress,
+                            UserTitle = user.Name + " " + user.Surname[0] +"."
+                        });
                     ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Неверный адрес");
                 }
                 else
                 {
-                    if (!isUserExist)
+                    if (user != null)
                         return RedirectToAction("EnterUserInfo", new RegistrationViewModel
                         { MailAddress = confirmMailViewModel.MailAddress });
                     ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Адрес занят");
@@ -67,8 +70,8 @@ namespace Website.Controllers
                     authorizationViewModel.Password);
                 if (user != null)
                 {
-                    await Authenticate(user);
-                    return Redirect("/");
+                    //await Authenticate(user);
+                    return PartialView("AuthWarning");
                 }
                 
                 authorizationViewModel.Password = string.Empty;
@@ -98,7 +101,7 @@ namespace Website.Controllers
         }
 
         public async Task<bool> IsMailExist(string mailAddress) =>
-            await AuthenticateService.IsUserExistAsync(mailAddress);
+            await AuthenticateService.IsUserExistAsync(mailAddress)!=null;
 
         [Route("/auth/reg")]
         public async Task<IActionResult> EnterUserInfo(RegistrationViewModel registrationViewModel)

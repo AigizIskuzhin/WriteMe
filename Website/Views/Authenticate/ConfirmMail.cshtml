@@ -17,7 +17,7 @@
 
 <div class="center-screen auth">
     <h3>@title</h3>
-    <form class="auth-form" asp-anti-forgery="true">
+    <form class="auth-form" asp-action="ConfirmMail" asp-anti-forgery="true">
         <input type="hidden" asp-for="IsAuth" />
         <div class="auth-row">
             <input id="MailAddress" autocomplete="off" onkeyup="IsInputEmpty()" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />

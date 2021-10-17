@@ -3,9 +3,11 @@ using Website.ViewModels.Base;
 
 namespace Website.ViewModels
 {
-    public class AuthorizationViewModel
-    {        
-        public string MailAddress { get; set; }
+    public class AuthorizationViewModel : ConfirmMailViewModel
+    {
+
+        public double UserTitleBlockWidth { get; set; }
+        public string UserTitle { get; set; }
         [Required(ErrorMessage = " ")]
         public string Password { get; set; }
     }

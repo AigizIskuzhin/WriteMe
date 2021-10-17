@@ -48,8 +48,8 @@ namespace Website.Infrastructure.Services
             });
         }
 
-        public async Task<bool>  IsUserExistAsync(string mailAddress) => await _Users.Items
-            .AnyAsync(user => user.MailAddress.Equals(mailAddress))
+        public async Task<User>  IsUserExistAsync(string mailAddress) => await _Users.Items
+            .FirstOrDefaultAsync(user => user.MailAddress.Equals(mailAddress))
             .ConfigureAwait(false);
     }
 }
