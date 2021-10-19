@@ -21,13 +21,6 @@ namespace Website.Controllers
             AuthenticateService = authenticateService;
         }
         
-        //[Route("reg")]
-        //[Route("auth")]
-        //public IActionResult ConfirmMail()
-        //{
-        //    return RedirectToAction("ConfirmMail",new ConfirmMailViewModel { IsAuth = isAuth });
-        //}
-        
         [Route("reg")]
         [Route("auth")]
         public async Task<IActionResult> ConfirmMail(ConfirmMailViewModel confirmMailViewModel)
@@ -52,9 +45,11 @@ namespace Website.Controllers
                 }
                 else
                 {
-                    if (user != null)
-                        return RedirectToAction("EnterUserInfo", new RegistrationViewModel
-                        { MailAddress = confirmMailViewModel.MailAddress });
+                    if (user==null)
+                        return View("EnterUserInfo", new RegistrationViewModel
+                        {
+                            MailAddress = confirmMailViewModel.MailAddress
+                        });
                     ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Адрес занят");
                 }
             }
@@ -70,8 +65,8 @@ namespace Website.Controllers
                     authorizationViewModel.Password);
                 if (user != null)
                 {
-                    //await Authenticate(user);
-                    return PartialView("AuthWarning");
+                    await Authenticate(user);
+                    return Redirect("/app/welcome");
                 }
                 
                 authorizationViewModel.Password = string.Empty;
@@ -87,11 +82,8 @@ namespace Website.Controllers
                 new(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name),
                 new("id",user.Id.ToString())
             };
-            // создаем объект ClaimsIdentity
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-            // установка аутентификационных куки
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-            var t = HttpContext.User;
         }
         [Route("exit")]
         public async Task<IActionResult> Logout()
@@ -106,11 +98,15 @@ namespace Website.Controllers
         [Route("/auth/reg")]
         public async Task<IActionResult> EnterUserInfo(RegistrationViewModel registrationViewModel)
         {
-            var user = await AuthenticateService.RegisterAsync(registrationViewModel);
-            if (user != null)
+            if (ModelState.IsValid)
             {
-                await Authenticate(user);
-                return Redirect("/");
+                var user = await AuthenticateService.RegisterAsync(registrationViewModel);
+                if (user != null)
+                {
+                    await Authenticate(user);
+                    return Redirect("/app/welcome");
+                }
+
             }
             return View();
         }

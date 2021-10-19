@@ -8,7 +8,8 @@ namespace Website.ViewModels
 
         public double UserTitleBlockWidth { get; set; }
         public string UserTitle { get; set; }
-        [Required(ErrorMessage = " ")]
+        [Required(ErrorMessage = "Обязательно к заполнению")]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }
