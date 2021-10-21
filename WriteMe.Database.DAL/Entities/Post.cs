@@ -3,7 +3,7 @@ using WriteMe.Database.DAL.Entities.Base;
 
 namespace WriteMe.Database.DAL.Entities
 {
-    public class Post : NamedEntity
+    public class Post : Entity
     {
         public int OwnerId { get; set; }
         public User Owner { get; set; }
