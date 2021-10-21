@@ -2,47 +2,173 @@
 @{
     Layout = null;
 }
-<h3>Регистрация</h3>
-<form asp-action="EnterPassword" asp-controller="App" asp-anti-forgery="true">
-    <input type="hidden" asp-for="IsAuth" />
-    <input type="hidden" asp-for="MailAddress" />
-    <div>
-        <h4>Данные для входа</h4>
-        <div>
-            <input id="inputPassword" placeholder="Пароль" type="text" asp-for="Password" />
-            <span></span>
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
+
+<div class="center-screen auth">
+    <form class="auth-form" asp-action="EnterPassword" asp-controller="App" asp-anti-forgery="true" style="gap:20px">
+        <h3>Регистрация</h3>
+        <div class="auth-section">
+            <h4>Данные для входа</h4>
+            <div class="auth-row">
+                <input id="inputPassword" class="auth-input" placeholder="Пароль" type="password" asp-for="Password" autocomplete="off"
+                       onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" />
+                <span class="submit-error" asp-validation-for="Password"></span>
+            </div>
+            <div class="auth-row">
+                <input id="inputConfirmPassword"  class="auth-input" placeholder="Повторите пароль" type="password" asp-for="ConfirmPassword" autocomplete="off"
+                       onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" />
+                <span asp-validation-for="ConfirmPassword"></span>
+            </div>
         </div>
-        <div>
-            <input id="inputConfirmPassword" placeholder="Повторите пароль" type="text" />
-            <span></span>
+        <div class="auth-section">
+            <h4>Личные данные</h4>
+            <div class="auth-row">
+                <input placeholder="Фамилия" class="auth-input" type="text" asp-for="Surname" />
+                <span asp-validation-for="Surname"></span>
+            </div>
+            <div class="auth-row">
+                <input placeholder="Имя" class="auth-input" type="text" asp-for="Name"
+                       onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" />
+                <span asp-validation-for="Name"></span>
+            </div>
+            <div class="auth-row">
+                <input placeholder="Отчество" class="auth-input" type="text" asp-for="Patronymic" />
+                <span asp-validation-for="Patronymic"></span>
+            </div>
+            <div class="auth-row">
+                @* Вариант 1 *@
+                <span class="auth-input-title">Страна</span>
+                <select placeholder="Отчество" class="auth-input pointer" style="margin-right: 0; appearance: none" asp-for="Country">
+                    <option value="ru">Не выбрано</option>
+                    <option value="ru">Россия</option>
+                </select>
+
+                @* Вариант 2 *@
+                @*<span class="auth-input-title-two">Страна</span>
+                    <select class="auth-input variant-two" style="margin-right: 0" asp-for="Country">
+                        <option value="ru">Не выбрано</option>
+                        <option value="ru">Россия</option>
+                    </select>*@
+                <span asp-validation-for="Country"></span>
+            </div>
+            <div class="auth-row">
+
+                @* Вариант 1 *@
+                <marquee direction="left" style="width: 55px;" scrolldelay="60" scrollamount="2" class="auth-input-title">Дата рождения</marquee>
+                <input class="auth-input pointer" style="margin-right: 0; padding-left: 12px; padding-right: 0;" type="date" asp-for="Birthday" />
+
+                @* Вариант 2 *@
+                @*<marquee direction="left" scrolldelay="60" scrollamount="2" class="auth-input-title-two">Год рождения</marquee>
+                    <input class="auth-input variant-two" style="margin-right: 0" type="date" asp-for="Birthday" />*@
+                <span asp-validation-for="Birthday"></span>
+            </div>
         </div>
-    </div>
-    <div>
-        <h4>Личные данные</h4>
-        <div>
-            <input placeholder="Фамилия" type="text" asp-for="Surname" />
-            <span></span>
+
+        <input type="hidden" asp-for="IsAuth" />
+        <input type="hidden" asp-for="MailAddress" />
+        <div class="auth-row" style="margin-top: 20px;">
+            <input id="submit" class="auth-btn pointer" disabled onmousemove="ShowError(this)" onmouseleave="HideError(this)" style="width: 100%;" type="submit" value="Зарегистрироваться" />
+            <span class="field-validation-error rightOf submit-error">Заполните указанные данные</span>
         </div>
-        <div>
-            <input placeholder="Имя" type="text" asp-for="Name" />
-            <span></span>
-        </div>
-        <div>
-            <input placeholder="Отчество" type="text" asp-for="Patronymic" />
-            <span></span>
-        </div>
-        <div>
-            <select placeholder="Отчество" asp-for="Country">
-                <option value="ru">Не выбрано</option>
-                <option value="ru">Россия</option>
-            </select>
-            <span></span>
-        </div>
-        <div>
-            <input placeholder="Дата рождения" type="date" asp-for="Birthday" />
-            <span></span>
-        </div>
-    </div>
-    <input type="submit" value="Зарегистрироваться" />
-</form>
-<div asp-validation-summary="All"></div>
+    </form>
+</div>
+
+
+<script>
+    let inputHasError = false;
+    let inputErrors = document.getElementsByClassName('field-validation-error');
+    document.addEventListener("DOMContentLoaded",
+        function (event) {
+            if (inputErrors.length != 0) {
+                for (let inputError of inputErrors) {
+
+                    if (!inputError.classList.contains('submit-error'))
+                        setTimeout(function () {
+                            if (inputError.innerText != "") {
+                                inputHasError = true;
+                            }
+                            AddVisibleClass(inputError);
+                        },
+                            500);
+                }
+            }
+        });
+
+    function IsSubmitError(inputError) {
+        for (let item of inputError.parentElement.children) {
+            if (item.classList.contains("auth-btn"))
+                return true;
+        }
+        return false;
+    }
+
+    let submitBtn = document.getElementById('submit');
+
+    function IsInputEmpty(input) {
+        let inputError;
+        for (let item of input.parentElement.children)
+            if (item.classList.contains("field-validation-error"))
+                inputError = item;
+        if(inputError!=null)    
+        if (inputError.innerText != "")
+            AddVisibleClass(inputError);
+        if (input.innerText == "") {
+            submitBtn.disabled = true;
+        } else {
+            inputHasError = false;
+            HideError(input);
+            submitBtn.disabled = false;
+            HideError(submitBtn);
+            //inputError.value = "";
+        }
+    }
+
+    function ShowError(input) {
+        if (!input.disabled) {
+            HideError(input);
+            return;
+        }
+        for (let item of input.parentElement.children) {
+            if (item.classList.contains("field-validation-error"))
+                if (item.innerText != "") {
+
+                    if (inputHasError)
+                        item.innerText = "Исправьте введенные данные";
+                    else item.innerText = "Заполните указанные данные";
+                    setTimeout(function () {
+                        AddVisibleClass(item);
+                    },
+                        150);
+                }
+        }
+
+    }
+
+    function HideError(input) {
+        setTimeout(function () {
+            for (let item of input.parentElement.children)
+                if (item.classList.contains("field-validation-error")) {
+                    if (item.value != "") {
+                        if (!item.classList.contains("submit-error"))
+                            item.value = "";
+                        RemoveVisibleClass(item);
+                    }
+                }
+        }, 150);
+    }
+
+    function AddVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (!element.hasAttribute("style"))
+            element.setAttribute("style", "width: " + element.scrollWidth + "px;");
+    }
+
+    function RemoveVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (element.hasAttribute("style"))
+            element.removeAttribute("style");
+    }
+</script>
