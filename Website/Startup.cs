@@ -1,15 +1,11 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Website.Data;
 using Website.Infrastructure.Services;
-using Website.Infrastructure.Services.Interfaces;
 
 namespace Website
 {
@@ -25,20 +21,14 @@ namespace Website
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services) => services
             .AddDatabase(Configuration.GetSection("Database"))
-            .AddTransient<IAuthorizationService, AuthorizationService>()
-            .AddControllersWithViews().Services
+            .AddServices()
+            .AddControllersWithViews().AddRazorRuntimeCompilation()
+            .Services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie();
-            //.AddLocalization(options => options.ResourcesPath = "Resources")
-            //.AddViewLocalization();
-            //services.AddLocalization(options=>options.ResourcesPath="Infrastructure/Localization");
-
-
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //    .AddCookie(options => //CookieAuthenticationOptions
-            //    {
-            //        options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/App/Logintest");
-            //    });
+        //.AddLocalization(options => options.ResourcesPath = "Resources")
+        //.AddViewLocalization();
+        //services.AddLocalization(options=>options.ResourcesPath="Infrastructure/Localization");
         
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.  
@@ -77,7 +67,7 @@ namespace Website
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Home}/{action=Index}/{id?}");
+                    pattern: "{controller=About}/{action=Index}/{id?}");
             });
         }
     }

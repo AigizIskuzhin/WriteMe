@@ -2,72 +2,22 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WriteMe.Database.DAL.Context;
 
 namespace WriteMe.Database.DAL.Migrations
 {
     [DbContext(typeof(WriteMeDatabase))]
-    partial class WriteMeDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20211016172725_initial3")]
+    partial class initial3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.10");
-
-            modelBuilder.Entity("WriteMe.Database.DAL.Entities.FriendshipApplication", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<bool>("ApplicationStateUserOne")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<bool>("ApplicationStateUserTwo")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<int>("UserOneId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserTwoId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserOneId");
-
-                    b.HasIndex("UserTwoId");
-
-                    b.ToTable("FriendshipApplications");
-                });
-
-            modelBuilder.Entity("WriteMe.Database.DAL.Entities.Post", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("OwnerId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OwnerId");
-
-                    b.ToTable("Posts");
-                });
 
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.Role", b =>
                 {
@@ -97,9 +47,6 @@ namespace WriteMe.Database.DAL.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("longtext");
 
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("tinyint(1)");
-
                     b.Property<bool>("IsNew")
                         .HasColumnType("tinyint(1)");
 
@@ -115,7 +62,7 @@ namespace WriteMe.Database.DAL.Migrations
                     b.Property<string>("Patronymic")
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime>("RegistrationDateTime")
+                    b.Property<DateTime>("RegistrationDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<int?>("RoleId")
@@ -148,36 +95,6 @@ namespace WriteMe.Database.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserConnection");
-                });
-
-            modelBuilder.Entity("WriteMe.Database.DAL.Entities.FriendshipApplication", b =>
-                {
-                    b.HasOne("WriteMe.Database.DAL.Entities.User", "UserOne")
-                        .WithMany()
-                        .HasForeignKey("UserOneId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("WriteMe.Database.DAL.Entities.User", "UserTwo")
-                        .WithMany()
-                        .HasForeignKey("UserTwoId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserOne");
-
-                    b.Navigation("UserTwo");
-                });
-
-            modelBuilder.Entity("WriteMe.Database.DAL.Entities.Post", b =>
-                {
-                    b.HasOne("WriteMe.Database.DAL.Entities.User", "Owner")
-                        .WithMany()
-                        .HasForeignKey("OwnerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Owner");
                 });
 
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.User", b =>

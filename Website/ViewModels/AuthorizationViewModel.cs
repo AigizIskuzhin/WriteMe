@@ -1,13 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Website.ViewModels.Base;
 
 namespace Website.ViewModels
 {
     public class AuthorizationViewModel : ConfirmMailViewModel
-    {        
-        //[Required(ErrorMessage ="Не указана почта")]
-        //public string MailAddress { get; set; }
-        [Required(ErrorMessage = "Не указан пароль")]
+    {
+
+        public double UserTitleBlockWidth { get; set; }
+        public string UserTitle { get; set; }
+        [Required(ErrorMessage = "Обязательно к заполнению")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
     }
