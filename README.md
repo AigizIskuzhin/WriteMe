@@ -1,6 +1,9 @@
 # WriteMe
  Social network
 
-An attempt to demonstrate some kind of work xDDDDDDD
- 
-![In progress (dev branch)](https://github.com/AigizIskuzhin/WriteMe/tree/dev)
+  
+  
+  
+![Scrum table](https://github.com/AigizIskuzhin/WriteMe/projects/1)
+
+![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/PresentationSmall.png)
