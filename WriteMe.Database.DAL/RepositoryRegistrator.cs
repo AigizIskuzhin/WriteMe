@@ -8,6 +8,7 @@ namespace WriteMe.Database.DAL
     {
         public static IServiceCollection AddRepositoriesInDB(this IServiceCollection services) => services
             .AddTransient<IRepository<User>, UsersRepository>()
-            .AddTransient<IRepository<Role>, DbRepository<Role>>();
+            .AddTransient<IRepository<Role>, DbRepository<Role>>()
+            .AddTransient<IRepository<Post>, PostsRepository>();
     }
 }

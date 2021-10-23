@@ -10,7 +10,8 @@ namespace WriteMe.Database.DAL.Entities
         public string Password { get; set; }
         public Role Role { get; set; }
         public bool IsNew { get; set; }
-        public DateTime RegistrationDate { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime RegistrationDateTime { get; set; }
         public User()
         {
             ConnectionIdentifiers = new HashSet<UserConnection>();

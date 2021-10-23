@@ -1,15 +1,11 @@
-using System.Globalization;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Rewrite;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Website.Data;
 using Website.Infrastructure.Services;
-using Website.Infrastructure.Services.Interfaces;
 
 namespace Website
 {
@@ -26,7 +22,8 @@ namespace Website
         public void ConfigureServices(IServiceCollection services) => services
             .AddDatabase(Configuration.GetSection("Database"))
             .AddServices()
-            .AddControllersWithViews().Services
+            .AddControllersWithViews().AddRazorRuntimeCompilation()
+            .Services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             .AddCookie();
         //.AddLocalization(options => options.ResourcesPath = "Resources")

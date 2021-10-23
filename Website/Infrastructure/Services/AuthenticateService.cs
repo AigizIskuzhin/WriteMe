@@ -1,9 +1,6 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Website.ViewModels;
 using WriteMe.Database.DAL.Entities;
 using WriteMe.Database.Interfaces;
@@ -48,8 +45,8 @@ namespace Website.Infrastructure.Services
             });
         }
 
-        public async Task<bool>  IsUserExistAsync(string mailAddress) => await _Users.Items
-            .AnyAsync(user => user.MailAddress.Equals(mailAddress))
+        public async Task<User>  IsUserExistAsync(string mailAddress) => await _Users.Items
+            .FirstOrDefaultAsync(user => user.MailAddress.Equals(mailAddress))
             .ConfigureAwait(false);
     }
 }

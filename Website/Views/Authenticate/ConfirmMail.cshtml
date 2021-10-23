@@ -1,14 +1,16 @@
-﻿@model Website.ViewModels.Base.ConfirmMailViewModel
+﻿@model Website.ViewModels.ConfirmMailViewModel
 @{
     Layout = null;
     string title = "Регистрация";
     string redirectUrl = "/auth";
+    string action = "/reg";
     string redirectDescription = "Авторизация";
 
     if (Model.IsAuth.Value)
     {
         title = "Авторизация";
         redirectUrl = "/reg";
+        action = "/auth";
         redirectDescription = "Регистрация";
     }
 }
@@ -16,12 +18,13 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
 
 <div class="center-screen auth">
-    <h3>@title</h3>
-    <form class="auth-form" asp-anti-forgery="true">
+    <form class="auth-form" action=@action method="POST" asp-anti-forgery="true">
+        <h3>@title</h3>
         <input type="hidden" asp-for="IsAuth" />
         <div class="auth-row">
-            <input id="MailAddress" autocomplete="off" onkeyup="IsInputEmpty()" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />
-            <div asp-validation-summary="All"></div>
+            <input id="MailAddress" autocomplete="off" onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />
+            @*<div asp-validation-summary="All"></div>*@
+            <span asp-validation-for="MailAddress"></span>
             @*<div asp-validation-summary="ModelOnly" class="validation-summary-errors">
                     <ul>
                         <li class="auth-error">Неверная почта</li>
@@ -29,85 +32,109 @@
                 </div>*@
         </div>
         <div class="auth-row">
-            <input id="sumbit" class="auth-btn pointer" disabled onmousemove="IsDisabled()" onmouseleave="HideError()" type="submit" value="Продолжить" />
-            <span id="submit-error" class="auth-error rightOf">Введите почту</span>
+            <input id="submit" class="auth-btn pointer" disabled onfocus="HideError(this)" onmousemove="ShowError(this)" onmouseleave="HideError(this)" type="submit" value="Продолжить" />
+            <span class="field-validation-error rightOf submit-error">Введите почту</span>
         </div>
     </form>
     <div style="position: relative">
         <a href="@redirectUrl">@redirectDescription</a>
     </div>
 </div>
+
 <script>
     let inputHasError = false;
-    let inputValidationList = document.getElementsByClassName('validation-summary-errors')[0];
-    document.addEventListener("DOMContentLoaded", function (event) {
-        if (inputValidationList != undefined)
-            if (inputValidationList.hasChildNodes)
-                if (inputValidationList.children[0].hasChildNodes) {
-                    inputHasError = true;
-                    let inputError = inputValidationList.children[0].children[0];
-                    inputError.className = "auth-error";
-                    setTimeout(function () {
-                        AddShowClass(inputError);
-                    }, 500);
+    let inputErrors = document.getElementsByClassName('field-validation-error');
+    document.addEventListener("DOMContentLoaded",
+        function(event) {
+            if (inputErrors.length != 0) {
+                for (let inputError of inputErrors) {
+
+                    if (!inputError.classList.contains('submit-error'))
+                        setTimeout(function () {
+                            if (inputError.innerText != "") {
+                                    inputHasError = true;
+                                }
+                                AddVisibleClass(inputError);
+                            },
+                            500);
                 }
-    });
+            }
+        });
 
-    let submitBtn = document.getElementById('sumbit');
-    function IsInputEmpty() {
-        let input = document.getElementById('MailAddress');
+    function IsSubmitError(inputError) {
+        for (let item of inputError.parentElement.children) {
+            if (item.classList.contains("auth-btn"))
+                return true;
+        }
+        return false;
+    }
 
+    let submitBtn = document.getElementById('submit');
+
+    function IsInputEmpty(input) {
+        let inputError;
+        for (let item of input.parentElement.children)
+            if (item.classList.contains("field-validation-error"))
+                inputError = item;
+        if (inputError.value != "")
+            AddVisibleClass(inputError);
         if (input.value == "") {
-            submitBtn.setAttribute("disabled", "");
-        }
-        else {
-            HideError();
-            submitBtn.removeAttribute("disabled");
-        }
-        if (inputHasError) {
-            let inputError = inputValidationList.children[0].children[0];
-            RemoveVisibleClass(inputError);
+            submitBtn.disabled=true;
+        } else {
+            HideError(input);
+            HideError(submitBtn);
+            submitBtn.disabled = false;
             inputHasError = false;
+            //inputError.value = "";
         }
     }
-    IsInputEmpty();
-    function IsDisabled() {
-        if (!submitBtn.hasAttribute("disabled")) {
-            HideError();
+
+    function ShowError(input) {
+        if (!input.disabled) {
+            HideError(input);
             return;
         }
-        ShowError();
-    }
-    function ShowError() {
-        if (!submitBtn.hasAttribute("disabled")) {
-            HideError();
-            return;
+        for (let item of input.parentElement.children) {
+            if (item.classList.contains("field-validation-error"))
+                if (item.innerText != "") {
+                    
+                    if (inputHasError)
+                        item.innerText = "Исправьте почту";
+                    else item.innerText = "Введите почту";
+                    setTimeout(function () {
+                        AddVisibleClass(item);
+                    },
+                        150);
+                }
         }
-        setTimeout(function () {
-            let submitError = document.getElementById('submit-error');
-            AddShowClass(submitError);
-        }, 150);
+
     }
-    function HideError() {
+
+    function HideError(input) {
         setTimeout(function () {
-            let submitError = document.getElementById('submit-error');
-            let className = submitError.classList[0];
-            let visibleClassName = className + "-visible";
-            if (submitError.classList.contains(visibleClassName))
-                submitError.classList.remove(visibleClassName);
-        }, 150);
+                for (let item of input.parentElement.children)
+                    if (item.classList.contains("field-validation-error")) {
+                        if (item.value != "") {
+                            if (!item.classList.contains("submit-error"))
+                                item.value = "";
+                            RemoveVisibleClass(item);
+                        }
+                    }
+            }, 150);
     }
-    function AddShowClass(element) {
+
+    function AddVisibleClass(element) {
         let className = element.classList[0];
         let visibleClassName = className + "-visible";
-        if (!element.classList.contains(visibleClassName))
-            element.classList.add(visibleClassName);
+        if (!element.hasAttribute("style"))
+            element.setAttribute("style", "width: " + element.scrollWidth + "px;");
     }
+
     function RemoveVisibleClass(element) {
         let className = element.classList[0];
         let visibleClassName = className + "-visible";
-        if (element.classList.contains(visibleClassName))
-            element.classList.remove(visibleClassName);
+        if (element.hasAttribute("style"))
+            element.removeAttribute("style");
     }
 </script>
 @*<script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>*@
@@ -144,7 +171,7 @@
 @if (!Model.IsAuth.Value)
 {
     <script>
-        $('#mailInput').on('keyup',
+        @*$('#mailInput').on('keyup',
             function () {
                 var url = "@Url.Action("IsMailExist","Authenticate")";
                 var mail = document.getElementById('mailInput').value;
@@ -165,6 +192,6 @@
                             else warn.textContent='Свободен';
                         }
                 });
-            });
+            });*@яя
     </script>
 }

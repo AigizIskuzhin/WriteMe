@@ -33,6 +33,7 @@ a{
     border-radius: 15px; */
 }
 .side_bar_ol{
+    margin-top: 20px;
     list-style: none;
     padding: 0;
     transition: .5s linear;
@@ -106,7 +107,7 @@ a{
     position: fixed;
     height: var(--header-height);
     width: 100%;
-    background: rgba(230,230,230,.5);
+    background: rgb(230,230,230);
     z-index: 11;
 }
 #active_side_bar_menu_item{
@@ -172,7 +173,7 @@ a{
 }
 .ui_search_input_block{
     display: flex;
-    column-gap: 10px;
+    column-gap: 20px;
 }
 #im_search_block{
     width: 100%;

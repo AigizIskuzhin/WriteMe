@@ -12,7 +12,7 @@ namespace Website.Infrastructure.Services.Interfaces
         public Task<User> ConfirmUserAsync(string mail, string password);
         public bool LogOut();
         public Task<User> RegisterAsync(RegistrationViewModel registrationViewModel);
-        public Task<bool> IsUserExistAsync(string mailAddress);
+        public Task<User> IsUserExistAsync(string mailAddress);
 
     }
 }
