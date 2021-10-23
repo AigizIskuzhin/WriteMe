@@ -26,4 +26,8 @@
     <ProjectReference Include="..\WriteMe.Database.Interfaces\WriteMe.Database.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="wwwroot\Resources\images\" />
+  </ItemGroup>
+
 </Project>
