@@ -6,7 +6,6 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
-using Website.ViewModels.Base;
 using WriteMe.Database.DAL.Entities;
 
 namespace Website.Controllers
@@ -99,11 +98,16 @@ namespace Website.Controllers
         {
             if (ModelState.IsValid)
             {
+                if (!registrationViewModel.Password.Equals(registrationViewModel.ConfirmPassword))
+                {
+                    ModelState.AddModelError("ConfirmPassword","Пароли не совпадают");
+                    return View(registrationViewModel);
+                }
                 var user = await AuthenticateService.RegisterAsync(registrationViewModel);
                 if (user != null)
                 {
                     await Authenticate(user);
-                    return Redirect("/app/welcome");
+                    return RedirectToAction("Profile","Profile");
                 }
 
             }
