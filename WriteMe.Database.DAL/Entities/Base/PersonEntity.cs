@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace WriteMe.Database.DAL.Entities.Base
+﻿namespace WriteMe.Database.DAL.Entities.Base
 {
     public abstract class PersonEntity : Entity
     {

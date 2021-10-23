@@ -1,5 +1,5 @@
-﻿using System.Linq;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using WriteMe.Database.DAL.Context;
 using WriteMe.Database.DAL.Entities;
 
@@ -7,7 +7,7 @@ namespace WriteMe.Database.DAL
 {
     class PostsRepository : DbRepository<Post>
     {
-        public PostsRepository(WriteMeDatabase db):base(db)
+        public PostsRepository(WriteMeDatabase db) : base(db)
         {
 
         }

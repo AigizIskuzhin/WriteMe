@@ -3,7 +3,7 @@ using WriteMe.Database.DAL.Entities.Base;
 
 namespace WriteMe.Database.DAL.Entities
 {
-    public class Role: NamedEntity
+    public class Role : NamedEntity
     {
         public virtual ICollection<User> Users { get; set; }
 

@@ -17,7 +17,7 @@ namespace WriteMe.Database.Interfaces
         void Update(T item);
         Task UpdateAsync(T item, CancellationToken cancel = default);
 
-        void Remove(int id);    
+        void Remove(int id);
         Task RemoveAsync(int id, CancellationToken cancel = default);
     }
 }
