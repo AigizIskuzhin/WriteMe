@@ -1,7 +1,8 @@
-﻿@model Website.ViewModels.ProfileViewModel
-
+﻿@using Microsoft.Extensions.Primitives
+@model Website.ViewModels.ProfileViewModel
 @{
-    var t = Model;
+    var queryId = Context.Request.Query["id"].ToString();
+    string profileId = String.IsNullOrWhiteSpace(queryId) ? User.Claims.First(claim => claim.Type.Equals("id")).Value : queryId;
 }
 <link rel="stylesheet" href="~/Resources/css/profile.css" />
 <link rel="stylesheet" href="~/Resources/css/post.css" />
@@ -10,7 +11,8 @@
 <div style="background: white; height: 70px; z-index: 11; width: inherit; position: fixed;"></div>
 <div id="user_profile" class="user_profile">
     <div id="profile_logo" class="profile_logo">
-        <img id="profile_img" class="profile_img" src="resources/images/photo_2021-09-18_02-12-12.jpg">
+        <img id="profile_img" class="profile_img" src="~/Resources/images/photo_2021-09-18_02-12-12.jpg">
+        <div></div>
     </div>
     <div class="profile_description">
         <div class="profile_title">
@@ -65,29 +67,35 @@
         </div>
     </div>
     <div id="profile_posts" class="profile_posts">
-        <ul>
-            <div class="ui_search_input_block">
-                <div style="position: absolute; top:-5px; height: calc(100% + 15px); width: 100%; background: white; z-index: 1; "></div>
-                <div id="im_search_block" class="im_search_block">
-                    <svg id="search_icon" fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20px" height="20px"><path d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"></path></svg>
-                    <input id="im_dialogs_search" class="ui_input_field" onkeyup="IsSearchInputEmpty(this)" type="text" placeholder="Искать">
-                </div>
+        <div class="ui_search_input_block">
+            <div style="position: absolute; top:-5px; height: calc(100% + 15px); width: 100%; background: white; z-index: 1; "></div>
+            <div id="im_search_block" class="im_search_block">
+                <svg id="search_icon" fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20px" height="20px"><path d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"></path></svg>
+                <input id="im_dialogs_search" class="ui_input_field" oninput="IsSearchInputEmpty(this)" type="text" placeholder="Искать">
+            </div>
             <div class="ui_search_custom_controls">
                 @if (Model.IsOwner)
                 {
-                    <button class="ui_control_item" onclick="BtnClick(this)">
+                    <button id="create_post_btn" class="ui_control_item">
                         <svg fill="none" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="currentColor" fill-rule="evenodd"><path d="M9.56 4.1h3.54a.9.9 0 110 1.8H9.6c-1 0-1.69 0-2.23.04-.52.05-.82.13-1.05.24a2.6 2.6 0 00-1.14 1.14c-.11.23-.2.53-.24 1.05-.04.54-.04 1.24-.04 2.23v3.8c0 1 0 1.69.04 2.23.05.52.13.82.24 1.05.25.49.65.89 1.14 1.14.23.11.53.2 1.05.24.54.04 1.24.04 2.23.04h3.8c1 0 1.69 0 2.23-.04.52-.05.82-.13 1.05-.24a2.6 2.6 0 001.14-1.14c.11-.23.2-.53.24-1.05.04-.54.04-1.24.04-2.23v-3.5a.9.9 0 011.8 0v3.54c0 .95 0 1.71-.05 2.33a4.5 4.5 0 01-.43 1.73 4.4 4.4 0 01-1.92 1.92 4.5 4.5 0 01-1.73.43c-.62.05-1.38.05-2.33.05H9.56c-.95 0-1.71 0-2.33-.05a4.5 4.5 0 01-1.73-.43 4.4 4.4 0 01-1.92-1.92 4.51 4.51 0 01-.43-1.73c-.05-.62-.05-1.38-.05-2.33v-3.88c0-.95 0-1.71.05-2.33.05-.64.16-1.2.43-1.73A4.4 4.4 0 015.5 4.58a4.51 4.51 0 011.73-.43c.62-.05 1.38-.05 2.33-.05z"></path><path d="M19.12 3.33a1.1 1.1 0 111.56 1.55l-.35.35a.4.4 0 01-.57 0l-.99-.99a.4.4 0 010-.56zm-.6 2.57l-.42-.42c-.44-.44-.72-.42-1.13 0l-5.13 5.12c-1.95 1.96-3.19 3.89-2.76 4.32.43.43 2.36-.8 4.32-2.76l5.12-5.13c.44-.44.42-.72 0-1.13z"></path></g></svg>
                     </button>
                 }
-                <button id="submit_search" class="ui_control_item" onclick="BtnClick(this)">
-                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20px" height="20px"><path d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"></path></svg>                </button>
+                @*<button id="submit_search" class="ui_control_item" onclick="BtnClick(this)">
+                    <svg fill="#000000" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="20px" height="20px"><path d="M 21 3 C 11.601563 3 4 10.601563 4 20 C 4 29.398438 11.601563 37 21 37 C 24.355469 37 27.460938 36.015625 30.09375 34.34375 L 42.375 46.625 L 46.625 42.375 L 34.5 30.28125 C 36.679688 27.421875 38 23.878906 38 20 C 38 10.601563 30.398438 3 21 3 Z M 21 7 C 28.199219 7 34 12.800781 34 20 C 34 27.199219 28.199219 33 21 33 C 13.800781 33 8 27.199219 8 20 C 8 12.800781 13.800781 7 21 7 Z"></path></svg>
+                </button>*@
             </div>
-            </div>
+        </div>
+        <ul id="profile_posts_container">
             @if (!Model.UserPosts.Any())
             {
-                <li>Записей нет</li>
+                <li class="post-smoothpad">
+                    <div class="post_description">
+                        Записей нет
+                    </div>
+                </li>
             }
-            else foreach (var post in Model.UserPosts)
+            else
+                foreach (var post in Model.UserPosts)
                 {
                     await Html.RenderPartialAsync("PostView", post);
                 }
@@ -96,6 +104,58 @@
 </div>
 
 <script>
+
+    // --------- Search posts -----------
+
+    let searchPostsOnInput = (inputId, containerId) => {
+        let input = document.getElementById(inputId);
+        let resultContainer = document.getElementById(containerId);
+        let request;
+        if (input && resultContainer) {
+            input.addEventListener('input', () => {
+                if (request && request.readyState != 4)
+                    request.abort();
+                var url = "@Url.Action("SearchUserPosts", "Profile")";
+                request = $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: {
+                        "id": @profileId,
+                        "filterText": input.value
+                    },
+                    success: function(view) {
+                        resultContainer.innerHTML = view;
+                    }
+                });
+            });
+        }
+    }
+    searchPostsOnInput('im_dialogs_search', 'profile_posts_container');
+
+    let openCreatePostModalForm = (inputId, containerId) => {
+        let input = document.getElementById(inputId);
+        let resultContainer = document.getElementById(containerId);
+        let request;
+        if (input && resultContainer) {
+            input.addEventListener('click', () => {
+                if (request && request.readyState != 4)
+                    request.abort();
+                var url = "@Url.Action("CreatePostModalForm", "Modals")";
+                request = $.ajax({
+                    url: url,
+                    type: "POST",
+                    success: function(view) {
+                        resultContainer.innerHTML = view;
+                        showModal('page_modal_wrap');
+                        document.querySelectorAll('.close-modal').forEach(c => c.addEventListener('click', closeModal));
+                    }
+                });
+            });
+        }
+    }
+    openCreatePostModalForm('create_post_btn', 'page_modal_wrap');
+
+    // --------- Search posts -----------
     window.onscroll = function () { scrollFunction() };
 
     function scrollFunction() {

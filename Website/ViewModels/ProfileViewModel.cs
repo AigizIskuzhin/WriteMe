@@ -11,5 +11,6 @@ namespace Website.ViewModels
         public bool IsMod { get; set; }
         public bool IsFriend { get; set; }
         public IEnumerable<Post> UserPosts { get; set; }
+        public bool IsNew => true; //User.IsNew;
     }
 }

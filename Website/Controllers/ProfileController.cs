@@ -28,18 +28,24 @@ namespace Website.Controllers
             {
                 User=user,
                 IsOwner = id==GetConnectedUserID,
-                UserPosts = ProfileService.GetPosts(id)
+                UserPosts = ProfileService.GetUserPosts(id)
             });
         }
 
         [HttpPost]
-        public async Task<ActionResult> UploadAvatar(IFormFile uploadedFile)
+        public ActionResult UploadAvatar(IFormFile uploadedFile)
         {
             if (uploadedFile != null)
             {
 
             }
             return View("Profile");
+        }
+
+        public ActionResult SearchUserPosts(int id, string filterText)
+        {
+            id = id == 0 ? GetConnectedUserID : id;
+            return View("PostsView", string.IsNullOrWhiteSpace(filterText) ? ProfileService.GetUserPosts(id) : ProfileService.GetUserPostsWithFilter(id,filterText));
         }
     }
 }

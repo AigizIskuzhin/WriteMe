@@ -1,17 +1,22 @@
-﻿<!DOCTYPE html>
+﻿@using Website.ViewModels
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Website</title>
-    <link rel="stylesheet" href="~/Resources/lib/bootstrap/dist/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="~/Resources/css/site.css"/>
-    <link rel="stylesheet" href="~/Resources/css/style.css"/>
+    <link rel="stylesheet" href="~/Resources/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/Resources/css/site.css" />
+    <link rel="stylesheet" href="~/Resources/css/style.css" />
+    <link rel="stylesheet" href="~/Resources/css/modal.css" />
 </head>
 <body>
-<div id="page_wrap">
-        <div id="page_header_wrap">
-
+    <div id="page_wrap">
+        <div id="page_modal_wrap" class="modal_container">
+            @*@if (Model is ProfileViewModel { IsNew: true })
+                {
+                    @await Html.PartialAsync("~/Views/Modals/GreetingModal.cshtml")
+                }*@
         </div>
         <div id="page_layout">
             <div id="side_bar">
@@ -94,14 +99,19 @@
                             <div id="sidebar_expander" class="side_bar_menu_item sidebar_expander-expanded" onclick="SwitchSideBarView()">
                                 <div class="side_bar_menu_icon">
                                     <input checked="true" id="sidebar_checkbox" type="checkbox">
-                                    <svg width=19 fill=none xmlns="http://www.w3.org/2000/svg" viewBox="-3 0 54.53 55.26"><defs><style>
-                                                                                                                                    .cls-1 {
-                                                                                                                                        fill: none;
-                                                                                                                                        stroke: #000;
-                                                                                                                                        stroke-miterlimit: 10;
-                                                                                                                                        stroke-width: 4px;
-                                                                                                                                    }
-                                    </style></defs><g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M52.11,4.21c1-2,.18-2.77-1.79-1.79L3.48,25.84c-2,1-2,2.6,0,3.58L50.32,52.84c2,1,2.77.18,1.79-1.79L42.19,31.21a9,9,0,0,1,0-7.16Z" /><path class="cls-1" d="M52.11,4.21c1-2,.18-2.77-1.79-1.79L3.48,25.84c-2,1-2,2.6,0,3.58L50.32,52.84c2,1,2.77.18,1.79-1.79L42.19,31.21a9,9,0,0,1,0-7.16Z" /></g></g></svg>
+                                    <svg width=19 fill=none xmlns="http://www.w3.org/2000/svg" viewBox="-3 0 54.53 55.26">
+                                        <defs>
+                                            <style>
+                                                .cls-1 {
+                                                    fill: none;
+                                                    stroke: #000;
+                                                    stroke-miterlimit: 10;
+                                                    stroke-width: 4px;
+                                                }
+                                            </style>
+                                        </defs>
+                                        <g id="Layer_2" data-name="Layer 2"><g id="Layer_1-2" data-name="Layer 1"><path d="M52.11,4.21c1-2,.18-2.77-1.79-1.79L3.48,25.84c-2,1-2,2.6,0,3.58L50.32,52.84c2,1,2.77.18,1.79-1.79L42.19,31.21a9,9,0,0,1,0-7.16Z" /><path class="cls-1" d="M52.11,4.21c1-2,.18-2.77-1.79-1.79L3.48,25.84c-2,1-2,2.6,0,3.58L50.32,52.84c2,1,2.77.18,1.79-1.79L42.19,31.21a9,9,0,0,1,0-7.16Z" /></g></g>
+                                    </svg>
                                 </div><span class="side_bar_menu_item_title">Скрыть</span>
                             </div>
                         </li>
@@ -113,9 +123,10 @@
             </div>
         </div>
     </div>
-<script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/Resources/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-<script src="~/Resources/js/index.js"></script>
+    <script src="~/Resources/js/index.js"></script>
+<script src="~/Resources/js/modal.js"></script>
     <script src="~/Resources/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

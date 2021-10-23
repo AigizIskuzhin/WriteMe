@@ -1,4 +1,4 @@
-﻿.post {
+﻿.post, .post-smoothpad {
     margin-top: 20px;
     background-color: rgba(230,230,230,.5);
     padding: 10px 20px 20px 20px;
@@ -6,6 +6,9 @@
     min-height: 40px;
     box-sizing: border-box;
     position: relative;
+}
+.post-smoothpad {
+    padding: 10px 20px;
 }
 .post:first-child {
         margin-top: 0;

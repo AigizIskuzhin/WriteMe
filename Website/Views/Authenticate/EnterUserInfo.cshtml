@@ -2,22 +2,23 @@
 @{
     Layout = null;
 }
+<html lang="ru">
 <link rel="stylesheet" href="~/Resources/css/auth.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
 
 <div class="center-screen auth">
-    <form class="auth-form" asp-action="EnterPassword" asp-controller="App" asp-anti-forgery="true" style="gap:20px">
+    <form class="auth-form" asp-action="EnterUserInfo" asp-controller="Authenticate" asp-anti-forgery="true" style="gap:20px">
         <h3>Регистрация</h3>
         <div class="auth-section">
             <h4>Данные для входа</h4>
             <div class="auth-row">
                 <input id="inputPassword" class="auth-input" placeholder="Пароль" type="password" asp-for="Password" autocomplete="off"
-                       onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" />
-                <span class="submit-error" asp-validation-for="Password"></span>
+                       oninput="IsInputEmpty(this)" />
+                <span asp-validation-for="Password"></span>
             </div>
             <div class="auth-row">
-                <input id="inputConfirmPassword"  class="auth-input" placeholder="Повторите пароль" type="password" asp-for="ConfirmPassword" autocomplete="off"
-                       onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" />
+                <input id="inputConfirmPassword" class="auth-input" placeholder="Повторите пароль" type="password" asp-for="ConfirmPassword" autocomplete="off"
+                       oninput="IsInputEmpty(this), ConfirmPassword(this)" />
                 <span asp-validation-for="ConfirmPassword"></span>
             </div>
         </div>
@@ -29,7 +30,7 @@
             </div>
             <div class="auth-row">
                 <input placeholder="Имя" class="auth-input" type="text" asp-for="Name"
-                       onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" />
+                       oninput="IsInputEmpty(this)" />
                 <span asp-validation-for="Name"></span>
             </div>
             <div class="auth-row">
@@ -40,7 +41,7 @@
                 @* Вариант 1 *@
                 <span class="auth-input-title">Страна</span>
                 <select placeholder="Отчество" class="auth-input pointer" style="margin-right: 0; appearance: none" asp-for="Country">
-                    <option value="ru">Не выбрано</option>
+                    <option value="none">Не выбрано</option>
                     <option value="ru">Россия</option>
                 </select>
 
@@ -68,7 +69,7 @@
         <input type="hidden" asp-for="IsAuth" />
         <input type="hidden" asp-for="MailAddress" />
         <div class="auth-row" style="margin-top: 20px;">
-            <input id="submit" class="auth-btn pointer" disabled onmousemove="ShowError(this)" onmouseleave="HideError(this)" style="width: 100%;" type="submit" value="Зарегистрироваться" />
+            <input id="submit" class="auth-btn pointer" disabled onmousemove="ShowError(this), CheckRequiredInputs()" onmouseleave="HideError(this)" style="width: 100%;" type="submit" value="Зарегистрироваться" />
             <span class="field-validation-error rightOf submit-error">Заполните указанные данные</span>
         </div>
     </form>
@@ -76,6 +77,15 @@
 
 
 <script>
+    let requiredInputs = new Array();
+    requiredInputs.push(document.getElementById('inputPassword'));
+    requiredInputs.push(document.getElementById('inputConfirmPassword'));
+    requiredInputs.push(document.getElementById('Name'));
+
+
+
+
+
     let inputHasError = false;
     let inputErrors = document.getElementsByClassName('field-validation-error');
     document.addEventListener("DOMContentLoaded",
@@ -103,22 +113,31 @@
         return false;
     }
 
+    function IsRequiredInputsEmpty() {
+        for (var i = 0; i < requiredInputs.length; i++) {
+            var input = requiredInputs[i];
+            if (input.value == "")
+                return true;
+        }
+        return false;
+    }
+
+
     let submitBtn = document.getElementById('submit');
 
     function IsInputEmpty(input) {
-        let inputError;
-        for (let item of input.parentElement.children)
-            if (item.classList.contains("field-validation-error"))
-                inputError = item;
-        if(inputError!=null)    
-        if (inputError.innerText != "")
+        let inputError = GetInputSpanErrorField(input);
+        if (inputError != null)
+            if (inputError.innerText != "" && inputError.innerText != "Обязательное поле")
+                AddVisibleClass(inputError);
+
+        submitBtn.disabled = IsRequiredInputsEmpty();
+        if (input.value == "") {
+            inputError.innerText = "Обязательное поле";
             AddVisibleClass(inputError);
-        if (input.innerText == "") {
-            submitBtn.disabled = true;
         } else {
             inputHasError = false;
-            HideError(input);
-            submitBtn.disabled = false;
+            RemoveVisibleClass(inputError);
             HideError(submitBtn);
             //inputError.value = "";
         }
@@ -129,18 +148,16 @@
             HideError(input);
             return;
         }
-        for (let item of input.parentElement.children) {
-            if (item.classList.contains("field-validation-error"))
-                if (item.innerText != "") {
+        let spanError = GetInputSpanErrorField(input);
+        if (spanError.innerText != "") {
 
-                    if (inputHasError)
-                        item.innerText = "Исправьте введенные данные";
-                    else item.innerText = "Заполните указанные данные";
-                    setTimeout(function () {
-                        AddVisibleClass(item);
-                    },
-                        150);
-                }
+            if (inputHasError)
+                spanError.innerText = "Исправьте введенные данные";
+            else spanError.innerText = "Заполните указанные данные";
+            setTimeout(function () {
+                AddVisibleClass(spanError);
+            },
+                150);
         }
 
     }
@@ -170,5 +187,22 @@
         let visibleClassName = className + "-visible";
         if (element.hasAttribute("style"))
             element.removeAttribute("style");
+    }
+
+    function GetInputSpanErrorField(input) {
+        for (let item of input.parentElement.children)
+            if (item.classList.contains("field-validation-error") || item.classList.contains("field-validation-valid"))
+                return item;
+    }
+    function CheckRequiredInputs() {
+        for (var i = 0; i < requiredInputs.length; i++) {
+            var input = requiredInputs[i];
+            var spanError = GetInputSpanErrorField(input);
+            if (input.value == "")
+                if (spanError.innerText == "") {
+                    spanError.innerText = "Обязательное поле";
+                    AddVisibleClass(spanError);
+                }
+        }
     }
 </script>

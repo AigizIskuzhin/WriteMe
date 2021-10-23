@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Website.Infrastructure.Services.Interfaces;
 using WriteMe.Database.DAL.Entities;
@@ -15,22 +18,17 @@ namespace Website.Infrastructure.Services
             _Users = users;
             _Posts = posts;
         }
-
-        private IEnumerable<Post> GetUserPosts(int id)
-        {
-            foreach (var post in _Posts.Items)
-            {
-                if (post.OwnerId == id) yield return post;
-            }
-        }
         public IEnumerable<User> Users => _Users.Items;
+        public IEnumerable<Post> Posts => _Posts.Items;
+        
 
-        public IEnumerable<Post> GetPosts(int id)
-        {
-            foreach (var post in _Posts.Items)
-                if (post.OwnerId == id) yield return post;
-            
-        }
-        public Task<User> GetUserAsync(int id) => _Users.GetAsync(id);
+        public IEnumerable<Post> GetUserPostsWithFilter(int id, string filterText) => Posts.Where(post => 
+            post.OwnerId.Equals(id) && 
+            (post.Title != null && post.Title.Contains(filterText) || 
+             post.Description != null && post.Description.Contains(filterText)));
+
+        public async Task<User> GetUserAsync(int id) => await _Users.GetAsync(id);
+
+        public IEnumerable<Post> GetUserPosts(int id) => Posts.Where(post => post.OwnerId.Equals(id));
     }
 }
