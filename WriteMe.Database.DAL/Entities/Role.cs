@@ -5,7 +5,7 @@ namespace WriteMe.Database.DAL.Entities
 {
     public class Role : NamedEntity
     {
-        public virtual ICollection<User> Users { get; set; }
+        public ICollection<User> Users { get; set; }
 
         public Role()
         {

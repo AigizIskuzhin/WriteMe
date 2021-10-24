@@ -6,33 +6,18 @@ namespace WriteMe.Database.DAL.Entities.Chat
 {
     public class Chat : Entity
     {
+        public string Title { get; set; }
+        public virtual ICollection<ChatParticipant> Participants { get; set; }
         public virtual ICollection<ChatMessage> History { get; set; }
+        public bool IsGroupChat { get; set; }
 
         public Chat()
         {
+            Participants = new HashSet<ChatParticipant>();;
             History = new HashSet<ChatMessage>();
         }
         public DateTime ChangeDateTime { get; set; }
         public DateTime CreationDateTime { get; set; }
-    }
-
-    public class ChatDialog : Chat
-    {
-        public int UserOneId { get; set; }
-        public User UserOne { get; set; }
-        public int UserTwoId { get; set; }
-        public User UserTwo { get; set; }
-    }
-
-    public class GroupChat : Chat
-    {
-        public string Title { get; set; }
-        public virtual ICollection<ChatParticipant> Participants { get; set; }
-
-        public GroupChat()
-        { 
-            Participants = new HashSet<ChatParticipant>();;
-        }
     }
     public abstract class Participant : Entity
     {

@@ -23,8 +23,11 @@ namespace WriteMe.Database.Builder
             .ConfigureServices(services =>services
                 .AddDbContext<WriteMeDatabase>(opt => 
                     opt.UseMySql("server=localhost;port=3306;database=writemedatabaseTest;uid=root;password=admin",
-                        new MySqlServerVersion(new Version(8, 0, 26))))
-                .AddRepositoriesInDB()
+                        new MySqlServerVersion(new Version(8, 0, 26)))
+                        .EnableSensitiveDataLogging()
+                        .EnableDetailedErrors()
+                        .EnableServiceProviderCaching())
+                .AddRepositoriesInDb()
                 .AddTransient<WriteMeDatabaseTestInitializer>());
 
         static Task Main(string[] args)
@@ -48,7 +51,6 @@ namespace WriteMe.Database.Builder
             // Удаление бд, миграция моделей, создание бд (в будущем инициализация данных еще)
 
             IRepository<Chat> chatRepository = provider.GetRequiredService<IRepository<Chat>>();
-            IRepository<ChatDialog> chatDialogsRepository = provider.GetRequiredService<IRepository<ChatDialog>>();
             IRepository<User> usersRepository = provider.GetRequiredService<IRepository<User>>();
 
             

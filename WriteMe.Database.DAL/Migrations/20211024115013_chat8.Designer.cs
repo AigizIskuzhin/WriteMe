@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WriteMe.Database.DAL.Context;
 
 namespace WriteMe.Database.DAL.Migrations
 {
     [DbContext(typeof(WriteMeDatabase))]
-    partial class WriteMeDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20211024115013_chat8")]
+    partial class chat8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -63,7 +65,7 @@ namespace WriteMe.Database.DAL.Migrations
 
                     b.HasIndex("ChatId");
 
-                    b.ToTable("ChatMessages");
+                    b.ToTable("ChatMessage");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("ChatMessage");
                 });
@@ -193,7 +195,7 @@ namespace WriteMe.Database.DAL.Migrations
                     b.Property<DateTime>("RegistrationDateTime")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("RoleId")
+                    b.Property<int?>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<string>("Surname")
@@ -304,9 +306,7 @@ namespace WriteMe.Database.DAL.Migrations
                 {
                     b.HasOne("WriteMe.Database.DAL.Entities.Role", "Role")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleId");
 
                     b.Navigation("Role");
                 });
