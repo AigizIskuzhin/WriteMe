@@ -18,4 +18,8 @@
     <ProjectReference Include="..\WriteMe.Database.Interfaces\WriteMe.Database.Interfaces.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Entities\Profile\" />
+  </ItemGroup>
+
 </Project>

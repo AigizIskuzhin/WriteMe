@@ -9,8 +9,8 @@ using WriteMe.Database.DAL.Context;
 namespace WriteMe.Database.DAL.Migrations
 {
     [DbContext(typeof(WriteMeDatabase))]
-    [Migration("20211019164309_initial6")]
-    partial class initial6
+    [Migration("20211024080652_chat")]
+    partial class chat
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,50 @@ namespace WriteMe.Database.DAL.Migrations
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.10");
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Chats");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Chat");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatParticipant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("GroupChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("JoinedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GroupChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatParticipant");
+                });
 
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.FriendshipApplication", b =>
                 {
@@ -44,6 +88,26 @@ namespace WriteMe.Database.DAL.Migrations
                     b.HasIndex("UserTwoId");
 
                     b.ToTable("FriendshipApplications");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.Message", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Messages");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Message");
                 });
 
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.Post", b =>
@@ -152,6 +216,60 @@ namespace WriteMe.Database.DAL.Migrations
                     b.ToTable("UserConnection");
                 });
 
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatDialog", b =>
+                {
+                    b.HasBaseType("WriteMe.Database.DAL.Entities.Chat");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.HasDiscriminator().HasValue("ChatDialog");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.GroupChat", b =>
+                {
+                    b.HasBaseType("WriteMe.Database.DAL.Entities.Chat");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.HasDiscriminator().HasValue("GroupChat");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatMessage", b =>
+                {
+                    b.HasBaseType("WriteMe.Database.DAL.Entities.Message");
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasDiscriminator().HasValue("ChatMessage");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatParticipant", b =>
+                {
+                    b.HasOne("WriteMe.Database.DAL.Entities.GroupChat", null)
+                        .WithMany("Participants")
+                        .HasForeignKey("GroupChatId");
+
+                    b.HasOne("WriteMe.Database.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.FriendshipApplication", b =>
                 {
                     b.HasOne("WriteMe.Database.DAL.Entities.User", "UserOne")
@@ -198,6 +316,39 @@ namespace WriteMe.Database.DAL.Migrations
                         .HasForeignKey("UserId");
                 });
 
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatDialog", b =>
+                {
+                    b.HasOne("WriteMe.Database.DAL.Entities.User", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WriteMe.Database.DAL.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatMessage", b =>
+                {
+                    b.HasOne("WriteMe.Database.DAL.Entities.Chat", null)
+                        .WithMany("History")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.Chat", b =>
+                {
+                    b.Navigation("History");
+                });
+
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.Role", b =>
                 {
                     b.Navigation("Users");
@@ -206,6 +357,11 @@ namespace WriteMe.Database.DAL.Migrations
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.User", b =>
                 {
                     b.Navigation("ConnectionIdentifiers");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.GroupChat", b =>
+                {
+                    b.Navigation("Participants");
                 });
 #pragma warning restore 612, 618
         }

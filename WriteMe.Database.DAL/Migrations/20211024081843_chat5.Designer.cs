@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WriteMe.Database.DAL.Context;
 
 namespace WriteMe.Database.DAL.Migrations
 {
     [DbContext(typeof(WriteMeDatabase))]
-    partial class WriteMeDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20211024081843_chat5")]
+    partial class chat5
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -22,12 +24,6 @@ namespace WriteMe.Database.DAL.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    b.Property<DateTime>("ChangeDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
 
@@ -60,6 +56,30 @@ namespace WriteMe.Database.DAL.Migrations
                     b.ToTable("ChatMessage");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("ChatMessage");
+                });
+
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatParticipant", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("JoinedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatParticipant");
                 });
 
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.FriendshipApplication", b =>
@@ -223,6 +243,23 @@ namespace WriteMe.Database.DAL.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("WriteMe.Database.DAL.Entities.ChatParticipant", b =>
+                {
+                    b.HasOne("WriteMe.Database.DAL.Entities.Chat", null)
+                        .WithMany("Participants")
+                        .HasForeignKey("ChatId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("WriteMe.Database.DAL.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.FriendshipApplication", b =>
                 {
                     b.HasOne("WriteMe.Database.DAL.Entities.User", "UserOne")
@@ -283,6 +320,8 @@ namespace WriteMe.Database.DAL.Migrations
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.Chat", b =>
                 {
                     b.Navigation("History");
+
+                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("WriteMe.Database.DAL.Entities.Role", b =>

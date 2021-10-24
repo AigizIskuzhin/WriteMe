@@ -1,13 +1,13 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using WriteMe.Database.DAL.Context;
 using WriteMe.Database.DAL.Entities.Base;
 using WriteMe.Database.Interfaces;
 
-namespace WriteMe.Database.DAL
+namespace WriteMe.Database.DAL.Repositories.Base
 {
     class DbRepository<T> : IRepository<T> where T : Entity, new()
     {
@@ -47,7 +47,10 @@ namespace WriteMe.Database.DAL
 
         public void Update(T item)
         {
-            throw new System.NotImplementedException();
+            if (item is null) throw new ArgumentNullException(nameof(item));
+            Database.Entry(item).State = EntityState.Modified;
+            if (AutoSaveChanges)
+                Database.SaveChanges();
         }
 
         public Task UpdateAsync(T item, CancellationToken cancel = default)

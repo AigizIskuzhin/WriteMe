@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.Linq;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using WriteMe.Database.DAL.Context;
 using WriteMe.Database.DAL.Entities;
+using WriteMe.Database.DAL.Repositories.Base;
 
-namespace WriteMe.Database.DAL
+namespace WriteMe.Database.DAL.Repositories
 {
     class UsersRepository : DbRepository<User>
     {
