@@ -6,6 +6,7 @@
 Migrations/	
 .Database/
 Documentation/
+Website/
 # User-specific files
 *.rsuser
 *.suo
