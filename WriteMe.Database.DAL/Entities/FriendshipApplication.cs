@@ -4,7 +4,11 @@ namespace WriteMe.Database.DAL.Entities
 {
     public class FriendshipApplication : Entity
     {
+<<<<<<< HEAD
         public int UserOneId { get; set; }
+=======
+        public int UserOneId{get; set; }
+>>>>>>> dev
         public int UserTwoId { get; set; }
 
 
