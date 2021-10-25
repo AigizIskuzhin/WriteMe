@@ -12,7 +12,7 @@ namespace Database.DAL.Entities
         public Role Role { get; set; }
         public bool IsNew { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime RegistrationDateTime { get; set; }
+        public DateTime RegistrationDateTime { get;}
         public User()
         {
             ConnectionIdentifiers = new HashSet<UserConnection>();

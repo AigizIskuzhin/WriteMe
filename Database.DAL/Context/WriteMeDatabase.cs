@@ -16,5 +16,18 @@ namespace Database.DAL.Context
         public DbSet<FriendshipApplication> FriendshipApplications { get; set; }
 
         public WriteMeDatabase(DbContextOptions<WriteMeDatabase> options) : base(options){}
+
+        private const string GetDate = "GETDATE()";
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Post>()
+                .Property(post => post.CreationDateTime)
+                .HasDefaultValueSql(GetDate);
+            modelBuilder.Entity<User>()
+                .Property(user => user.RegistrationDateTime)
+                .HasDefaultValueSql(GetDate);
+
+            base.OnModelCreating(modelBuilder);
+        }
     }
 }

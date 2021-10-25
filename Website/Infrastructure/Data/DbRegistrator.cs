@@ -1,11 +1,11 @@
-﻿using Database.DAL.Context;
+﻿using System;
+using Database.DAL.Context;
+using Database.DAL.Repositories.ServicesRegistrator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using Database.DAL.Repositories.ServicesRegistrator;
 
-namespace Website.Data
+namespace Website.Infrastructure.Data
 {
     static class DatabaseRegistrator
     {
