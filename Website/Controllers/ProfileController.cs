@@ -1,10 +1,13 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using Database.DAL.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
+using Website.ViewModels.Profile;
 
 namespace Website.Controllers
 {
@@ -40,6 +43,18 @@ namespace Website.Controllers
 
             }
             return View("Profile");
+        }
+
+        [HttpPost]
+        public ActionResult UploadPost(PostViewModel post)
+        {
+            return PartialView("PostView", ProfileService.UploadPost(new ()
+            {
+                Title = post.Title,
+                Description = post.Description,
+                Owner = ProfileService.GetUserAsync(GetConnectedUserID).Result,
+                CreationDateTime = DateTime.Now
+            }));
         }
 
         public ActionResult SearchUserPosts(int id, string filterText)

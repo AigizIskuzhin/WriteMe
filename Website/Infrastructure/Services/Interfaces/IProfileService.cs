@@ -6,7 +6,7 @@ namespace Website.Infrastructure.Services.Interfaces
 {
     public interface IProfileService
     {
-        public IEnumerable<User> Users { get; }
+        public Post UploadPost(Post post);
         public IEnumerable<Post> GetUserPosts(int id);
         public IEnumerable<Post> GetUserPostsWithFilter(int id, string filterText);
         public Task<User> GetUserAsync(int id);

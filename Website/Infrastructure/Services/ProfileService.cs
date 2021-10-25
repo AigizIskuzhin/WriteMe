@@ -16,17 +16,50 @@ namespace Website.Infrastructure.Services
             _Users = users;
             _Posts = posts;
         }
-        public IEnumerable<User> Users => _Users.Items;
-        public IEnumerable<Post> Posts => _Posts.Items;
-        
 
-        public IEnumerable<Post> GetUserPostsWithFilter(int id, string filterText) => Posts.Where(post => 
-            post.OwnerId.Equals(id) && 
-            (post.Title != null && post.Title.Contains(filterText) || 
-             post.Description != null && post.Description.Contains(filterText)));
+        #region GetUserPostsWithFilter
+        /// <summary>
+        /// Получить посты указанного пользователя, у которых заголовок или текст содержит текст фильтра
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="filterText"></param>
+        /// <returns></returns>
+        public IEnumerable<Post> GetUserPostsWithFilter(int id, string filterText) => _Posts.Items.Where(post =>
+            post.OwnerId.Equals(id) &&
+            (post.Title != null && post.Title.Contains(filterText) ||
+             post.Description != null && post.Description.Contains(filterText)))
+            .OrderByDescending(post => post.CreationDateTime);
+        #endregion
+            
+        #region GetUserPosts
 
-        public async Task<User> GetUserAsync(int id) => await _Users.GetAsync(id);
+        public Post UploadPost(Post post)
+        {
+            if (string.IsNullOrWhiteSpace(post.Title) && string.IsNullOrWhiteSpace(post.Description))
+                return null;
+            if (post.Owner == null)
+                return null;
+            return _Posts.Add(post);
+        }
 
-        public IEnumerable<Post> GetUserPosts(int id) => Posts.Where(post => post.OwnerId.Equals(id));
+        /// <summary>
+        /// Получить посты указанного пользователя
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public IEnumerable<Post> GetUserPosts(int id) => _Posts.Items
+            .Where(post => post.OwnerId.Equals(id))
+            .OrderByDescending(post => post.CreationDateTime);
+        #endregion
+
+        #region GetUserAsync
+        /// <summary>
+        /// Получить указанного пользователя асинхронно 
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public async Task<User> GetUserAsync(int id) => await _Users.GetAsync(id); 
+        #endregion
+
     }
 }
