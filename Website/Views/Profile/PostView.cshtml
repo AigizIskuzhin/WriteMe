@@ -1,4 +1,5 @@
 ﻿@model Database.DAL.Entities.Post
+@using static Website.Infrastructure.Converters.TimeOfAdditionConverter
 @{
     Layout = null;
 }
@@ -30,8 +31,7 @@
             @Model.Description
         </div>
         <div class="post_time">
-            @Model.CreationDateTime.ToShortTimeString()
-            @Model.CreationDateTime.DayOfWeek
+            @Convert(Model.CreationDateTime)
         </div>
     </li>
 }
