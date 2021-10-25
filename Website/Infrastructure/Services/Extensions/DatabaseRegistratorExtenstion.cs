@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Website.Infrastructure.Data
+namespace Website.Infrastructure.Services.Extensions
 {
-    static class DatabaseRegistrator
+    static class DatabaseRegistratorExtenstion
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration Configuration) => services
            .AddDbContext<WriteMeDatabase>(opt =>
