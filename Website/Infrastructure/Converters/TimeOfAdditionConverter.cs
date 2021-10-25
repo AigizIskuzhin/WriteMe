@@ -4,6 +4,13 @@ namespace Website.Infrastructure.Converters
 {
     public static class TimeOfAdditionConverter // : IConverter<Datetime>
     {
+        //TODO: Асинхронный метод
+
+        /// <summary>
+        /// Конвертер времени в надпись последнего добавления
+        /// </summary>
+        /// <param name="source"></param>
+        /// <returns></returns>
         public static string Convert(DateTime source)
         {
             DateTime now = DateTime.Now;

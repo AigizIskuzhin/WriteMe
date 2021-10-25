@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Website.Infrastructure.Services.Extensions;
 using Website.Infrastructure.Services;
+using Website.Infrastructure.Services.Extensions;
 
 namespace Website
 {

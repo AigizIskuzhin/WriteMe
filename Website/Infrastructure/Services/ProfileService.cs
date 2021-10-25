@@ -65,9 +65,8 @@ namespace Website.Infrastructure.Services
             if (string.IsNullOrWhiteSpace(post.Title) && string.IsNullOrWhiteSpace(post.Description))
                 return null;
             if (post.Owner == null)
-                post.Owner=_Users.Get(post.OwnerId);
-            var p = _Posts.Add(post);
-            return p;
+                post.Owner = _Users.Get(post.OwnerId);
+            return _Posts.Add(post);
         }
         #endregion
 
