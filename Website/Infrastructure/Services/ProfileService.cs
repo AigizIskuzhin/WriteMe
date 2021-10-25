@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.Infrastructure.Services.Interfaces;
-using Website.ViewModels.Profile;
 
 namespace Website.Infrastructure.Services
 {

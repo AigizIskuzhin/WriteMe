@@ -48,7 +48,7 @@ namespace Website.Controllers
         } 
         #endregion
 
-        // Not implemented
+        // TODO: implement it
         #region Upload profile avatar
         [HttpPost]
         public ActionResult UploadAvatar(IFormFile uploadedFile)
@@ -60,8 +60,8 @@ namespace Website.Controllers
             return View("Profile");
         } 
         #endregion
-
-        // Not implemented
+        
+        // TODO: implement it
         #region Remove profile avatar
         [HttpPost]
         public ActionResult RemoveAvatar(IFormFile uploadedFile)
@@ -75,7 +75,11 @@ namespace Website.Controllers
         #endregion
 
         #region Upload profile post
-
+        /// <summary>
+        /// Добавление поста на страницу
+        /// </summary>
+        /// <param name="post"></param>
+        /// <returns></returns>
         [HttpPost]
         public ActionResult UploadPost(PostViewModel post) => PartialView("PostView", ProfileService.UploadPost(new(){
             Title=post.Title,
@@ -86,12 +90,23 @@ namespace Website.Controllers
         #endregion
 
         #region Delete profile post
+        /// <summary>
+        /// Удалить указанный пост с профиля
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpPost]
         public bool DeletePost(int id) => ProfileService.RemovePost(id, GetConnectedUserID);
 
         #endregion
 
         #region Search user posts
+        /// <summary>
+        /// Поиск постов пользователя с фильтром
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="filterText"></param>
+        /// <returns></returns>
         public ActionResult SearchUserPosts(int id, string filterText)
         {
             id = id == 0 ? GetConnectedUserID : id;

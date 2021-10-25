@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Database.DAL.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Database.DAL.Entities;
-using Website.ViewModels.Profile;
 
 namespace Website.Infrastructure.Services.Interfaces
 {
