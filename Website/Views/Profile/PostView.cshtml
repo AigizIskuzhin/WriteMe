@@ -2,33 +2,36 @@
 @{
     Layout = null;
 }
-<li class="post">
-    <div class="post_header">
-        <div class="post_owner">
-            <a href="/profile?id=@Model.OwnerId">
-            @Model.Owner.Name
-            </a>
-        </div>
-        <div class="post_quick_menu">
-            <div class="quick_btn">
+@if (Model != null)
+{
+    <li class="post">
+        <div class="post_header">
+            <div class="post_owner">
+                <a href="/profile?id=@Model.OwnerId">
+                    @Model.Owner.Name
+                </a>
             </div>
-            <div class="quick_btn">
-            </div>
-            <div class="quick_btn">
+            <div class="post_quick_menu">
+                <div class="quick_btn">
+                </div>
+                <div class="quick_btn">
+                </div>
+                <div class="quick_btn">
+                </div>
             </div>
         </div>
-    </div>
-    @if (!String.IsNullOrWhiteSpace(Model.Title))
-    {
-        <div class="post_title">
-            @Model.Title
+        @if (!String.IsNullOrWhiteSpace(Model.Title))
+        {
+            <div class="post_title">
+                @Model.Title
+            </div>
+        }
+        <div class="post_description">
+            @Model.Description
         </div>
-    }
-    <div class="post_description">
-        @Model.Description
-    </div>
-    <div class="post_time">
-        @Model.CreationDateTime.ToShortTimeString()
-        @Model.CreationDateTime.DayOfWeek
-    </div>
-</li>
+        <div class="post_time">
+            @Model.CreationDateTime.ToShortTimeString()
+            @Model.CreationDateTime.DayOfWeek
+        </div>
+    </li>
+}

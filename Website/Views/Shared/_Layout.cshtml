@@ -12,7 +12,7 @@
 </head>
 <body>
     <div id="page_wrap">
-        <div id="page_modal_wrap" class="modal_container">
+        <div id="x" class="modal_container">
             @*@if (Model is ProfileViewModel { IsNew: true })
                 {
                     @await Html.PartialAsync("~/Views/Modals/GreetingModal.cshtml")
@@ -126,7 +126,7 @@
     <script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/Resources/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/Resources/js/index.js"></script>
-<script src="~/Resources/js/modal.js"></script>
+    <script src="~/Resources/js/modal.js"></script>
     <script src="~/Resources/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
