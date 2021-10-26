@@ -5,7 +5,7 @@
 }
 @if (Model != null)
 {
-<li class="post" post-id="@Model.Id" owner-id="@Model.OwnerId">
+<li id="post-@Model.Id" class="post" data-post-id="@Model.Id" data-owner-id="@Model.OwnerId">
     <div class="post_quick_menu">
         <div class="quick_btn edit_post_btn">
             <div class="quick_btn_icon">

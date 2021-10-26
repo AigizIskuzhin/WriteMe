@@ -102,6 +102,10 @@
 
 <script>
 
+    //------------------------
+    //TODO: PLEASE CLEAN ME UP
+    //------------------------
+
     // --------- Search posts -----------
     Document.prototype.createElementFromString = function (str) {
         const element = new DOMParser().parseFromString(str, 'text/html');
@@ -129,8 +133,8 @@
                         resultContainer.innerHTML = view;
                         document.getElementById('profile_posts_container').querySelectorAll('.edit_post_btn').forEach(btn => btn.addEventListener('click',function() {
                             var post = btn.offsetParent.offsetParent;
-                            var postId = post.getAttribute('post-id');
-                            var ownerId = post.getAttribute('owner-id');
+                            var postId = post.getAttribute('data-post-id');
+                            var ownerId = post.getAttribute('data-owner-id');
                             var postTitle = post.querySelector('.post_title').innerText;
                             var postDescription = post.querySelector('.post_description').innerText;
                             var url = "@Url.Action("CreatePostModalForm", "Modals")";
@@ -148,7 +152,7 @@
                                     if (wrap.innerText != "")
                                         return;
                                     wrap.innerHTML = view;
-                                    editPost('edit_post_btn', 'profile_posts_container', 'page_modal_wrap', post);
+                                    editPost('edit_post_btn', 'profile_posts_container', 'page_modal_wrap', postId);
                                 }});
                         }));
                     }
@@ -209,7 +213,7 @@
     }*@
     openCreatePostModalForm('open_post_sumbit_form', 'page_modal_wrap');
 
-    let editPost = (inputId, containerId, wrapId, post) => {
+    let editPost = (inputId, containerId, wrapId, postId) => {
         let input = document.getElementById(inputId);
         let resultContainer = document.getElementById(containerId);
         let wrap = document.getElementById(wrapId);
@@ -226,7 +230,7 @@
                     url: url,
                     type: "POST",
                     data: {
-                        "Id": document.getElementById('Id').value,
+                        "Id": document.getElementById('Id').value,  
                         "Title": document.getElementById('Title').value,
                         "Description": document.getElementById('Description').value
                     },
@@ -235,7 +239,17 @@
                         //var t = view;
                         closeModal();
                         let element = document.createElementFromString(view);
-                        post = element;
+
+                        var postTitleEdited = element.querySelector('.post_title').innerText;
+                        var postDescriptionEdited = element.querySelector('.post_description').innerText;
+
+
+                        var defaultPost = document.getElementById('post-' + postId);
+                        
+                        var postTitle = defaultPost.querySelector('.post_title');
+                        postTitle.innerHTML = postTitleEdited;
+                        var postDescription = defaultPost.querySelector('.post_description');
+                        postDescription.innerHTML = postDescriptionEdited;
                         //if (resultContainer.children[0].classList.contains('post-smoothpad')) {
                         //    resultContainer.innerHTML = "";
                         //    resultContainer.appendChild(element);

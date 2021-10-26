@@ -75,12 +75,16 @@ namespace Website.Infrastructure.Services
         public Post EditPost(Post post)
         {
             var postDefault = _Posts.Get(post.Id);
+
             if (postDefault.OwnerId != post.OwnerId)
                 return postDefault;
-            post.CreationDateTime = postDefault.CreationDateTime;
-            post.Owner = _Users.Get(post.OwnerId);
-            _Posts.Update(post);
-            return post;
+
+            postDefault.Title = post.Title;
+            postDefault.Description = post.Description;
+
+            _Posts.Update(postDefault);
+
+            return postDefault;
         } 
         #endregion
 
