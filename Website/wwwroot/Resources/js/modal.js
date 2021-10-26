@@ -15,7 +15,7 @@ const showModal = (modalContent) => {
     var modalWrap = document.getElementById(modalContent)
 
     if (modalWrap) {
-        modalWrap.classList.add('show-modal')
+        modalWrap.classList.add('show-modal');  
     }
 }
 //showModal('page_modal_wrap');
@@ -25,9 +25,11 @@ const showModal = (modalContent) => {
 
 function closeModal(){
     const modalWrap = document.getElementById('page_modal_wrap')
+
     modalWrap.classList.remove('show-modal')
     setTimeout(function () {
-            modalWrap.innerHTML = "";
-    },1000)
+        modalWrap.innerHTML = "";
+        modalWrap.classList.remove('show-modal')
+    },500);
 }
 //closeBtn.forEach(c => c.addEventListener('click', closeModal))
