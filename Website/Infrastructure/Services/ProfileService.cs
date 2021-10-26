@@ -63,10 +63,27 @@ namespace Website.Infrastructure.Services
         {
             if (string.IsNullOrWhiteSpace(post.Title) && string.IsNullOrWhiteSpace(post.Description))
                 return null;
-            if (post.Owner == null)
-                post.Owner = _Users.Get(post.OwnerId);
+            post.Owner = _Users.Get(post.OwnerId);
             return _Posts.Add(post);
         }
+        #region Edit post
+        /// <summary>
+        /// Редактирование поста
+        /// </summary>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        public Post EditPost(Post post)
+        {
+            var postDefault = _Posts.Get(post.Id);
+            if (postDefault.OwnerId != post.OwnerId)
+                return postDefault;
+            post.CreationDateTime = postDefault.CreationDateTime;
+            post.Owner = _Users.Get(post.OwnerId);
+            _Posts.Update(post);
+            return post;
+        } 
+        #endregion
+
         #endregion
 
         #region DeletePost
