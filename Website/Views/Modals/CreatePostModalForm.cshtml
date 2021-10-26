@@ -1,4 +1,5 @@
-﻿@{  
+﻿@model Website.ViewModels.Profile.PostViewModel
+@{  
     Layout = null;      
 }
 <div class="modal_background close-modal">
@@ -11,11 +12,9 @@
     <h1 class="modal_title">Создать новый пост</h1>
     <p class="modal_description">Введите параметры</p>
     
-    <form>
-        <input placeholder="Заголовок" />
-        <textarea placeholder="Текст"></textarea>
-        <input class="modal_button" type="submit" value="Создать"/>
-    </form>
+    <input asp-for="Title" placeholder="Заголовок" />
+    <textarea asp-for="Description" placeholder="Текст"></textarea>
+    <input id="create_post_btn" class="modal_button" type="submit" value="Создать"/>
     @*<div class="modal_button-link close-modal">
         Закрыть
     </div>*@

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<WriteMe.Database.DAL.Entities.Post>
+﻿@model IEnumerable<Database.DAL.Entities.Post>
 @{
     Layout = null;
 }
@@ -11,6 +11,6 @@
     </li>
 }
 else foreach (var post in Model)
-    {
-        await Html.RenderPartialAsync("PostView", post);
-    }
+{
+    await Html.RenderPartialAsync("PostView", post);
+}

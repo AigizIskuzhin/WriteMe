@@ -1,8 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Database.DAL.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Website.ViewModels;
-using WriteMe.Database.DAL.Entities;
-using WriteMe.Database.Interfaces;
 
 namespace Website.Infrastructure.Services.Interfaces
 {

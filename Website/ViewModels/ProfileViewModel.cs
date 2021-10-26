@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using WriteMe.Database.DAL.Entities;
+﻿using Database.DAL.Entities;
+using System.Collections.Generic;
 
 namespace Website.ViewModels
 {

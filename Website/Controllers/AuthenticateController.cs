@@ -4,9 +4,9 @@ using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Database.DAL.Entities;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
-using WriteMe.Database.DAL.Entities;
 
 namespace Website.Controllers
 {

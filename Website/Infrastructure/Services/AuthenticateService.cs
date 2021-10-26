@@ -1,9 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Database.DAL.Entities;
+using Database.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Website.ViewModels;
-using WriteMe.Database.DAL.Entities;
-using WriteMe.Database.Interfaces;
 
 namespace Website.Infrastructure.Services
 {
