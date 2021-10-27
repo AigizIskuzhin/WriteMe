@@ -194,7 +194,6 @@ a{
     height: 40px;
     transition: .3s linear;
 }
-
 #im_search_block:hover #search_icon{
     transform: scale(1.1) translate(9px, 45%);
 }   

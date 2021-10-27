@@ -14,7 +14,7 @@ namespace Database.DAL.Context
         public DbSet<UserMessage> UserMessages { get; set; }
         public DbSet<GeneratedMessage> GeneratedMessages { get; set; }
         public DbSet<FriendshipApplication> FriendshipApplications { get; set; }
-
+        public DbSet<FriendshipType> FriendshipTypes { get; set; }
         public WriteMeDatabase(DbContextOptions<WriteMeDatabase> options) : base(options){}
 
         //private const string GetDate = "GETDATE()";
