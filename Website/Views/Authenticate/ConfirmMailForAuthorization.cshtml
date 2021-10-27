@@ -1,25 +1,13 @@
 ﻿@model Website.ViewModels.ConfirmMailViewModel
 @{
     Layout = null;
-    string title = "Регистрация";
-    string redirectUrl = "/auth";
-    string action = "/reg";
-    string redirectDescription = "Авторизация";
-
-    if (Model.IsAuth.Value)
-    {
-        title = "Авторизация";
-        redirectUrl = "/reg";
-        action = "/auth";
-        redirectDescription = "Регистрация";
-    }
 }
 <link rel="stylesheet" href="~/Resources/css/auth.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
 
 <div class="center-screen auth">
-    <form class="auth-form" action=@action method="POST" asp-anti-forgery="true">
-        <h3>@title</h3>
+    <form class="auth-form" action="@Url.Action("ConfirmMailForAuthorization")" method="POST" asp-anti-forgery="true">
+        <h3>Авторизация</h3>
         <input type="hidden" asp-for="IsAuth" />
         <div class="auth-row">
             <input id="MailAddress" autocomplete="off" onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />
@@ -37,7 +25,7 @@
         </div>
     </form>
     <div style="position: relative">
-        <a href="@redirectUrl">@redirectDescription</a>
+        @Html.ActionLink("Регистрация","ConfirmMailForRegistration")
     </div>
 </div>
 
@@ -168,30 +156,3 @@
             };
         </script>
     </script>*@
-@if (!Model.IsAuth.Value)
-{
-    <script>
-        @*$('#mailInput').on('keyup',
-            function () {
-                var url = "@Url.Action("IsMailExist","Authenticate")";
-                var mail = document.getElementById('mailInput').value;
-                $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: {
-                        "mailAddress": mail
-                    },
-                    success:
-                        function(result) {
-                            var warn = document.getElementById('mailAccess');
-                            if (mail == "") {
-                                warn.textContent = "";
-                                return;
-                            }
-                            if (result) warn.textContent='Занят';
-                            else warn.textContent='Свободен';
-                        }
-                });
-            });*@яя
-    </script>
-}
