@@ -30,15 +30,13 @@ namespace Database.DAL.Repositories.Base
         public T Add(T item)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
-
-
             Database.Entry(item).State = EntityState.Added;
             if (AutoSaveChanges)
                 Database.SaveChanges();
             return item;
         }
 
-        public virtual async Task<T> AddAsync(T item, CancellationToken cancel = default)
+        public async Task<T> AddAsync(T item, CancellationToken cancel = default)
         {
             if (item is null) throw new ArgumentNullException(nameof(item));
             Database.Entry(item).State = EntityState.Added;

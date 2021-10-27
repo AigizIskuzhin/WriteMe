@@ -1,0 +1,16 @@
+﻿@model IEnumerable<Database.DAL.Entities.Chat.Chat>
+@{
+    Layout = null;
+}
+@if (!Model.Any())
+{
+    <li class="dialog-smoothpad">
+        <div class="dialog_description">
+            Записей нет
+        </div>
+    </li>
+}
+else foreach (var chat in Model)
+{
+    await Html.RenderPartialAsync("DialogView", chat);
+}

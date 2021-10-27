@@ -1,0 +1,158 @@
+﻿@model Website.ViewModels.ConfirmMailViewModel
+@{
+    Layout = null;
+}
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
+
+<div class="center-screen auth">
+    <form class="auth-form" action="@Url.Action("ConfirmMailForAuthorization")" method="POST" asp-anti-forgery="true">
+        <h3>Авторизация</h3>
+        <input type="hidden" asp-for="IsAuth" />
+        <div class="auth-row">
+            <input id="MailAddress" autocomplete="off" onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />
+            @*<div asp-validation-summary="All"></div>*@
+            <span asp-validation-for="MailAddress"></span>
+            @*<div asp-validation-summary="ModelOnly" class="validation-summary-errors">
+                    <ul>
+                        <li class="auth-error">Неверная почта</li>
+                    </ul>
+                </div>*@
+        </div>
+        <div class="auth-row">
+            <input id="submit" class="auth-btn pointer" disabled onfocus="HideError(this)" onmousemove="ShowError(this)" onmouseleave="HideError(this)" type="submit" value="Продолжить" />
+            <span class="field-validation-error rightOf submit-error">Введите почту</span>
+        </div>
+    </form>
+    <div style="position: relative">
+        @Html.ActionLink("Регистрация","ConfirmMailForRegistration")
+    </div>
+</div>
+
+<script>
+    let inputHasError = false;
+    let inputErrors = document.getElementsByClassName('field-validation-error');
+    document.addEventListener("DOMContentLoaded",
+        function(event) {
+            if (inputErrors.length != 0) {
+                for (let inputError of inputErrors) {
+
+                    if (!inputError.classList.contains('submit-error'))
+                        setTimeout(function () {
+                            if (inputError.innerText != "") {
+                                    inputHasError = true;
+                                }
+                                AddVisibleClass(inputError);
+                            },
+                            500);
+                }
+            }
+        });
+
+    function IsSubmitError(inputError) {
+        for (let item of inputError.parentElement.children) {
+            if (item.classList.contains("auth-btn"))
+                return true;
+        }
+        return false;
+    }
+
+    let submitBtn = document.getElementById('submit');
+
+    function IsInputEmpty(input) {
+        let inputError;
+        for (let item of input.parentElement.children)
+            if (item.classList.contains("field-validation-error"))
+                inputError = item;
+        if (inputError.value != "")
+            AddVisibleClass(inputError);
+        if (input.value == "") {
+            submitBtn.disabled=true;
+        } else {
+            HideError(input);
+            HideError(submitBtn);
+            submitBtn.disabled = false;
+            inputHasError = false;
+            //inputError.value = "";
+        }
+    }
+
+    function ShowError(input) {
+        if (!input.disabled) {
+            HideError(input);
+            return;
+        }
+        for (let item of input.parentElement.children) {
+            if (item.classList.contains("field-validation-error"))
+                if (item.innerText != "") {
+                    
+                    if (inputHasError)
+                        item.innerText = "Исправьте почту";
+                    else item.innerText = "Введите почту";
+                    setTimeout(function () {
+                        AddVisibleClass(item);
+                    },
+                        150);
+                }
+        }
+
+    }
+
+    function HideError(input) {
+        setTimeout(function () {
+                for (let item of input.parentElement.children)
+                    if (item.classList.contains("field-validation-error")) {
+                        if (item.value != "") {
+                            if (!item.classList.contains("submit-error"))
+                                item.value = "";
+                            RemoveVisibleClass(item);
+                        }
+                    }
+            }, 150);
+    }
+
+    function AddVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (!element.hasAttribute("style"))
+            element.setAttribute("style", "width: " + element.scrollWidth + "px;");
+    }
+
+    function RemoveVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (element.hasAttribute("style"))
+            element.removeAttribute("style");
+    }
+</script>
+@*<script src="~/Resources/lib/jquery/dist/jquery.min.js"></script>*@
+@*<script>
+            function ConfirmMail() {
+                var url = "@Url.Action("ConfirmMail", "Authenticate")";
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: $('#auth-form').serializeArray(),
+                    success: function(view) {
+                        //var authBlock = document.getElementById('te');
+                        //authBlock.append(view);
+                        document.body.innerHTML = view;
+                    }
+                });
+            };
+
+
+        <script>
+            function ConfirmPassword() {
+                var url = "@Url.Action("EnterPassword", "Authenticate")";
+                $.ajax({
+                    url: url,
+                    type: "POST",
+                    data: $('#auth-form').serializeArray(),
+                    success: function (view) {
+                        document.body.innerHTML = view;
+                    }
+                });
+            };
+        </script>
+    </script>*@

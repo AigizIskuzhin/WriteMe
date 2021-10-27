@@ -73,7 +73,7 @@ namespace Website.Controllers
             return View("Profile");
         } 
         #endregion
-
+        
         #region Upload profile post
         /// <summary>
         /// Добавление поста на страницу
@@ -87,6 +87,21 @@ namespace Website.Controllers
             OwnerId = GetConnectedUserID,
             CreationDateTime=DateTime.Now
             })); 
+        #endregion
+
+        #region Edit profile post
+        /// <summary>
+        /// Редактирование поста
+        /// </summary>
+        /// <param name="post"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public ActionResult EditPost(PostViewModel post) => PartialView("PostView", ProfileService.EditPost(new(){
+            Id = post.Id,
+            Title=post.Title,
+            Description=post.Description,
+            OwnerId = GetConnectedUserID
+        })); 
         #endregion
 
         #region Delete profile post

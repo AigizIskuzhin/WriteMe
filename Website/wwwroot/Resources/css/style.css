@@ -194,11 +194,6 @@ a{
     height: 40px;
     transition: .3s linear;
 }
-#search_icon{
-    position: fixed;
-    transform: translate(10px, 50%);
-    transition: .2s linear;
-}
 #im_search_block:hover #search_icon{
     transform: scale(1.1) translate(9px, 45%);
 }   
@@ -224,7 +219,6 @@ a{
 }
 .ui_control_item:hover{
     border-color: var(--field-hover-dark-color);
-    transform: scale(1.1);
 }
 .ui_control_item-animated{
     color:var(--font-light-color);
