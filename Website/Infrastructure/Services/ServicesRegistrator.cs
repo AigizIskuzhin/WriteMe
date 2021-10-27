@@ -7,6 +7,7 @@ namespace Website.Infrastructure.Services
     {
         public static IServiceCollection AddServices(this IServiceCollection services) => services
             .AddTransient<IProfileService,ProfileService>()
-            .AddTransient<IAuthenticateService, AuthenticateService>();
+            .AddTransient<IAuthenticateService, AuthenticateService>()
+            .AddTransient<IMessengerService, MessengerService>();
     }
 }

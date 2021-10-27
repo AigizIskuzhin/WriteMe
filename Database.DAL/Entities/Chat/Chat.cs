@@ -35,6 +35,7 @@ namespace Database.DAL.Entities.Chat
     {
         public string Text { get; set; }
         public DateTime DateTime { get; set; }
+        public ChatParticipant Sender { get; set; }
     }
     public abstract class ChatMessage : Message
     {

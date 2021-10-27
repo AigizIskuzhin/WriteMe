@@ -3,17 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31702.278
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "Website\Website.csproj", "{04180328-52DE-435E-878F-02C493B78355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website", "Website\Website.csproj", "{04180328-52DE-435E-878F-02C493B78355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.DAL", "Database.DAL\Database.DAL.csproj", "{56B57208-B707-4B5F-878B-7A81C2A7A55C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.DAL", "Database.DAL\Database.DAL.csproj", "{56B57208-B707-4B5F-878B-7A81C2A7A55C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Builder", "Database.Builder\Database.Builder.csproj", "{82351216-73FE-4436-9948-8A566B401D55}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Builder", "Database.Builder\Database.Builder.csproj", "{82351216-73FE-4436-9948-8A566B401D55}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Tests", "Database.Tests\Database.Tests.csproj", "{C58688F8-6918-4D15-A7B4-61009524D2E4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Tests", "Database.Tests\Database.Tests.csproj", "{C58688F8-6918-4D15-A7B4-61009524D2E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website.Tests", "Website.Tests\Website.Tests.csproj", "{07DA4487-BFF0-4B74-AE1E-4661D6D2C813}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website.Tests", "Website.Tests\Website.Tests.csproj", "{07DA4487-BFF0-4B74-AE1E-4661D6D2C813}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Interfaces", "Database.Interfaces\Database.Interfaces.csproj", "{B7C37467-B34F-4588-9AD7-5C580701CD9F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Database.Interfaces", "Database.Interfaces\Database.Interfaces.csproj", "{B7C37467-B34F-4588-9AD7-5C580701CD9F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services.Tests", "Services.Tests\Services.Tests.csproj", "{A52D57DF-E083-4BB5-B0FD-A92255FBBD32}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{B7C37467-B34F-4588-9AD7-5C580701CD9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7C37467-B34F-4588-9AD7-5C580701CD9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7C37467-B34F-4588-9AD7-5C580701CD9F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A52D57DF-E083-4BB5-B0FD-A92255FBBD32}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A52D57DF-E083-4BB5-B0FD-A92255FBBD32}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A52D57DF-E083-4BB5-B0FD-A92255FBBD32}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A52D57DF-E083-4BB5-B0FD-A92255FBBD32}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
