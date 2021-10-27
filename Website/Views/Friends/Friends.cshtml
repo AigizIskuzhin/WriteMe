@@ -1,0 +1,7 @@
+﻿@model IEnumerable<Website.ViewModels.Friends.FriendViewModel>
+
+    @foreach (var friend in Model)
+    {
+        <h4>Id @friend.Id</h4>
+        <div>Name @friend.Name</div>
+    }   

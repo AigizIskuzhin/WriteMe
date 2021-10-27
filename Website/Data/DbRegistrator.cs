@@ -1,9 +1,9 @@
 ﻿using System;
+using Database.DAL.Context;
+using Database.DAL.Repositories.ServicesRegistrator;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using WriteMe.Database.DAL;
-using WriteMe.Database.DAL.Context;
 
 namespace Website.Data
 {
@@ -33,7 +33,7 @@ namespace Website.Data
                 }
             })
            //.AddTransient<DbInitializer>()
-           .AddRepositoriesInDB()
+           .AddRepositoriesInDb()
         ;
     }
 }

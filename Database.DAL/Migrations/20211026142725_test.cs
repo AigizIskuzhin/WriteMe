@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Database.DAL.Migrations
 {
-    public partial class initial : Migration
+    public partial class test : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -26,6 +26,21 @@ namespace Database.DAL.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Chats", x => x.Id);
+                })
+                .Annotation("MySql:CharSet", "utf8mb4");
+
+            migrationBuilder.CreateTable(
+                name: "FriendshipTypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(256)", maxLength: 256, nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FriendshipTypes", x => x.Id);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -146,26 +161,40 @@ namespace Database.DAL.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    UserOneId = table.Column<int>(type: "int", nullable: false),
-                    UserTwoId = table.Column<int>(type: "int", nullable: false),
+                    UserOneId = table.Column<int>(type: "int", nullable: true),
+                    UserTwoId = table.Column<int>(type: "int", nullable: true),
                     ApplicationStateUserOne = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    ApplicationStateUserTwo = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    ApplicationStateUserTwo = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    UserOneFriendshipTypeId = table.Column<int>(type: "int", nullable: true),
+                    UserTwoFriendshipTypeId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_FriendshipApplications", x => x.Id);
                     table.ForeignKey(
+                        name: "FK_FriendshipApplications_FriendshipTypes_UserOneFriendshipType~",
+                        column: x => x.UserOneFriendshipTypeId,
+                        principalTable: "FriendshipTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_FriendshipApplications_FriendshipTypes_UserTwoFriendshipType~",
+                        column: x => x.UserTwoFriendshipTypeId,
+                        principalTable: "FriendshipTypes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
                         name: "FK_FriendshipApplications_Users_UserOneId",
                         column: x => x.UserOneId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_FriendshipApplications_Users_UserTwoId",
                         column: x => x.UserTwoId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -237,9 +266,19 @@ namespace Database.DAL.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FriendshipApplications_UserOneFriendshipTypeId",
+                table: "FriendshipApplications",
+                column: "UserOneFriendshipTypeId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_FriendshipApplications_UserOneId",
                 table: "FriendshipApplications",
                 column: "UserOneId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FriendshipApplications_UserTwoFriendshipTypeId",
+                table: "FriendshipApplications",
+                column: "UserTwoFriendshipTypeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_FriendshipApplications_UserTwoId",
@@ -281,6 +320,9 @@ namespace Database.DAL.Migrations
 
             migrationBuilder.DropTable(
                 name: "Chats");
+
+            migrationBuilder.DropTable(
+                name: "FriendshipTypes");
 
             migrationBuilder.DropTable(
                 name: "Users");
