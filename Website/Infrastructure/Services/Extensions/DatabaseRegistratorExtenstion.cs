@@ -1,5 +1,5 @@
 ﻿using Database.DAL.Context;
-using Database.DAL.Repositories.ServicesRegistrator;
+using Database.DAL.Repositories.ServicesRegistrar;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +7,7 @@ using System;
 
 namespace Website.Infrastructure.Services.Extensions
 {
-    static class DatabaseRegistratorExtenstion
+    static class DatabaseRegistrarExtenstion
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration Configuration) => services
            .AddDbContext<WriteMeDatabase>(opt =>

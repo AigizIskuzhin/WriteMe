@@ -6,6 +6,8 @@ using Database.Builder.Infrastructure.Extensions;
 using Database.DAL.Context;
 using Database.DAL.Entities;
 using Database.DAL.Entities.Chat;
+using Database.DAL.Entities.Chat.Base;
+using Database.DAL.Entities.Chat.GroupChat;
 using Microsoft.EntityFrameworkCore;
 
 namespace Database.Builder
@@ -34,14 +36,14 @@ namespace Database.Builder
                 await InitializeRoles();
             if (!await Database.Users.AnyAsync())
                 await InitializeUsers();
-            if (!await Database.Chats.AnyAsync())
-            {
-                await InitializeUserToUserChats();
-                await InitializeGroupChats();
-            }
+            //if (!await Database.Chats.AnyAsync())
+            //{
+            //    await InitializeUserToUserChats();
+            //    await InitializeGroupChats();
+            //}
 
-            if (!await Database.ChatMessages.AnyAsync())
-                await InitializeMessages();
+            //if (!await Database.ChatMessages.AnyAsync())
+                //await InitializeMessages();
         }
 
         #region Инициализация ролей
@@ -95,18 +97,18 @@ namespace Database.Builder
             _Chats = new Chat[_ChatsCount];
             while (_ChatsCount > 0)
             {
-                _Chats[_ChatsCount] = new Chat
-                {
-                    IsGroupChat = false,
-                    Participants = new List<ChatParticipant>
-                    {
-                        new() {UserId = rnd.NextItem(_Users).Id},
-                        new() {UserId = rnd.NextItem(_Users).Id}
-                    }
-                };
+                //_Chats[_ChatsCount] = new Chat
+                //{
+                //    IsGroupChat = false,
+                //    Participants = new List<ChatParticipant>
+                //    {
+                //        new() {UserId = rnd.NextItem(_Users).Id},
+                //        new() {UserId = rnd.NextItem(_Users).Id}
+                //    }
+                //};
                 _ChatsCount--;
             }
-            await Database.Chats.AddRangeAsync(_Chats);
+            //await Database.Chats.AddRangeAsync(_Chats);
             await Database.SaveChangesAsync();
         } 
         #endregion
@@ -118,25 +120,25 @@ namespace Database.Builder
         private async Task InitializeGroupChats()
         {
             _GroupChats = new Chat[_ChatsCount];
-            List<ChatParticipant> participants = new List<ChatParticipant>();
-            if(_ChatsCount==2)
-                for (int i = 0; i < _Users.Length/2; i++)
-                    participants.Add(new (){UserId = _Users[i].Id});
-            else
-                for (int i = _Users.Length/2; i >= _Users.Length/2; i--)
-                    participants.Add(new(){UserId=_Users[i].Id});
+            List<GroupChatParticipant> participants = new List<GroupChatParticipant>();
+            //if(_ChatsCount==2)
+            //    for (int i = 0; i < _Users.Length/2; i++)
+            //        participants.Add(new (){UserId = _Users[i].Id});
+            //else
+            //    for (int i = _Users.Length/2; i >= _Users.Length/2; i--)
+            //        participants.Add(new(){UserId=_Users[i].Id});
 
             while (_ChatsCount > 0)
             {
-                _GroupChats[_ChatsCount-1] = new Chat
-                {
-                    Id = _ChatsCount,
-                    IsGroupChat = true,
-                    Participants = participants
-                };
+                //_GroupChats[_ChatsCount-1] = new Chat
+                //{
+                //    Id = _ChatsCount,
+                //    IsGroupChat = true,
+                //    Participants = participants
+                //};
                 _ChatsCount--;
             }
-            await Database.Chats.AddRangeAsync(_Chats);
+            //await Database.Chats.AddRangeAsync(_Chats);
             await Database.SaveChangesAsync();
         } 
         #endregion
@@ -159,12 +161,12 @@ namespace Database.Builder
             _Messages = new Message[_MessagesCount];
             while (_MessagesCount > 0)
             {
-                _Messages[_UsersCount] = new UserMessage
-                {
-                    SenderId = userId,
-                    Text = "Message "+_MessagesCount,
-                    ChatId = rnd.NextItem(_Chats).Id
-                };
+                //_Messages[_UsersCount] = new GroupChatUserMessage
+                //{
+                //    SenderId = userId,
+                //    Text = "Message "+_MessagesCount,
+                //    ChatId = rnd.NextItem(_Chats).Id
+                //};
                 _MessagesCount--;
             }
             await Database.Users.AddRangeAsync(_Users);
