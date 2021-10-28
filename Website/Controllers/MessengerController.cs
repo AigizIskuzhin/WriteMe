@@ -35,23 +35,36 @@ namespace Website.Controllers
         {
             int connectedUserId = GetConnectedUserID;
             dialogsViewModel.Chats = MessengerService.GetUserChats(connectedUserId);
-            var t = dialogsViewModel.Chats.First().History;
             return View(dialogsViewModel);
         }
         #endregion
 
-        #region Chat
+        #region GetChatWithUser
 
         /// <summary>
-        /// Возврат чата по указанному ид, подключенного пользователя
+        /// Возврат чата с указанным пользователем, подключенного пользователя
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="dialogsViewModel"></param>
         /// <returns></returns>
-        public IActionResult Chat(int id)
+        public IActionResult GetChatWithUser(DialogsViewModel dialogsViewModel)
         {
-            var chat = MessengerService.GetChat(id);
-            return View(chat);
-        } 
+            if (dialogsViewModel.TargetedUserId == 0)
+                return RedirectToAction("Dialogs");
+            var chat = MessengerService.GetPrivateChatWithUser(dialogsViewModel.TargetedUserId, GetConnectedUserID);
+            if (chat is null)
+                chat = MessengerService.GetNewChatWithUser(dialogsViewModel.TargetedUserId, GetConnectedUserID);
+            if (chat is null)
+                return RedirectToAction("Dialogs");
+            return View("ChatWithUser", chat);
+        }
         #endregion
+
+        public IActionResult GetGroupChat(DialogsViewModel dialogsViewModel)
+        {
+            if (dialogsViewModel.TargetedGroupChatId == 0)
+                return RedirectToAction("Dialogs");
+            return View("GroupChat");
+        }
+
     }
 }

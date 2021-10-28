@@ -1,0 +1,8 @@
+﻿@model Website.ViewModels.DialogsViewModel
+<link rel="stylesheet" href="~/Resources/css/dialogs.css" />
+
+<ul>
+    @{
+        await Html.RenderPartialAsync("Base/ChatsView", Model.Chats);
+    }
+</ul>

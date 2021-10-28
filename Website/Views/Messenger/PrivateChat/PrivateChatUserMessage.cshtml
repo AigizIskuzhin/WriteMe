@@ -1,0 +1,15 @@
+﻿@model Database.DAL.Entities.Chat.PrivateChat.PrivateChatUserMessage
+@{
+    Layout = null;
+}
+<li id="message-@Model.Id" class="message" data-private-message-id="@Model.Id" data-message-owner-id="@Model.Sender.Id">
+    <div class="message_sender">
+        @Model.Sender.Name
+    </div>
+    <div class="message-content">
+        @Model.Text
+    </div>
+    <div class="message-sent-time">
+        @Model.SentDateTime
+    </div>
+</li>

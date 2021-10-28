@@ -1,0 +1,19 @@
+﻿@using Database.DAL.Entities.Chat.PrivateChat
+@model Database.DAL.Entities.Chat.PrivateChat.PrivateChat
+@{
+    Layout = null;
+}
+@if (!Model.History.Any())
+{
+    <li class="message message-pad">
+        <div class="message-content">
+            Записей нет
+        </div>
+    </li>
+}
+else foreach (var message in Model.History)
+{
+    if (message is PrivateChatUserMessage userMessage)
+        await Html.RenderPartialAsync("PrivateChatUserMessage", userMessage);
+    else await Html.RenderPartialAsync("Base/MessageView", message);
+}
