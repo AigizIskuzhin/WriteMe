@@ -26,12 +26,19 @@ namespace Website.Controllers
             if (ModelState.IsValid)
             {
                 var user = await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress);
-                if (user!=null)
+                
+                
+                string surname = string.Empty;
+
+                if (!string.IsNullOrWhiteSpace(user.Surname))
+                    surname = " " + user.Surname[0] + ".";
+
+                if (user != null)
                     return View("EnterPassword", new AuthorizationViewModel
                     {
                         MailAddress = confirmMailViewModel.MailAddress,
-                        UserTitle = user.Name + " " + user.Surname[0] +"."
-                    });
+                        UserTitle = user.Name + surname
+                    }); ;
                 ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Неверный адрес");
             }
             return View(confirmMailViewModel);

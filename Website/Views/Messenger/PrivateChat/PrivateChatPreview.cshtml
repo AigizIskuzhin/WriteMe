@@ -1,24 +1,25 @@
-﻿@using Database.DAL.Entities.Chat.PrivateChat
-@model Database.DAL.Entities.Chat.PrivateChat.PrivateChat
-@{
-    Layout = null;
-    int connectedUserId = int.Parse(User.Claims.First(claim => claim.Type.Equals("id")).Value);
-    string receiver = Model.UserOne.Id == connectedUserId ? Model.UserTwo.Name : Model.UserOne.Name;
-    var lastMessage = Model.History.OrderByDescending(m => m.SentDateTime).FirstOrDefault();
-}
-<li id="chat-@Model.Id" class="chat" data-private-chat-id="@Model.Id">
+﻿@using Database.DAL.Entities.Chat.PrivateChat 
+@model Website.ViewModels.Chats.PrivateChatViewModel
+@{ Layout = null; }
+<li id="chat-@Model.PrivateChat.Id" class="chat" data-private-chat-id="@Model.PrivateChat.Id" data-receiver-user-id="@Model.ReceiverId">
     <div class="chat_title">
-        @receiver
+        <a href="/profile?id=@Model.ReceiverId">
+            <div class="chat_title_receiver">
+                @Model.ReceiverName
+            </div>
+        </a>
     </div>
     <div class="chat_preview_message">
-        @if (lastMessage is PrivateChatUserMessage privateChatUserMessage)
+        @if (Model.LastMessage is PrivateChatUserMessage privateUserMessage)
         {
-            <div class="message_sender">@privateChatUserMessage.Sender.Name</div>
-            <div class="message-content">@lastMessage.Text</div>
-        }
+            <div class="message_sender">@privateUserMessage.Sender.Name</div>
+            <div class="message-content">@privateUserMessage.Text</div> }
         else
         {
-            <div class="message-content">@lastMessage.Text</div>
+            if (Model.LastMessage != null)
+            {
+                <div class="message-content">@Model.LastMessage.Text</div>
+            }
         }
     </div>
 </li>

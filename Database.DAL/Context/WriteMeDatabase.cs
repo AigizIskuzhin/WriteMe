@@ -1,10 +1,9 @@
-﻿using System;
-using Database.DAL.Entities;
-using Database.DAL.Entities.Chat;
+﻿using Database.DAL.Entities;
 using Database.DAL.Entities.Chat.Base;
 using Database.DAL.Entities.Chat.GroupChat;
 using Database.DAL.Entities.Chat.PrivateChat;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Database.DAL.Context
 {
@@ -16,6 +15,7 @@ namespace Database.DAL.Context
         public DbSet<Post> Posts { get; set; }
 
         #region Chat
+
         #region PrivateChat
         /// <summary>
         /// User-To-User chats
@@ -23,57 +23,38 @@ namespace Database.DAL.Context
         public DbSet<PrivateChat> PrivateChats { get; set; }
 
         /// <summary>
-        /// Private generated message
+        /// Private generated messages
         /// </summary>
         public DbSet<PrivateChatMessage> PrivateChatMessages { get; set; }
 
         /// <summary>
-        /// Private User-To-User message
+        /// Private User-To-User messages
         /// </summary>
-        //public DbSet<PrivateChatUserMessage> PrivateChatUserMessages { get; set; }
+        public DbSet<PrivateChatUserMessage> PrivateChatUserMessages { get; set; }
+        #endregion
+
+        #region GroupChat
+        /// <summary>
+        /// Group chat generated messages
+        /// </summary>
+        public DbSet<GroupChatMessage> GroupChatMessages { get; set; }
+
+        /// <summary>
+        /// Group chat participants messages
+        /// </summary>
+        public DbSet<GroupChatParticipantMessage> GroupChatParticipantMessages { get; set; }
         #endregion
 
         #endregion
-
-
 
         public DbSet<FriendshipApplication> FriendshipApplications { get; set; }
         public DbSet<FriendshipType> FriendshipTypes { get; set; }
 
         public WriteMeDatabase(DbContextOptions<WriteMeDatabase> options) : base(options)
+        { }
+        protected override void OnModelCreating(ModelBuilder builder)
         {
-
-        }
-        private DateTime Current_TimeStamp => DateTime.Now;
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<Post>()
-                .Property(post => post.CreationDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-            modelBuilder.Entity<User>()
-                .Property(user => user.RegistrationDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-            modelBuilder.Entity<PrivateChat>()
-                .Property(privateChat => privateChat.CreationDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-            modelBuilder.Entity<PrivateChat>()
-                .Property(privateChat => privateChat.ChangeDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-
-            
-            modelBuilder.Entity<GroupChat>()
-                .Property(privateChat => privateChat.CreationDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-            modelBuilder.Entity<GroupChat>()
-                .Property(privateChat => privateChat.ChangeDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-
-            
-            modelBuilder.Entity<Message>()
-                .Property(privateChat => privateChat.SentDateTime)
-                .HasDefaultValue(Current_TimeStamp);
-
-            base.OnModelCreating(modelBuilder);
+            // Other model creating stuff here ...  
         }
     }
 }

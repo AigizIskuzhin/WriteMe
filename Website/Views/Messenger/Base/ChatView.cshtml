@@ -1,10 +1,13 @@
 ﻿@using Database.DAL.Entities.Chat.GroupChat
 @using Database.DAL.Entities.Chat.PrivateChat
 @model Database.DAL.Entities.Chat.Base.Chat
+@{ 
+    var t = Model;
+}
 @{
     Layout = null;
     if (Model is PrivateChat privateChat)
         await Html.RenderPartialAsync("PrivateChat/PrivateChatPreview", privateChat);
-    if (Model is GroupChat groupChat)
+   else if (Model is GroupChat groupChat)
         await Html.RenderPartialAsync("GroupChat/GroupChatPreview", groupChat);
 }

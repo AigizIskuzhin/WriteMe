@@ -23,11 +23,12 @@ namespace Website.Infrastructure.Services
             GroupChatsRepository = groupChatsRepository;
         }
 
-        public IEnumerable<Chat> GetUserChats(int id)
+        public IEnumerable<Chat> GetUserChats(int userId)
         {
-            foreach (var privateChat in PrivateChatsRepository.Items.Where(chat => chat.Id.Equals(id)))
+            foreach (var privateChat in PrivateChatsRepository.Items.Where(privateChat =>
+                privateChat.UserOne.Id.Equals(userId) || privateChat.UserTwo.Id.Equals(userId)))
                 yield return privateChat;
-            foreach (var groupChat in GroupChatsRepository.Items.Where(groupChat => groupChat.Id.Equals(id)))
+            foreach (var groupChat in GroupChatsRepository.Items.Where(groupChat => groupChat.Id.Equals(userId)))
                 yield return groupChat;
         }
 
@@ -61,6 +62,13 @@ namespace Website.Infrastructure.Services
             });
 
             return chat;
+        }
+
+        public Message SendMessageToPrivateChat(int privateChatId)
+        {
+            var chat = PrivateChatsRepository.Get(privateChatId);
+            var privateChatUserMessage = new PrivateChatUserMessage();
+            return null;
         }
     }
 }

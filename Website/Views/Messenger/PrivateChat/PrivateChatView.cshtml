@@ -1,8 +1,5 @@
 ﻿@using Database.DAL.Entities.Chat.PrivateChat
 @model Database.DAL.Entities.Chat.PrivateChat.PrivateChat
-@{
-    Layout = null;
-}
 @if (!Model.History.Any())
 {
     <li class="message message-pad">

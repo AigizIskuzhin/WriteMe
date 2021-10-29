@@ -29,7 +29,7 @@ namespace Website.Infrastructure.Services
             post.OwnerId.Equals(id) &&
             (post.Title != null && post.Title.Contains(filterText) ||
              post.Description != null && post.Description.Contains(filterText)))
-            .OrderByDescending(post => post.CreationDateTime);
+            .OrderByDescending(post => post.CreatedDateTime);
         #endregion
             
         #region GetUserPosts
@@ -41,7 +41,7 @@ namespace Website.Infrastructure.Services
         /// <returns></returns>
         public IEnumerable<Post> GetUserPosts(int id) => _Posts.Items
             .Where(post => post.OwnerId.Equals(id))
-            .OrderByDescending(post => post.CreationDateTime);
+            .OrderByDescending(post => post.CreatedDateTime);
         #endregion
 
         #region GetUserAsync

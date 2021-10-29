@@ -1,7 +1,5 @@
-﻿using System.Collections.Generic;
-using Database.DAL.Entities.Chat;
-using Database.DAL.Entities.Chat.Base;
-using Database.DAL.Entities.Chat.GroupChat;
+﻿using Database.DAL.Entities.Chat.Base;
+using System.Collections.Generic;
 
 namespace Website.Infrastructure.Services.Interfaces
 {
@@ -11,5 +9,6 @@ namespace Website.Infrastructure.Services.Interfaces
         public IEnumerable<Message> GetPrivateChatHistory(int id);
         public Chat GetPrivateChatWithUser(int receiverId, int senderId);
         public Chat GetNewChatWithUser(int receiverUserId, int senderUserId);
+        public Message SendMessageToPrivateChat(int privateChatId);
     }
 }

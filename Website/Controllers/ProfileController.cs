@@ -84,8 +84,7 @@ namespace Website.Controllers
         public ActionResult UploadPost(PostViewModel post) => PartialView("PostView", ProfileService.UploadPost(new(){
             Title=post.Title,
             Description=post.Description,
-            OwnerId = GetConnectedUserID,
-            CreationDateTime=DateTime.Now
+            OwnerId = GetConnectedUserID
             })); 
         #endregion
 

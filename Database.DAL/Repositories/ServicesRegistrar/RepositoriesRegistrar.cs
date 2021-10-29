@@ -13,7 +13,8 @@ namespace Database.DAL.Repositories.ServicesRegistrar
             .AddTransient<IRepository<User>, UsersRepository>()
             .AddTransient<IRepository<Role>, DbRepository<Role>>()
             .AddTransient<IRepository<Post>, PostsRepository>()
-            //.AddTransient<IRepository<PrivateChat>, PrivateChatsRepository>()
+            .AddTransient<IRepository<PrivateChat>, PrivateChatsRepository>()
+            .AddTransient<IRepository<GroupChat>, GroupChatsRepository>()
             //.AddTransient<IRepository<GroupChatParticipant>, GroupChatsParticipantsRepository>()
             .AddTransient<IRepository<FriendshipApplication>, FriendshipApplicationsRepository>();
         //.AddTransient<IRepository<UserMessage>, IRepository<UserMessage>>()

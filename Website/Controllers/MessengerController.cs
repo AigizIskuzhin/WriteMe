@@ -29,13 +29,13 @@ namespace Website.Controllers
         /// <summary>
         /// Открытие страницы диалогов, возврат диалого подключенного пользователя
         /// </summary>
-        /// <param name="dialogsViewModel"></param>
+        /// <param name="chatsViewModel"></param>
         /// <returns></returns>
-        public IActionResult Dialogs(DialogsViewModel dialogsViewModel)
+        public IActionResult Chats(ChatsViewModel chatsViewModel)
         {
             int connectedUserId = GetConnectedUserID;
-            dialogsViewModel.Chats = MessengerService.GetUserChats(connectedUserId);
-            return View(dialogsViewModel);
+            chatsViewModel.Chats = MessengerService.GetUserChats(connectedUserId);
+            return View(chatsViewModel);
         }
         #endregion
 
@@ -44,24 +44,33 @@ namespace Website.Controllers
         /// <summary>
         /// Возврат чата с указанным пользователем, подключенного пользователя
         /// </summary>
-        /// <param name="dialogsViewModel"></param>
+        /// <param name="chatsViewModel"></param>
         /// <returns></returns>
-        public IActionResult GetChatWithUser(DialogsViewModel dialogsViewModel)
+        /// GetChatWithUser?TargetedUserId=id
+        public IActionResult GetChatWithUser(ChatsViewModel chatsViewModel)
         {
-            if (dialogsViewModel.TargetedUserId == 0)
-                return RedirectToAction("Dialogs");
-            var chat = MessengerService.GetPrivateChatWithUser(dialogsViewModel.TargetedUserId, GetConnectedUserID);
+            if (chatsViewModel.TargetedUserId == 0)
+                return RedirectToAction("Chats");
+            var chat = MessengerService.GetPrivateChatWithUser(chatsViewModel.TargetedUserId, GetConnectedUserID);
             if (chat is null)
-                chat = MessengerService.GetNewChatWithUser(dialogsViewModel.TargetedUserId, GetConnectedUserID);
+                chat = MessengerService.GetNewChatWithUser(chatsViewModel.TargetedUserId, GetConnectedUserID);
             if (chat is null)
-                return RedirectToAction("Dialogs");
-            return View("ChatWithUser", chat);
+                return RedirectToAction("Chats");
+            return View("PrivateChat/PrivateChatView", chat);
         }
         #endregion
 
-        public IActionResult GetGroupChat(DialogsViewModel dialogsViewModel)
+        #region SendMessageToPrivateChat
+        public IActionResult SendMessageToPrivateChat(ChatsViewModel chatsViewModel)
         {
-            if (dialogsViewModel.TargetedGroupChatId == 0)
+
+            return null;
+        }
+        #endregion
+
+        public IActionResult GetGroupChat(ChatsViewModel chatsViewModel)
+        {
+            if (chatsViewModel.TargetedGroupChatId == 0)
                 return RedirectToAction("Dialogs");
             return View("GroupChat");
         }

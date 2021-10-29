@@ -1,5 +1,4 @@
-﻿using System;
-using Database.DAL.Entities.Chat.Base;
+﻿using Database.DAL.Entities.Chat.Base;
 
 namespace Database.DAL.Entities.Chat.GroupChat
 {

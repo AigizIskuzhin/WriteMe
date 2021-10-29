@@ -10,5 +10,5 @@
         </li>
     }
     else foreach (var chat in Model)
-            await Html.RenderPartialAsync("ChatView", chat);
+            await Html.RenderPartialAsync("Base/ChatView", chat);
 }

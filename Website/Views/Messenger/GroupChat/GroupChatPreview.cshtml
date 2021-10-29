@@ -3,7 +3,7 @@
 @{
     Layout = null;
     var title = Model.Title;
-    var lastMessage = Model.History.OrderByDescending(m => m.SentDateTime).FirstOrDefault();
+    var lastMessage = Model.History.OrderByDescending(m => m.CreatedDateTime).FirstOrDefault();
 }
 <li id="chat-@Model.Id" class="chat" data-private-chat-id="@Model.Id">
     <div class="chat_title">
