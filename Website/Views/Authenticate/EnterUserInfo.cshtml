@@ -65,8 +65,6 @@
                 <span asp-validation-for="Birthday"></span>
             </div>
         </div>
-
-        <input type="hidden" asp-for="IsAuth" />
         <input type="hidden" asp-for="MailAddress" />
         <div class="auth-row" style="margin-top: 20px;">
             <input id="submit" class="auth-btn pointer" disabled onmousemove="ShowError(this), CheckRequiredInputs()" onmouseleave="HideError(this)" style="width: 100%;" type="submit" value="Зарегистрироваться" />

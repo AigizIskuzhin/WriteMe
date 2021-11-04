@@ -1,4 +1,5 @@
-function SwitchSideBarView(){
+function SwitchSideBarView() {
+    return;
     var checkbox = document.getElementById("sidebar_checkbox")
     let expander = document.getElementById("sidebar_expander");
     switch (checkbox.checked) {
@@ -68,7 +69,8 @@ function AnimateElement(btn){
             btn_.className=classes[0];
     }
 }
-function ResizeFrame(){
+function ResizeFrame() {
+    return;
     var frame = document.getElementById("iframe");
     frame.height=0;
     var body = document.body;
@@ -81,4 +83,4 @@ function ResizeFrame(){
     }
     frame.height=height-57;
 }
-ResizeFrame()
+//ResizeFrame()

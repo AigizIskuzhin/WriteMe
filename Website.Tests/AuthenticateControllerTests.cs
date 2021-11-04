@@ -1,4 +1,6 @@
-﻿    using Microsoft.AspNetCore.Mvc;
+﻿    using System.Threading.Tasks;
+    using Database.DAL.Entities;
+    using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Website.Controllers;
 using Website.Infrastructure.Services.Interfaces;
@@ -43,10 +45,10 @@ namespace Website.Tests
         }
         #endregion
 
-        #region HttpPost ConfirmMailForAuthorization with wrong mailAddress
+        #region HttpPost ConfirmMailForAuthorization with nonvalid mail address
 
         /// <summary>
-        /// HttpPost ConfirmMailForAuthorization with wrong mailAddress 
+        /// HttpPost ConfirmMailForAuthorization with nonvalid mail address
         /// </summary>
         [Fact]  
         public void ConfirmMailForAuthorization_withNonValidMailAddress_returns_ViewResult_errorWithNonValidMailAddress()
@@ -79,7 +81,61 @@ namespace Website.Tests
         [Fact]
         public void ConfirmMailForAuthorization_with_rightMailAddress_returns_ViewResult_with_errorNonExistentUser()
         {
+            // Arrange
+            var mockService = new Mock<IAuthenticateService>();
+            var controller = new AuthenticateController(mockService.Object);
+            var viewModel = new ConfirmMailViewModel();
+            viewModel.MailAddress = "test@mail.ru";
 
+            mockService.Setup(s => s.IsUserExistAsync(viewModel.MailAddress)).Returns(() => null);
+
+            // Act
+            var result = controller.ConfirmMailForAuthorization(viewModel);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result.Result);
+            var model = Assert.IsAssignableFrom<ConfirmMailViewModel>(viewResult.ViewData.Model);
+            Assert.Equal(viewModel, model);
+
+            var modelState = viewResult.ViewData.ModelState;
+
+            Assert.False(modelState.IsValid);
+        }
+
+        #endregion
+
+        
+        #region HttpPost ConfirmMailForAuthorization with right mailAddress format and get redirect to password input site
+
+        /// <summary>
+        /// HttpPost ConfirmMailForAuthorization with right mailAddress got error with non existent user
+        /// </summary>
+        [Fact]
+        public void ConfirmMailForAuthorization_with_rightMailAddress_returns_ViewResult_for_passwordConfirm()
+        {
+            // Arrange
+            var mockService = new Mock<IAuthenticateService>();
+            var controller = new AuthenticateController(mockService.Object);
+            var viewModel = new ConfirmMailViewModel
+            {
+                MailAddress = "test@mail.ru"
+            };
+            //mockService.Setup(s => s.IsUserExistAsync(viewModel.MailAddress)).Returns(() =>
+            //{
+            //    return new Task<User>(() => new User());
+            //});
+
+            // Act
+            var result = controller.ConfirmMailForAuthorization(viewModel);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result.Result);
+            var model = Assert.IsAssignableFrom<AuthorizationViewModel>(viewResult.ViewData.Model);
+            Assert.Equal(viewModel, model);
+
+            var modelState = viewResult.ViewData.ModelState;
+
+            Assert.False(modelState.IsValid);
         }
 
         #endregion

@@ -1,8 +1,8 @@
-﻿@model Database.DAL.Entities.Chat.Base.Message
+﻿@model Database.DAL.Entities.Messages.ChatMessage.GeneratedChatMessage
 @{
     Layout = null;
 }
-<li id="message-@Model.Id" class="message" data-message-id="@Model.Id">
+<li id="message-@Model.Id" class="message" data-generated-message-id="@Model.Id">
     <div class="message-content">
         @Model.Text
     </div>

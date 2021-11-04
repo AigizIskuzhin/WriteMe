@@ -12,18 +12,18 @@
     </div>
 
     <h1 class="modal_title">@title</h1>
-    <p class="modal_description">Введите параметры</p>
-    <input asp-for="Title" placeholder="Заголовок" />
-    <textarea asp-for="Description" placeholder="Текст"></textarea>
+    @*<p class="modal_description">Введите параметры</p>*@
+    <input asp-for="Title" class="ui_control_item" style="width: 100%; padding: 12px;" placeholder="Заголовок" />
+    <textarea asp-for="Description" class="ui_control_item" style="width: 100%; height: 80px; min-height: 80px; height: auto; margin-top: 20px; padding: 12px; resize: vertical" placeholder="Текст"></textarea>
     @if (!isEditing)
     {
-        <input id="create_post_btn" class="modal_button" type="submit" value="Создать" />
+        <input id="create_post_btn" class="modal_button" style="margin-top: 20px;" type="submit" value="Создать" />
     }
     else
     {
         <input type="hidden" asp-for="OwnerId" />
         <input type="hidden" asp-for="Id" />
-        <input id="edit_post_btn" class="modal_button" type="submit" value="Отредактировать" />
+        <input id="edit_post_btn" class="modal_button" style="margin-top: 20px;" type="submit" value="Отредактировать" />
     }
     @*<div class="modal_button-link close-modal">
             Закрыть

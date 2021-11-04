@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using Database.DAL.Entities;
-using Database.DAL.Entities.Chat;
-using Database.DAL.Entities.Chat.Base;
-using Database.DAL.Entities.Chat.GroupChat;
-using Database.DAL.Entities.Chat.PrivateChat;
+using Database.DAL.Entities.Chats.Base;
+using Database.DAL.Entities.Messages.Base;
+using Database.DAL.Entities.Messages.ChatMessage;
 using Database.Interfaces;
 using Website.Infrastructure.Services.Interfaces;
 
@@ -13,38 +12,41 @@ namespace Website.Infrastructure.Services
 {
     public class MessengerService : IMessengerService
     {
-        private readonly IRepository<PrivateChat> PrivateChatsRepository;
-        private readonly IRepository<GroupChat> GroupChatsRepository;
         private readonly IRepository<User> UsersRepository;
-        public MessengerService(IRepository<User> usersRepository, IRepository<PrivateChat> privateChatsRepository, IRepository<GroupChat> groupChatsRepository)
+        private readonly IRepository<Chat> ChatsRepository;
+        private readonly IRepository<ChatParticipant> ChatParticipantsRepository;
+        public MessengerService(
+            IRepository<User> usersRepository,
+            IRepository<Chat> chatsRepository, 
+            IRepository<ChatParticipant> chatParticipantsRepository)
         {
             UsersRepository = usersRepository;
-            PrivateChatsRepository = privateChatsRepository;
-            GroupChatsRepository = groupChatsRepository;
+            ChatsRepository = chatsRepository;
+            ChatParticipantsRepository = chatParticipantsRepository;
         }
 
         public IEnumerable<Chat> GetUserChats(int userId)
         {
-            foreach (var privateChat in PrivateChatsRepository.Items.Where(privateChat =>
-                privateChat.UserOne.Id.Equals(userId) || privateChat.UserTwo.Id.Equals(userId)))
-                yield return privateChat;
-            foreach (var groupChat in GroupChatsRepository.Items.Where(groupChat => groupChat.Id.Equals(userId)))
-                yield return groupChat;
+            return ChatsRepository.Items.Where(chat =>
+                chat.ChatParticipants.Any(participant => participant.User.Id.Equals(userId)));
         }
 
-        public IEnumerable<Message> GetPrivateChatHistory(int id)
+        public IEnumerable<IMessage> GetPrivateChatHistory(int id)
         {
-            var chat = PrivateChatsRepository.Get(id);
-            if(chat is null)
-                return Enumerable.Empty<PrivateChatMessage>();
-            return chat.History;
+            var chat = ChatsRepository.Get(id);
+            return chat is null ? Enumerable.Empty<IMessage>() : chat.GetHistory();
         }
+
+        public Chat GetChat(int id) => ChatsRepository.Get(id);
 
         public Chat GetPrivateChatWithUser(int receiverId, int senderId)
         {
-            var chat = PrivateChatsRepository.Items.FirstOrDefault(privateChat=>
-                privateChat.UserOne.Id.Equals(receiverId) && privateChat.UserTwo.Id.Equals(senderId)||
-                privateChat.UserOne.Id.Equals(senderId) && privateChat.UserTwo.Id.Equals(receiverId));
+            var chat = ChatsRepository.Items
+                           .FirstOrDefault(privateChat=> 
+                               privateChat.IsPrivateChat && privateChat.MaximumChatParticipants == 2 && 
+                               privateChat.ChatParticipants.Any(participant=>participant.User.Id.Equals(receiverId)) && 
+                               privateChat.ChatParticipants.Any(participant=>participant.User.Id.Equals(receiverId))) 
+                       ?? GetNewChatWithUser(receiverId, senderId);
             return chat;
         }
 
@@ -55,20 +57,47 @@ namespace Website.Infrastructure.Services
             if (sender is null || receiver is null)
                 return null;
 
-            var chat = PrivateChatsRepository.Add(new()
+            var chat = ChatsRepository.Add(new()
             {
-                UserOne = sender,
-                UserTwo = receiver
+                IsPrivateChat = true,
+                MaximumChatParticipants = 2,
             });
 
+            var chatParticipantOne =
+                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Equals(receiver)) ??
+                ChatParticipantsRepository.Add(new() { Chat = chat, User = receiver });
+            
+            var chatParticipantTwo =
+                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Equals(sender)) ??
+                ChatParticipantsRepository.Add(new() { Chat = chat, User = sender });
+
+
+            chat.ChatParticipants.Add(chatParticipantOne);
+            chat.ChatParticipants.Add(chatParticipantTwo);
             return chat;
         }
 
-        public Message SendMessageToPrivateChat(int privateChatId)
+        public void SendMessageToChat(int userId, int chatId, string text)
         {
-            var chat = PrivateChatsRepository.Get(privateChatId);
-            var privateChatUserMessage = new PrivateChatUserMessage();
-            return null;
+            var chatParticipant =
+                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Id.Equals(userId));
+            if (chatParticipant != null)
+                chatParticipant.ChatParticipantMessages.Add(new ParticipantChatMessage
+                {
+                    Chat = chatParticipant.Chat,
+                    ChatParticipantSender = chatParticipant,
+                    Text = text
+                });
+            ChatParticipantsRepository.Update(chatParticipant);
+        }
+        
+        public IEnumerable<IMessage> GetNewMessagesFromLast(int chatId, int lastMessageId)
+        {
+            var chat = ChatsRepository.Get(chatId);
+            var lastMessage = chat.GetHistory().FirstOrDefault(message => message.Id.Equals(lastMessageId));
+            return lastMessage is null
+                ? chat.GetHistory()
+                : chat.GetHistory().Where(message => message.CreatedDateTime > lastMessage.CreatedDateTime);
         }
     }
 }

@@ -30,6 +30,22 @@ namespace Website.Infrastructure.Converters
             };
             return commentary;
         }
+        public static string ConvertToTime(DateTime source)
+        {
+            DateTime now = DateTime.Now;
+            //TimeSpan difference = now.Subtract(source);
+            //string commentary = difference.TotalMinutes switch
+            //{
+            //    < 1 => "Только что",
+            //    1 => "Минуту назад",
+            //    2 => "2 минуты назад",
+            //    3 => "3 минуты назад",
+            //    4 => "4 минуты назад",
+            //    5 => "5 минут назад",
+            //    _ => source.ToString("HH:mm"),
+            //};
+            return source.ToString("HH:mm");
+        }
 
         public static DateTime ConvertBack(string source)
         {

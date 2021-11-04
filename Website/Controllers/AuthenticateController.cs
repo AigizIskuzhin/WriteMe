@@ -30,15 +30,16 @@ namespace Website.Controllers
                 
                 string surname = string.Empty;
 
-                if (!string.IsNullOrWhiteSpace(user.Surname))
-                    surname = " " + user.Surname[0] + ".";
+                if(user!=null)
+                    if (!string.IsNullOrWhiteSpace(user.Surname))
+                        surname = " " + user.Surname[0] + ".";
 
                 if (user != null)
                     return View("EnterPassword", new AuthorizationViewModel
                     {
                         MailAddress = confirmMailViewModel.MailAddress,
                         UserTitle = user.Name + surname
-                    }); ;
+                    });
                 ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Неверный адрес");
             }
             return View(confirmMailViewModel);
@@ -71,7 +72,7 @@ namespace Website.Controllers
                 if (user != null)
                 {
                     await Authenticate(user);
-                    return Redirect("/app/welcome");
+                    return Redirect("/news");
                 }
                 
                 authorizationViewModel.Password = string.Empty;

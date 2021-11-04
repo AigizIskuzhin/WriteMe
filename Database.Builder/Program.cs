@@ -1,13 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Database.DAL.Context;
+﻿using Database.DAL.Context;
 using Database.DAL.Entities;
-using Database.DAL.Entities.Chat;
 using Database.DAL.Repositories.ServicesRegistrar;
 using Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading.Tasks;
 
 namespace Database.Builder
 {

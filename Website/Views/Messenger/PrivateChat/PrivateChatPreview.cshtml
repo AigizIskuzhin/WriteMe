@@ -1,25 +1,33 @@
-﻿@using Database.DAL.Entities.Chat.PrivateChat 
-@model Website.ViewModels.Chats.PrivateChatViewModel
+﻿@using Database.DAL.Entities.Messages.ChatMessage
+@model Website.ViewModels.Messenger.ChatViewModel
 @{ Layout = null; }
-<li id="chat-@Model.PrivateChat.Id" class="chat" data-private-chat-id="@Model.PrivateChat.Id" data-receiver-user-id="@Model.ReceiverId">
-    <div class="chat_title">
+<li id="chat-@Model.Id" class="chat" data-chat-id="@Model.Id" data-receiver-user-id="@Model.ReceiverId">
+    <div class="chat_preview_title">
         <a href="/profile?id=@Model.ReceiverId">
-            <div class="chat_title_receiver">
+            <div class="chat_icon_container">
+                <svg class="chat_icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                    <path d="M 15 3 C 11.686 3 9 5.686 9 9 L 9 10 C 9 13.314 11.686 16 15 16 C 18.314 16 21 13.314 21 10 L 21 9 C 21 5.686 18.314 3 15 3 z M 14.998047 19 C 10.992047 19 5.8520469 21.166844 4.3730469 23.089844 C 3.4590469 24.278844 4.329125 26 5.828125 26 L 24.169922 26 C 25.668922 26 26.539 24.278844 25.625 23.089844 C 24.146 21.167844 19.004047 19 14.998047 19 z">
+                    </path>
+                </svg>
+            </div>
+            <div class="chat_receiver">
                 @Model.ReceiverName
             </div>
         </a>
     </div>
-    <div class="chat_preview_message">
-        @if (Model.LastMessage is PrivateChatUserMessage privateUserMessage)
-        {
-            <div class="message_sender">@privateUserMessage.Sender.Name</div>
-            <div class="message-content">@privateUserMessage.Text</div> }
-        else
-        {
-            if (Model.LastMessage != null)
+    
+    @if (Model.LastMessage != null)
+    {
+        <div class="chat_last_message">
+            @if (Model.LastMessage is ParticipantChatMessage privateUserMessage)
+            {
+                <div class="message_sender" style="margin-right: 4px;">@privateUserMessage.ChatParticipantSender.User.Name:</div>
+                <div class="message-content">@Model.LastMessage.Text</div>
+            }
+            else
             {
                 <div class="message-content">@Model.LastMessage.Text</div>
             }
-        }
-    </div>
+        </div>
+    }
 </li>

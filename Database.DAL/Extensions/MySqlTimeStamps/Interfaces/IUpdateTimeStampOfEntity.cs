@@ -1,9 +1,11 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace Database.DAL.Extensions.MySqlTimeStamps.Interfaces
 {
-    internal interface IUpdateTimeStampOfEntity
+    public interface IUpdateTimeStampOfEntity
     {
+        [Required]
         DateTime UpdatedDateTime { get; set; }
     }
 }

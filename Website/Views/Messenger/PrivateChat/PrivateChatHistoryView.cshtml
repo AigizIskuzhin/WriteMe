@@ -1,0 +1,20 @@
+﻿@using Database.DAL.Entities.Messages.ChatMessage
+@model Website.ViewModels.Messenger.ChatViewModel
+@{
+    Layout = null;
+}
+@if (!Model.History.Any())
+{
+    <li class="message none generated_message">
+        <div class="message_content">
+            Записей нет
+        </div>
+    </li>
+}
+else foreach (var message in Model.History)
+{
+    if (message is ParticipantChatMessage userMessage)
+        await Html.RenderPartialAsync("PrivateChat/PrivateChatMessageView", userMessage, ViewData);
+    else if(message is GeneratedChatMessage generatedMessage)
+        await Html.RenderPartialAsync("Base/MessageView", generatedMessage);
+}

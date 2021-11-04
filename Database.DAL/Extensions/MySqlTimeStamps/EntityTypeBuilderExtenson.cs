@@ -18,7 +18,7 @@ namespace Database.DAL.Extensions.MySqlTimeStamps
         /// <returns></returns>
         internal static EntityTypeBuilder<TEntity> UseBothTimeStampedProperties<TEntity>(
             this EntityTypeBuilder<TEntity> entity)
-            where TEntity : class, ICreateUpdateTimeStampedEntity => entity
+            where TEntity : class, IUpdateTimeStampOfEntity, ICreateTimeStampOfEntity => entity
             .UseCreationTimeStampOnProperty()
             .UseUpdateTimeStampOnProperty();
         #endregion
@@ -33,10 +33,13 @@ namespace Database.DAL.Extensions.MySqlTimeStamps
         internal static EntityTypeBuilder<TEntity> UseCreationTimeStampOnProperty<TEntity>(this EntityTypeBuilder<TEntity> entity)
             where TEntity : class, ICreateTimeStampOfEntity
         {
-            entity.Property(d => d.CreatedDateTime).ValueGeneratedOnAdd();
+            entity.Property(e => e.CreatedDateTime)
+                .ValueGeneratedOnAdd();
 
-            entity.Property(d => d.CreatedDateTime).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
-            entity.Property(d => d.CreatedDateTime).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.CreatedDateTime).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.CreatedDateTime).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.CreatedDateTime).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.CreatedDateTime).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             return entity;
         } 
         #endregion
@@ -51,10 +54,12 @@ namespace Database.DAL.Extensions.MySqlTimeStamps
         internal static EntityTypeBuilder<TEntity> UseUpdateTimeStampOnProperty<TEntity>(this EntityTypeBuilder<TEntity> entity)
             where TEntity : class, IUpdateTimeStampOfEntity
         {
-            entity.Property(d => d.UpdatedDateTime).ValueGeneratedOnAddOrUpdate();
-
-            entity.Property(d => d.UpdatedDateTime).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
-            entity.Property(d => d.UpdatedDateTime).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            entity.Property(e => e.UpdatedDateTime)
+                .ValueGeneratedOnUpdate();
+            //entity.Property(d => d.UpdatedDateTime).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.UpdatedDateTime).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.UpdatedDateTime).Metadata.SetBeforeSaveBehavior(PropertySaveBehavior.Ignore);
+            //entity.Property(d => d.UpdatedDateTime).Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Ignore);
             return entity;
         } 
         #endregion

@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Database.DAL.Entities.Chat;
-using Database.DAL.Entities.Chat.Base;
+﻿using Database.DAL.Entities.Chats.Base;
+using System.Collections.Generic;
 
 namespace Website.ViewModels
 {

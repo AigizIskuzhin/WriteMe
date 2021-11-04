@@ -1,0 +1,17 @@
+﻿.custom-scrollbar {
+    display: block;
+    overflow: auto;
+    height: 200px;
+}
+
+/* Demonstrate a "mostly customized" scrollbar
+ * (won't be visible otherwise if width/height is specified) */
+.custom-scrollbar::-webkit-scrollbar {
+    height: 200px;
+    background-color: #aaa; /* or add it to the track */
+}
+
+/* Add a thumb */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #000;
+}

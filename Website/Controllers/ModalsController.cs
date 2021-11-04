@@ -6,5 +6,9 @@ namespace Website.Controllers
     public class ModalsController : Controller
     {
         public IActionResult CreatePostModalForm(PostViewModel post) => PartialView(post);
+        [Route("/working")]
+        public IActionResult WorkingON() => View();
+
+        public IActionResult AlreadyLoggedIn() => View("AlreadyLoggedInWarning");
     }
 }

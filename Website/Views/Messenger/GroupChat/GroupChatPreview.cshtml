@@ -1,8 +1,7 @@
-﻿@using Database.DAL.Entities.Chat.GroupChat
-@model Database.DAL.Entities.Chat.GroupChat.GroupChat
+﻿@*@model Website.ViewModels.ChatViewModel
 @{
     Layout = null;
-    var title = Model.Title;
+    var title = Model;
     var lastMessage = Model.History.OrderByDescending(m => m.CreatedDateTime).FirstOrDefault();
 }
 <li id="chat-@Model.Id" class="chat" data-private-chat-id="@Model.Id">
@@ -20,4 +19,4 @@
             <div class="message-content">@lastMessage.Text</div>
         }
     </div>
-</li>
+</li>*@

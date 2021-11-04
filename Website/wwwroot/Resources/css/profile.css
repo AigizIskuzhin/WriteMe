@@ -1,19 +1,17 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap');
-:root{
+﻿:root{
     --light-main-background-color: rgba(242,242,242,1);
 }
 *{
-	font-family: 'Nunito', sans-serif;
+	/*font-family: 'Nunito', sans-serif;*/
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 
 .user_profile {
-    margin-top: 20px;
     width: inherit;
     /* position: sticky; */
-    height: 200px;
+    height: 220px;
     transition: .5s linear;
     display: flex;
     gap: 20px;
@@ -146,7 +144,7 @@
 }
 
 .profile_page {
-    position: sticky;
+    /*position: sticky;*/
     top: 300px;
     margin-top: 20px;
     /* margin-top: 240px; */
@@ -161,8 +159,8 @@
 }
 
 .profile_stats {
-    width: 200px;
-    min-width: 200px;
+    width: 220px;
+    min-width: 220px;
     transition: .5s linear;
     overflow: hidden;
     display: flex;
@@ -191,7 +189,11 @@
     padding: 12px 12px 12px 36px;
     outline: none;
 }
-
+.posts_container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
 #search_icon {
     position: absolute;
     left: 12px;

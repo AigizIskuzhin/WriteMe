@@ -1,0 +1,24 @@
+﻿
+@using static Website.Infrastructure.Converters.TimeOfAdditionConverter
+@model Database.DAL.Entities.Messages.ChatMessage.ParticipantChatMessage
+@{ Layout = null;
+                string userId = ViewData["UserId"].ToString();
+                string advancedClass = String.Empty;
+                int senderId = @Model.ChatParticipantSender.User.Id;
+                bool isConnectedUser = senderId.ToString().Equals(userId);
+
+                if (isConnectedUser)
+                    advancedClass = "message_right"; }
+<li id="message-@Model.Id" class="message @advancedClass" data-participant-message-id="@Model.Id" data-message-owner-id="@senderId">
+    @if (!isConnectedUser)
+    {
+<div class="message_sender">
+    @Model.ChatParticipantSender.User.Name
+</div>}
+    <div class="message_content">
+        @Model.Text
+    </div>
+    <div class="message_sent_time">
+        @ConvertToTime(Model.CreatedDateTime)
+    </div>
+</li>
