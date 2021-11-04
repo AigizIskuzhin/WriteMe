@@ -136,12 +136,21 @@
     width: 100%;
     border-radius: 12px;
     transition: .5s linear;
+    display: flex;
+    padding: 10px;
+    color: gray;
+    fill: gray;
 }
 
 .profile_info-collapsed {
     height: 0;
     transition: .5s linear;
 }
+
+.profile_info_row {
+    display: flex;
+    align-items: center;
+}  
 
 .profile_page {
     /*position: sticky;*/
@@ -173,6 +182,8 @@
     min-width: 0;
     white-space: nowrap;
 }
+
+ 
 
 .ui_posts_tools, .ui_control_item, #ui_post_search_block{
     z-index: 2;
@@ -252,5 +263,4 @@
     list-style: none;
 }
 
-    
 

@@ -7,6 +7,7 @@ namespace Website.ViewModels
     {
         public string FullName => (User.Name + " " + User.Surname + " " + User.Patronymic).Replace("  ", " ");
         public User User { get; set; }
+        public string UserAge => User.Birthday;
         public bool IsOwner { get; set; }
         public bool IsMod { get; set; }
         public bool IsFriend { get; set; }

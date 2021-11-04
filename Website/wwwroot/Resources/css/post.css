@@ -37,6 +37,10 @@
     font-size: 12px;
     opacity: .0;
     transition: .2s linear;
+
+
+    opacity: .5;
+    padding-bottom: 6px;
 }
 .post:hover .post_time {
     opacity: .5;
