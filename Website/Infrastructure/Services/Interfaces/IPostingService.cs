@@ -10,5 +10,8 @@ namespace Website.Infrastructure.Services.Interfaces
         public SystemPost UploadPost(SystemPost systemPost);
         public SystemPost EditPost(SystemPost systemPost);
         public bool RemovePost(int idPost);
+        public void SendReportToPost(int postId, int senderId, int reportTypeId, string msg);
+        public IEnumerable<PostReport> GetPostsReports();
+        public IEnumerable<ReportType> GetReportTypes();
     }
 }

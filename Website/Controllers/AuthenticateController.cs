@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Database.DAL.Entities;
+using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
 
@@ -20,6 +21,7 @@ namespace Website.Controllers
         }
 
         
+        [OnAuthorizeAttribute]
         [Route("auth")]
         public async Task<IActionResult> ConfirmMailForAuthorization(ConfirmMailViewModel confirmMailViewModel)
         {
@@ -45,6 +47,7 @@ namespace Website.Controllers
             return View(confirmMailViewModel);
         }
         
+        [OnAuthorizeAttribute]
         [Route("reg")]
         public async Task<IActionResult> ConfirmMailForRegistration(ConfirmMailViewModel confirmMailViewModel)
         {
@@ -100,7 +103,8 @@ namespace Website.Controllers
 
         public async Task<bool> IsMailExist(string mailAddress) =>
             await AuthenticateService.IsUserExistAsync(mailAddress)!=null;
-
+        
+        [OnAuthorizeAttribute]
         [Route("/auth/reg")]
         public async Task<IActionResult> EnterUserInfo(RegistrationViewModel registrationViewModel)
         {

@@ -11,8 +11,12 @@ namespace Database.DAL.Context
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
-        public DbSet<UserPost> Posts { get; set; }
+        public DbSet<UserPost> UserPosts { get; set; }
         public DbSet<SystemPost> SystemPosts { get; set; }
+        
+        public DbSet<ReportType> ReportTypes { get; set; }
+        public DbSet<ReportState> ReportStates { get; set; }
+        public DbSet<PostReport> PostReports { get; set; }
 
         #region Chat
 
@@ -66,6 +70,7 @@ namespace Database.DAL.Context
             builder.Entity<User>().UseBothTimeStampedProperties();
             builder.Entity<GeneratedChatMessage>().UseCreationTimeStampOnProperty();
             builder.Entity<ChatParticipant>().UseCreationTimeStampOnProperty();
+            builder.Entity<PostReport>().UseCreationTimeStampOnProperty();
             // Other model creating stuff here ...  
         }
     }

@@ -218,16 +218,6 @@
 #open_post_sumbit_form svg{
     vertical-align: baseline;
 }
-.ui_control_item {
-    border-radius: 12px;
-    height: 40px;
-    width: 40px;
-    background-color: var(--light-main-background-color);
-    color: var(--font-dark-color);
-    cursor: pointer;
-    border: 1px transparent solid;
-    transition: .2s linear;
-}
 
 .ui_control_item:hover {
     border-color: var(--field-hover-dark-color);

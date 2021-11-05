@@ -1,13 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using System.Threading.Tasks;
-using Database.DAL.Entities.Messages.Base;
-using Database.DAL.Entities.Messages.ChatMessage;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.SignalR.Client;
-using Microsoft.Extensions.Primitives;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;

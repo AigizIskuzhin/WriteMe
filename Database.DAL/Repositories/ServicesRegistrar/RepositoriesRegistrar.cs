@@ -16,6 +16,9 @@ namespace Database.DAL.Repositories.ServicesRegistrar
             .AddTransient<IRepository<SystemPost>, DbRepository<SystemPost>>()
             .AddTransient<IRepository<Chat>, ChatsRepository>()
             .AddTransient<IRepository<ChatParticipant>, ChatParticipantRepository>()
+            .AddTransient<IRepository<PostReport>, PostReportsRepository>()
+            .AddTransient<IRepository<ReportType>, DbRepository<ReportType>>()
+            .AddTransient<IRepository<ReportState>, DbRepository<ReportState>>()
             //.AddTransient<IRepository<GroupChatParticipant>, GroupChatsParticipantsRepository>()
             .AddTransient<IRepository<FriendshipApplication>, FriendshipApplicationsRepository>();
         //.AddTransient<IRepository<UserMessage>, IRepository<UserMessage>>()

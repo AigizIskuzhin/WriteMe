@@ -51,6 +51,7 @@ namespace Website.Infrastructure.Services
         /// <param name="id"></param>
         /// <returns></returns>
         public async Task<User> GetUserAsync(int id) => await _Users.GetAsync(id);
+
         #endregion
 
         #region UploadPost

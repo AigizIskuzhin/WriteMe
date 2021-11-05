@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
 
 namespace Website.Controllers
 {
+    [CustomizedAuthorize]
     public class NewsController : Controller
     {
         private readonly IPostingService PostingService;

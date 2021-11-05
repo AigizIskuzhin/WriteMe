@@ -21,3 +21,4 @@ let uploadPost = (inputId, containerId) => {
     }
 }
 uploadPost('im_dialogs_search', 'profile_posts_container');
+

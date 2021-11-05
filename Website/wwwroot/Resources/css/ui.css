@@ -49,10 +49,16 @@
     cursor: pointer;
     border: 1px transparent solid;
     transition: .2s linear;
+    align-items: center;
+    display: flex;  
 }
 
 .ui_control_item:hover {
     border-color: var(--border-hover-gray-color);
+}
+.ui_control_item:hover .tooltip{
+    visibility: visible;
+    opacity: 1;
 }
 
 .ui_control_item-animated {
@@ -64,4 +70,29 @@
 
 .expanded {
     width: 100%;
+}
+
+
+
+.tooltip {
+    position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: .2s linear;
+    z-index: 20;
+    background: gray;
+    border-radius: 6px;
+    padding: 1px 8px;
+    opacity: 0;
+    visibility: collapse;
+    margin-left: 10px;
+    left: 100%;
+    color: var(--light-main-background-color);
+    font-size: 14px;
+}
+.leftOf {
+    left: auto;
+    margin-left: 0;
+    right: 100%;
+    margin-right: 10px;
 }

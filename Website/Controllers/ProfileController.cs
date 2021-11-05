@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Extensions;
@@ -14,6 +13,7 @@ namespace Website.Controllers
     public class ProfileController : Controller
     {
         private readonly IProfileService ProfileService;
+        private readonly IPostingService PostingService;
 
         #region Get connected user id
         /// <summary>
@@ -22,9 +22,12 @@ namespace Website.Controllers
         private int GetConnectedUserID => int.Parse(User.GetConnectedUserId()); 
         #endregion
 
-        public ProfileController(IProfileService profileService)
+        public ProfileController(
+            IProfileService profileService,
+            IPostingService postingService)
         {
             ProfileService = profileService;
+            PostingService = postingService;
         }
 
         #region Profile
@@ -125,7 +128,18 @@ namespace Website.Controllers
         {
             id = id == 0 ? GetConnectedUserID : id;
             return View("PostsView", string.IsNullOrWhiteSpace(filterText) ? ProfileService.GetUserPosts(id) : ProfileService.GetUserPostsWithFilter(id, filterText));
-        } 
+        }
+        #endregion
+
+        #region SendReportForPost
+        /// <summary>
+        /// Append targeted post to report list
+        /// </summary>
+        /// <param name="postId"></param>
+        public void SendReportForPost(int postId, int reportTypeId, string msg)
+        {
+            PostingService.SendReportToPost(postId, GetConnectedUserID, reportTypeId, msg);
+        }
         #endregion
     }
 }

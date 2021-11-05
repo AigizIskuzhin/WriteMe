@@ -1,4 +1,5 @@
-﻿@model Website.ViewModels.ProfileViewModel
+﻿
+@model Website.ViewModels.ProfileViewModel
 @{
     var queryId = Context.Request.Query["id"].ToString();
     string profileId = String.IsNullOrWhiteSpace(queryId) ? User.Claims.First(claim => claim.Type.Equals("id")).Value : queryId;
@@ -110,7 +111,8 @@
             @if (Model.IsOwner)
             {
                 <button id="open_post_sumbit_form" class="ui_control_item">
-                    <svg fill="none" height="24" viewBox="0 -2 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="currentColor" fill-rule="evenodd"><path d="M9.56 4.1h3.54a.9.9 0 110 1.8H9.6c-1 0-1.69 0-2.23.04-.52.05-.82.13-1.05.24a2.6 2.6 0 00-1.14 1.14c-.11.23-.2.53-.24 1.05-.04.54-.04 1.24-.04 2.23v3.8c0 1 0 1.69.04 2.23.05.52.13.82.24 1.05.25.49.65.89 1.14 1.14.23.11.53.2 1.05.24.54.04 1.24.04 2.23.04h3.8c1 0 1.69 0 2.23-.04.52-.05.82-.13 1.05-.24a2.6 2.6 0 001.14-1.14c.11-.23.2-.53.24-1.05.04-.54.04-1.24.04-2.23v-3.5a.9.9 0 011.8 0v3.54c0 .95 0 1.71-.05 2.33a4.5 4.5 0 01-.43 1.73 4.4 4.4 0 01-1.92 1.92 4.5 4.5 0 01-1.73.43c-.62.05-1.38.05-2.33.05H9.56c-.95 0-1.71 0-2.33-.05a4.5 4.5 0 01-1.73-.43 4.4 4.4 0 01-1.92-1.92 4.51 4.51 0 01-.43-1.73c-.05-.62-.05-1.38-.05-2.33v-3.88c0-.95 0-1.71.05-2.33.05-.64.16-1.2.43-1.73A4.4 4.4 0 015.5 4.58a4.51 4.51 0 011.73-.43c.62-.05 1.38-.05 2.33-.05z"></path><path d="M19.12 3.33a1.1 1.1 0 111.56 1.55l-.35.35a.4.4 0 01-.57 0l-.99-.99a.4.4 0 010-.56zm-.6 2.57l-.42-.42c-.44-.44-.72-.42-1.13 0l-5.13 5.12c-1.95 1.96-3.19 3.89-2.76 4.32.43.43 2.36-.8 4.32-2.76l5.12-5.13c.44-.44.42-.72 0-1.13z"></path></g></svg>
+                    <svg fill="none" height="24" viewBox="0 0 24 24" style="margin: auto;" width="24" xmlns="http://www.w3.org/2000/svg"><g clip-rule="evenodd" fill="currentColor" fill-rule="evenodd"><path d="M9.56 4.1h3.54a.9.9 0 110 1.8H9.6c-1 0-1.69 0-2.23.04-.52.05-.82.13-1.05.24a2.6 2.6 0 00-1.14 1.14c-.11.23-.2.53-.24 1.05-.04.54-.04 1.24-.04 2.23v3.8c0 1 0 1.69.04 2.23.05.52.13.82.24 1.05.25.49.65.89 1.14 1.14.23.11.53.2 1.05.24.54.04 1.24.04 2.23.04h3.8c1 0 1.69 0 2.23-.04.52-.05.82-.13 1.05-.24a2.6 2.6 0 001.14-1.14c.11-.23.2-.53.24-1.05.04-.54.04-1.24.04-2.23v-3.5a.9.9 0 011.8 0v3.54c0 .95 0 1.71-.05 2.33a4.5 4.5 0 01-.43 1.73 4.4 4.4 0 01-1.92 1.92 4.5 4.5 0 01-1.73.43c-.62.05-1.38.05-2.33.05H9.56c-.95 0-1.71 0-2.33-.05a4.5 4.5 0 01-1.73-.43 4.4 4.4 0 01-1.92-1.92 4.51 4.51 0 01-.43-1.73c-.05-.62-.05-1.38-.05-2.33v-3.88c0-.95 0-1.71.05-2.33.05-.64.16-1.2.43-1.73A4.4 4.4 0 015.5 4.58a4.51 4.51 0 011.73-.43c.62-.05 1.38-.05 2.33-.05z"></path><path d="M19.12 3.33a1.1 1.1 0 111.56 1.55l-.35.35a.4.4 0 01-.57 0l-.99-.99a.4.4 0 010-.56zm-.6 2.57l-.42-.42c-.44-.44-.72-.42-1.13 0l-5.13 5.12c-1.95 1.96-3.19 3.89-2.76 4.32.43.43 2.36-.8 4.32-2.76l5.12-5.13c.44-.44.42-.72 0-1.13z"></path></g></svg>
+                    <span class="tooltip">Добавить новую запись</span>
                 </button>
             }
             @*<button id="submit_search" class="ui_control_item" onclick="BtnClick(this)">
@@ -156,6 +158,7 @@
                     },
                     success: function(view) {
                         resultContainer.innerHTML = view;
+                        loadReportBtn();
                         document.getElementById('profile_posts_container').querySelectorAll('.edit_post_btn').forEach(btn => btn.addEventListener('click',function() {
                             var post = btn.offsetParent.offsetParent;
                             var postId = post.getAttribute('data-post-id');
@@ -186,7 +189,60 @@
         }
     }
     searchPostsOnInput('ui_posts_search_input', 'profile_posts_container');
+    loadReportBtn();
 
+    
+    const sendReport = (sendBtn, reportTypes, reportMsg, postId) =>
+    {
+        var sendBtn = document.getElementById(sendBtn);
+        var reportTypes = document.getElementById('report_types');
+        var reportMsg = document.getElementById('report_msg');
+        var postId = postId;
+
+        if (sendBtn && reportTypes && reportMsg) {
+            sendBtn.addEventListener("click", function () {
+                var selectedReportType = reportTypes.options[reportTypes.selectedIndex].value;
+                var msg = reportMsg.value;
+
+                request = $.ajax({
+                    url: "profile/SendReportForPost",
+                    type: "POST",
+                    data: {
+                        "postId": postId,
+                        "reportTypeId": selectedReportType,
+                        "msg":msg
+                    },
+                    success: function (view) {
+                        closeModal();
+                    }
+                });
+            });
+        }
+    }
+    function loadReportBtn() {
+        var posts = document.querySelectorAll('.report_btn');
+        if (posts) {
+            posts.forEach(btn => btn.addEventListener("click", function () {
+                var post = btn.parentElement.parentElement;
+                var postId = post.getAttribute('data-post-id');
+                $.ajax({
+                    url: "modals/SendReportModal",
+                    type: "POST",
+                    data: {
+                        "postId": postId
+                    },
+                    success: function (view) {
+                        var wrap = document.getElementById('page_modal_wrap');
+                        if (wrap.innerText != "")
+                            return;
+                        wrap.innerHTML = view;
+                        showModal('page_modal_wrap');
+                        document.querySelectorAll('.close-modal').forEach(c => c.addEventListener('click', closeModal));
+                        sendReport('send_report', 'report_types', 'report_msg', postId);
+                    }});
+            }));
+        }
+    }
     let openCreatePostModalForm = (inputId, containerId) => {
         let input = document.getElementById(inputId);
         let resultContainer = document.getElementById(containerId);

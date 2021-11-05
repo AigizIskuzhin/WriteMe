@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using System.Linq;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
-using Website.ViewModels.Friends;
 
 namespace Website.Controllers
 {
