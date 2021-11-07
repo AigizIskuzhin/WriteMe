@@ -1,10 +1,10 @@
-﻿.chats {
+.friends {
     margin: 0;
     margin-top: 10px;
     padding: 0;
     list-style: none;
     height: 100%;
-    width: 80%;
+    width: 100%;
     padding: 10px;
     background-color: var(--light-main-background-color);
     border-radius: 20px;
@@ -13,7 +13,8 @@
     overflow-y: scroll;
     scrollbar-width: none;
 }
-.chat {
+
+.friend {
     display: flex;
     height: 40px;
     border-radius: 12px;
@@ -24,34 +25,39 @@
     border: 1px transparent solid;
     gap: 10px;
 }
-.chat:hover {
+
+.friend:hover {
     background-color: rgb(238, 238, 238);
     border-color: var(--border-hover-gray-color);
 }
-.chat_preview_title {
+
+.friend_preview_title {
     height: 100%;
 }
-.chat_preview_title a {
-        display: flex;
-        height: 100%;
-        align-items: center;
-        gap: 10px;
-    }
 
-.chat_icon_container {
+.friend_preview_title a {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    gap: 10px;
+}
+
+.friend_icon_container {
     height: 100%;
     border-radius: 6px;
     background: rgb(180, 180, 180);
 }
-.chat_icon {
+
+.friend_icon {
     height: 100%;
     fill: var(--light-main-background-color);
 }
-.chat_preview_title a:hover {
+
+.friend_preview_title a:hover {
     color: orange;
 }
 
-.chat_last_message {
+.friend_last_message {
     max-width: 300px;
     width: 0;
     white-space: nowrap;
@@ -62,8 +68,20 @@
     border-radius: 8px;
     animation: test 1s linear forwards;
 }
+
 @keyframes test {
     100% {
         width: 100%;
     }
+}
+
+.friends_links {
+    top: calc(var(--header-height) + 50px);
+    margin-top: 50px;
+    position: sticky;
+    margin-left: 20px;
+    gap: 20px;
+    display: flex;
+    flex-direction: column;
+    height: min-content;
 }

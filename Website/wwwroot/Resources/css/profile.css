@@ -25,12 +25,13 @@
 }
 
 .profile_logo {
-    border-radius: 30px;
+    border-radius: 20px;
     background-color: var(--light-main-background-color);
     height: 100%;
     box-sizing: border-box;
     padding: 10px;
     transition: .5s linear;
+    position: relative;
 }
 
 .profile_logo-collapsed {
@@ -229,7 +230,7 @@
     animation-iteration-count: 1;
     animation: btn_click .3s ease-in-out;
 }
-.expanded{
+.ui_expanded{
     width: 100%;
 }
 
@@ -254,3 +255,13 @@
 }
 
 
+#upload_btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    opacity: .4;
+}
+#upload_btn:hover {
+    opacity: 1;
+}

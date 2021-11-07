@@ -63,7 +63,8 @@ namespace Website.Controllers
                     IsPrivateChat = chat.IsPrivateChat,
                     ReceiverName = receiver.User.Name,
                     ReceiverId = receiver.Id,
-                    IsReceiverOnline = SignalRService.GetConnections(receiver.User.Id.ToString()).Any()
+                    IsReceiverOnline = SignalRService.GetConnections(receiver.User.Id.ToString()).Any(),
+                    ReceiverAvatarPath = receiver.User.AvatarPath
                 });
         }
         /// <summary>

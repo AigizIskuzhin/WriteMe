@@ -33,5 +33,8 @@ namespace Website.Controllers
 
             return View(model);
         }
+
+        [CustomizedAuthorize]
+        public IActionResult UploadAvatarModal() => View("UploadAvatar");
     }
 }

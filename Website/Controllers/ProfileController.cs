@@ -12,6 +12,7 @@ namespace Website.Controllers
     [CustomizedAuthorize]
     public class ProfileController : Controller
     {
+        private readonly IFileService FileService;
         private readonly IProfileService ProfileService;
         private readonly IPostingService PostingService;
 
@@ -24,10 +25,12 @@ namespace Website.Controllers
 
         public ProfileController(
             IProfileService profileService,
-            IPostingService postingService)
+            IPostingService postingService, 
+            IFileService fileService)
         {
             ProfileService = profileService;
             PostingService = postingService;
+            FileService = fileService;
         }
 
         #region Profile
@@ -54,13 +57,13 @@ namespace Website.Controllers
         // TODO: implement it
         #region Upload profile avatar
         [HttpPost]
-        public ActionResult UploadAvatar(IFormFile uploadedFile)
+        public ActionResult UploadAvatar(IFormFile image)
         {
-            if (uploadedFile != null)
+            if (image != null)
             {
-
+                FileService.Upload(image, HttpContext.GetConnectedUserId());
             }
-            return View("Profile");
+            return RedirectToAction("Profile");
         } 
         #endregion
         
@@ -141,5 +144,6 @@ namespace Website.Controllers
             PostingService.SendReportToPost(postId, GetConnectedUserID, reportTypeId, msg);
         }
         #endregion
+        
     }
 }

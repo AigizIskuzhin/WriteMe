@@ -1,0 +1,16 @@
+﻿@{  
+    Layout = null;
+}
+<div class="modal_background close-modal">
+</div>
+<div class="modal_content">
+    <div class="modal_close close-modal" title="Close">
+        <i class='bx bx-x'></i>
+    </div>
+    <h1 class="modal_title">Загрузить фото</h1>
+    <form asp-controller="Profile" asp-action="UploadAvatar" method="post" enctype="multipart/form-data">
+        <input name="image" id="image" style="width: 100%; padding: 12px;" placeholder="Выберите фото" type="file" accept="image/*" />
+        <input class="modal_button close-modal" type="submit" value="Загрузить"/>
+    </form>
+</div>
+

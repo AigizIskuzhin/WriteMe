@@ -19,7 +19,7 @@
     width: max-content;
 }
 
-#ui_posts_search_input {
+#ui_posts_search_input, #ui_reports_search_input, #ui_reports_search_input, #ui_chats_search_input {
     width: 100%;
     padding: 12px 12px 12px 36px;
     outline: none;
@@ -68,11 +68,20 @@
     animation: btn_click .3s ease-in-out;
 }
 
-.expanded {
+.ui_expanded {
     width: 100%;
 }
 
+.ui_mincontent {
+    width: min-content;
+    white-space: nowrap;
+}
 
+.ui_btn {
+    width: min-content;
+    white-space: nowrap;
+    padding: 2px 8px;
+}
 
 .tooltip {
     position: absolute;
@@ -95,4 +104,10 @@
     margin-left: 0;
     right: 100%;
     margin-right: 10px;
+}
+.ui_70 {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    position: relative;
 }

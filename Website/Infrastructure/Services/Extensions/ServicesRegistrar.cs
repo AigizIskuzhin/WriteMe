@@ -11,6 +11,7 @@ namespace Website.Infrastructure.Services.Extensions
             .AddTransient<IMessengerService, MessengerService>()
             .AddTransient<IFriendsService, FriendsService>()
             .AddSingleton<ISignalRService, SignalRService>()
-            .AddTransient<IPostingService, PostingService>();
+            .AddTransient<IPostingService, PostingService>()
+            .AddTransient<IFileService, FileService>();
     }
 }

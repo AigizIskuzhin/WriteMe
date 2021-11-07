@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
-using System.Linq;
 using Website.Controllers.Rules;
+using Website.Infrastructure.Extensions;
 using Website.Infrastructure.Services.Interfaces;
 
 namespace Website.Controllers
@@ -9,39 +9,31 @@ namespace Website.Controllers
     [CustomizedAuthorize]
     public class FriendsController : Controller
     {
-        #region Get connected user id
-        /// <summary>
-        /// Получить подключенного пользователя с помощью claims
-        /// </summary>
-        private int GetConnectedUserID => int.Parse(User.Claims.First(claim => claim.Type.Equals("id")).Value);
-        #endregion
-
-        private IFriendsService FriendsService;
+        private readonly IFriendsService FriendsService;
         public FriendsController(IFriendsService friendsService)
         {
             FriendsService = friendsService;
         }
         [Route("/friends")]
-        public // IEnumerable<FriendViewModel>
-            IActionResult Friends(int id)
+        public ActionResult Friends(int id)
         {
-            if (id == 0) id = GetConnectedUserID;
+            if (id == 0) id = int.Parse(HttpContext.GetConnectedUserId());
             return View("Friends", FriendsService.GetUserFriends(id));
-            //FriendsService.GetUserFriends(id).ToList()[0].Name;
         }
 
         [Route("/friends.RemoveFriendship")]
-        public string TryRemoveFriendship(int target)
+        public bool TryRemoveFriendship(int target)
         {
-            int id = GetConnectedUserID;
-            if (FriendsService.TryRemoveUserFriendship(id, target)) return "Removed";
-            else return "NotRemoved";
+            int id = int.Parse(HttpContext.GetConnectedUserId());
+            return FriendsService.TryRemoveUserFriendship(id, target);
         }
+        [Route("/requests.incoming")]
         public IActionResult IncomingFriendRequests()
         {
             return View("IncomingFriendshipRequests");
         }
-
+        
+        [Route("/requests.outgoing")]
         public IActionResult OutgoingFriendRequests()
         {
             return View("OutgoingFriendshipRequests");

@@ -13,8 +13,9 @@
 
 const showModal = (modalContent) => {
     var modalWrap = document.getElementById(modalContent)
-
-    if (modalWrap) {
+    var closeBtn = document.querySelectorAll('.close-modal')
+    closeBtn.forEach(c => c.addEventListener('click', closeModal))
+        if (modalWrap) {
         modalWrap.classList.add('show-modal');  
     }
 }

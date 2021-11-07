@@ -14,5 +14,6 @@ namespace Website.ViewModels.Messenger
         public string ReceiverName { get; set; }
         public IMessage LastMessage => History.Last();
         public bool IsPrivateChat { get; set; }
+        public string ReceiverAvatarPath{get;set;}
     }
 }
