@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using Database.DAL.Entities.Base;
+﻿using Database.DAL.Entities.Base;
+using System.Collections.Generic;
 
 namespace Database.DAL.Entities
 {
@@ -9,7 +9,6 @@ namespace Database.DAL.Entities
 
         public Role()
         {
-            //s
             Users = new HashSet<User>();
         }
     }

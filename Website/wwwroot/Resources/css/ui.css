@@ -1,0 +1,113 @@
+﻿
+.ui_posts_tools, .ui_control_item, #ui_post_search_block {
+    z-index: 2;
+}
+
+.ui_header {
+    display: flex;
+    position: sticky;
+    top: 50px;
+    gap: 20px;
+    height: 40px;
+    align-items: center;    
+}
+.ui_box_container {
+    display: flex;
+    align-items: center;
+    background-color: var(--light-main-background-color);
+    padding: 6px;
+    width: max-content;
+}
+
+#ui_posts_search_input, #ui_reports_search_input, #ui_reports_search_input, #ui_chats_search_input {
+    width: 100%;
+    padding: 12px 12px 12px 36px;
+    outline: none;
+}
+
+#search_icon {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    transition: .2s linear;
+}
+
+#ui_post_search_block:hover #search_icon {
+    transform: scale(1.1);
+}
+
+#open_post_sumbit_form svg {
+    vertical-align: baseline;
+}
+
+.ui_control_item {
+    border-radius: 12px;
+    height: 40px;
+    width: 40px;
+    background-color: var(--light-main-background-color);
+    color: var(--font-dark-color);
+    cursor: pointer;
+    border: 1px transparent solid;
+    transition: .2s linear;
+    align-items: center;
+    display: flex;  
+}
+
+.ui_control_item:hover {
+    border-color: var(--border-hover-gray-color);
+}
+.ui_control_item:hover .tooltip{
+    visibility: visible;
+    opacity: 1;
+}
+
+.ui_control_item-animated {
+    color: var(--font-light-color);
+    background-color: var(--font-dark-color);
+    animation-iteration-count: 1;
+    animation: btn_click .3s ease-in-out;
+}
+
+.ui_expanded {
+    width: 100%;
+}
+
+.ui_mincontent {
+    width: min-content;
+    white-space: nowrap;
+}
+
+.ui_btn {
+    width: min-content;
+    white-space: nowrap;
+    padding: 2px 8px;
+}
+
+.tooltip {
+    position: absolute;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: .2s linear;
+    z-index: 20;
+    background: gray;
+    border-radius: 6px;
+    padding: 1px 8px;
+    opacity: 0;
+    visibility: collapse;
+    margin-left: 10px;
+    left: 100%;
+    color: var(--light-main-background-color);
+    font-size: 14px;
+}
+.leftOf {
+    left: auto;
+    margin-left: 0;
+    right: 100%;
+    margin-right: 10px;
+}
+.ui_70 {
+    display: flex;
+    flex-direction: column;
+    width: 70%;
+    position: relative;
+}

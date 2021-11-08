@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Database.DAL.Entities;
+using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
 
@@ -18,45 +19,55 @@ namespace Website.Controllers
         {
             AuthenticateService = authenticateService;
         }
-        
-        [Route("reg")]
-        [Route("auth")]
-        public async Task<IActionResult> ConfirmMail(ConfirmMailViewModel confirmMailViewModel)
-        {
-            var t = Request.Path.Value;
-            bool isAuth = t!.Contains("auth");
-            if (confirmMailViewModel.IsAuth is null)
-                return View(new ConfirmMailViewModel { IsAuth = isAuth });
 
+        
+        [OnAuthorizeAttribute]
+        [Route("auth")]
+        public async Task<IActionResult> ConfirmMailForAuthorization(ConfirmMailViewModel confirmMailViewModel)
+        {
             if (ModelState.IsValid)
             {
                 var user = await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress);
-                if (confirmMailViewModel.IsAuth.Value)
-                {
-                    if (user!=null)
-                        return View("EnterPassword", new AuthorizationViewModel
-                        {
-                            MailAddress = confirmMailViewModel.MailAddress,
-                            UserTitle = user.Name + " " + user.Surname[0] +"."
-                        });
-                    ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Неверный адрес");
-                }
-                else
-                {
-                    if (user==null)
-                        return View("EnterUserInfo", new RegistrationViewModel
-                        {
-                            MailAddress = confirmMailViewModel.MailAddress
-                        });
-                    ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Адрес занят");
-                }
+                
+                
+                string surname = string.Empty;
+
+                if(user!=null)
+                    if (!string.IsNullOrWhiteSpace(user.Surname))
+                        surname = " " + user.Surname[0] + ".";
+
+                if (user != null)
+                    return View("EnterPassword", new AuthorizationViewModel
+                    {
+                        MailAddress = confirmMailViewModel.MailAddress,
+                        UserTitle = user.Name + surname
+                    });
+                ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Неверный адрес");
             }
             return View(confirmMailViewModel);
         }
+        
+        [OnAuthorizeAttribute]
+        [Route("reg")]
+        public async Task<IActionResult> ConfirmMailForRegistration(ConfirmMailViewModel confirmMailViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await AuthenticateService.IsUserExistAsync(confirmMailViewModel.MailAddress);
+                if (user==null)
+                    return View("EnterUserInfo", new RegistrationViewModel
+                    {
+                        MailAddress = confirmMailViewModel.MailAddress
+                    });
+                ModelState.AddModelError(nameof(confirmMailViewModel.MailAddress), "Адрес занят");
+            }
+            return View(confirmMailViewModel);
+        }
+
         [Route("auth/log")]
         public async Task<IActionResult> EnterPassword(AuthorizationViewModel authorizationViewModel)
         {
-            if (authorizationViewModel.MailAddress is null) return RedirectToAction("ConfirmMail");
+            if (authorizationViewModel.MailAddress is null) return RedirectToAction("ConfirmMailForAuthorization");
             if (ModelState.IsValid)
             {
                 var user = await AuthenticateService.ConfirmUserAsync(authorizationViewModel.MailAddress,
@@ -64,7 +75,7 @@ namespace Website.Controllers
                 if (user != null)
                 {
                     await Authenticate(user);
-                    return Redirect("/app/welcome");
+                    return Redirect("/news");
                 }
                 
                 authorizationViewModel.Password = string.Empty;
@@ -92,7 +103,8 @@ namespace Website.Controllers
 
         public async Task<bool> IsMailExist(string mailAddress) =>
             await AuthenticateService.IsUserExistAsync(mailAddress)!=null;
-
+        
+        [OnAuthorizeAttribute]
         [Route("/auth/reg")]
         public async Task<IActionResult> EnterUserInfo(RegistrationViewModel registrationViewModel)
         {

@@ -1,0 +1,24 @@
+﻿@using Website.ViewModels.Messenger
+@using Website.Infrastructure.Extensions
+@using Website.Infrastructure.Services.Interfaces
+@inject ISignalRService SignalRService
+@model Database.DAL.Entities.Chats.Base.Chat
+@{
+    int connectedUserId = int.Parse(Context.GetConnectedUserId());
+    var receiver = Model.GetReceiverChatParticipant(connectedUserId);
+    Layout = null;
+    ChatViewModel chat = new()
+    {
+        Id = Model.Id,
+        ConnectedUserId = connectedUserId,
+        IsPrivateChat = Model.IsPrivateChat,
+        History = Model.GetHistory(),
+        ReceiverName = receiver.User.Name,
+        ReceiverId = receiver.Id,
+        IsReceiverOnline = SignalRService.GetConnections(receiver.User.Id.ToString()).Any(),
+        ReceiverAvatarPath = receiver.User.AvatarPath
+    };
+    if (chat.IsPrivateChat)
+        await Html.RenderPartialAsync("PrivateChat/PrivateChatPreview", chat);
+    else await Html.RenderPartialAsync("GroupChat/GroupChatPreview", chat);
+}

@@ -1,95 +1,23 @@
-﻿.ui_search_input_block {
-    display: flex;
-    position: sticky;
-    top: 120px;
-    z-index: 2;
+﻿:root{
+    --light-main-background-color: rgba(242,242,242,1);
 }
-
-.ui_search_custom_controls {
-    position: relative;
-    z-index: 2;
-}
-
-#im_search_block {
-    position: relative;
-    z-index: 2;
-    width: 100%;
-}
-
-#im_dialogs_search {
-    width: 100%;
-    padding: 12px 12px 12px 36px;
-    border: 1px transparent solid;
-    /* background-image: url(../icons/search.svg); */
-    background-repeat: no-repeat;
-    background-size: auto;
-    background-position: 10px 50%;
-    outline: none;
-    font-size: 14px;
+*{
+	/*font-family: 'Nunito', sans-serif;*/
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
-    height: 40px;
-    transition: .3s linear;
 }
 
-#search_icon {
-    position: absolute;
-    transform: translate(10px, 50%);
-    transition: .2s linear;
-}
-
-#im_search_block:hover #search_icon {
-    transform: scale(1.1) translate(9px, 45%);
-}
-
-.ui_input_field {
-    background: rgba(230,230,230,.5);
-    border-radius: 12px;
-}
-
-#im_dialogs_search:hover {
-    border-color: var(--field-hover-dark-color);
-}
-
-#im_dialogs_search:focus {
-    border-color: var(--field-focus-dark-color);
-}
-
-.ui_control_item {
-    border-radius: 12px;
-    height: 40px;
-    width: 40px;
-    background: rgba(230,230,230,.7);
-    color: var(--font-dark-color);
-    cursor: pointer;
-    border: 1px transparent solid;
-    transition: .2s linear;
-}
-
-.ui_control_item:hover {
-    border-color: var(--field-hover-dark-color);
-    transform: scale(1.1);
-}
-
-.ui_control_item-animated {
-    color: var(--font-light-color);
-    background-color: var(--font-dark-color);
-    animation-iteration-count: 1;
-    animation: btn_click .3s ease-in-out;
-}
 .user_profile {
-    margin-top: 20px;
     width: inherit;
-    position: sticky;
-    height: 200px;
+    /* position: sticky; */
+    height: 220px;
     transition: .5s linear;
     display: flex;
     gap: 20px;
     overflow: hidden;
     z-index: 13;
     top: 68px;
-    background: white;
 }
 
 .user_profile-collapsed {
@@ -97,12 +25,13 @@
 }
 
 .profile_logo {
-    border-radius: 30px;
-    background-color: rgba(100,100,100,.2);
+    border-radius: 20px;
+    background-color: var(--light-main-background-color);
     height: 100%;
     box-sizing: border-box;
     padding: 10px;
     transition: .5s linear;
+    position: relative;
 }
 
 .profile_logo-collapsed {
@@ -151,7 +80,7 @@
 }
 
 .profile_name {
-    background-color: rgba(100,100,100,.2);
+    background-color: var(--light-main-background-color);
     font-size: 18px;
     font-weight: 600;
     border-radius: 10px;
@@ -192,9 +121,9 @@
     background-color: rgb(50, 50, 50);
 }
 
-    .profile_btn:hover .btn_logo {
-        fill: rgba(230,230,230);
-    }
+.profile_btn:hover .btn_logo {
+    fill: rgba(230,230,230);
+}
 
 .btn_logo {
     width: 24px;
@@ -203,11 +132,15 @@
 }
 
 .profile_info {
-    background-color: rgba(100,100,100,.2);
+    background-color: var(--light-main-background-color);
     height: 100%;
     width: 100%;
     border-radius: 12px;
     transition: .5s linear;
+    display: flex;
+    padding: 10px;
+    color: gray;
+    fill: gray;
 }
 
 .profile_info-collapsed {
@@ -215,8 +148,13 @@
     transition: .5s linear;
 }
 
+.profile_info_row {
+    display: flex;
+    align-items: center;
+}  
+
 .profile_page {
-    position: sticky;
+    /*position: sticky;*/
     top: 300px;
     margin-top: 20px;
     /* margin-top: 240px; */
@@ -231,8 +169,8 @@
 }
 
 .profile_stats {
-    width: 200px;
-    min-width: 200px;
+    width: 220px;
+    min-width: 220px;
     transition: .5s linear;
     overflow: hidden;
     display: flex;
@@ -244,6 +182,56 @@
     width: 0;
     min-width: 0;
     white-space: nowrap;
+}
+
+ 
+
+.ui_posts_tools, .ui_control_item, #ui_post_search_block{
+    z-index: 2;
+}
+.ui_posts_tools {
+    display: flex;
+    position: sticky;
+    top: 20px;
+    gap: 20px;
+}
+
+#ui_posts_search_input {
+    width: 100%;
+    padding: 12px 12px 12px 36px;
+    outline: none;
+}
+.posts_container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+#search_icon {
+    position: absolute;
+    left: 12px;
+    top: 10px;
+    transition: .2s linear;
+}
+
+#ui_post_search_block:hover #search_icon {
+    transform: scale(1.1);
+}
+#open_post_sumbit_form svg{
+    vertical-align: baseline;
+}
+
+.ui_control_item:hover {
+    border-color: var(--field-hover-dark-color);
+}
+
+.ui_control_item-animated {
+    color: var(--font-light-color);
+    background-color: var(--font-dark-color);
+    animation-iteration-count: 1;
+    animation: btn_click .3s ease-in-out;
+}
+.ui_expanded{
+    width: 100%;
 }
 
 .profile_posts {
@@ -265,10 +253,15 @@
     padding: 0;
     list-style: none;
 }
-.ui_search_custom_controls {
-    display: flex;
-    gap: 20px;
+
+
+#upload_btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    opacity: .4;
 }
-
-    
-
+#upload_btn:hover {
+    opacity: 1;
+}

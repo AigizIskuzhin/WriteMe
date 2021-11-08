@@ -1,0 +1,12 @@
+﻿@using Database.DAL.Entities
+@model Database.DAL.Entities.Post
+@{
+    Layout = null;
+}
+@if (Model != null)
+{
+    if(Model is UserPost userPost)
+        Html.RenderPartial("UserPostView",userPost);
+    else if(Model is SystemPost systemPost)
+        Html.RenderPartial("SystemPostView", systemPost);
+}

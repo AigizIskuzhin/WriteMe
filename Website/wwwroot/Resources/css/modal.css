@@ -1,22 +1,6 @@
-/*=============== GOOGLE FONTS ===============*/
 
-/*=============== VARIABLES CSS ===============*/
 :root {
-  /*========== Colors ==========*/
-  --hue: 240;
-  --first-color: hsl(var(--hue), 16%, 18%);
-  --first-color-alt: hsl(var(--hue), 16%, 12%);
-  --title-color: hsl(var(--hue), 8%, 15%);
-  --text-color: hsl(var(--hue), 8%, 35%);
-  --body-color: hsl(var(--hue), 100%, 99%);
-  --container-color: #FFF;
-
-  /*========== Font and typography ==========*/
-  --body-font: 'Poppins', sans-serif;
-  --big-font-size: 1.5rem;
-  --normal-font-size: .938rem;
-
-  /*========== z index ==========*/
+    
   --z-modal: 1000;
 }
 
@@ -29,15 +13,16 @@
 
 /*=============== BASE ===============*/
 * {
-    font-family: 'Nunito';
+    /*font-family: 'Nunito';*/
 }
 .modal-button{
-  font-family: var(--body-font);
-  font-size: var(--normal-font-size);
+  font-family: 'Nunito' sans-serif;
+  font-size: 16px;
 }
 
 .modal-button{
-  cursor: pointer;
+    border: none;
+    cursor: pointer;
   border: none;
   outline: none;
 }
@@ -60,8 +45,9 @@
 }
 
 .modal_button{
+    outline: none;
   display: inline-block;
-  background-color: var(--first-color);
+  background-color: rgb(130,130,130);
   color: #FFF;
     height: 40px;
   border-radius: .5rem;
@@ -69,7 +55,7 @@
 }
 
 .modal_button:hover{
-  background-color: var(--first-color-alt);
+  background-color: rgb(50,50,50);
 }
 
 .modal_container{
@@ -100,7 +86,7 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    background-color: var(--container-color);
+    background-color: white;
     text-align: center;
     padding: 2rem 2rem;
     border-radius: 1rem 1rem 0 0;

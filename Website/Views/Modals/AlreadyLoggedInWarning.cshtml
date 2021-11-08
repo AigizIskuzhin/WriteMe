@@ -1,0 +1,30 @@
+﻿@{ Layout = null; }
+
+<link rel="stylesheet" href="~/Resources/css/modal.css" />
+<link rel="stylesheet" href="~/Resources/css/neumorphism.css" />
+<style>
+    .bg {
+        background: #e3e3e3;
+    }
+
+    body {
+        margin: 0;
+    }
+</style>
+
+<div id="page_modal_wrap" class="modal_container">
+    <div class="modal_background bg">
+    </div>
+    <div class="modal_content neo bg">
+        <h1 class="modal_title">Вы уже авторизованы</h1>
+        <p class="modal_description">Выберите пункт</p>
+        <a class="modal_button-link" href="/profile">Профиль</a>
+        <a class="modal_button-link" href="/exit">Выйти из системы</a>
+    </div>
+
+    <script src="~/Resources/js/modal.js"></script>
+    <script src="~/Resources/js/neumorphism.js"></script>
+<script>
+    showModal('page_modal_wrap');
+</script>
+</div>

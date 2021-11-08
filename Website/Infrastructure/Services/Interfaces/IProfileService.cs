@@ -1,14 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using Database.DAL.Entities;
+using System.Collections.Generic;
 using System.Threading.Tasks;
-using Database.DAL.Entities;
 
 namespace Website.Infrastructure.Services.Interfaces
 {
     public interface IProfileService
     {
-        public IEnumerable<User> Users { get; }
-        public IEnumerable<Post> GetUserPosts(int id);
-        public IEnumerable<Post> GetUserPostsWithFilter(int id, string filterText);
+        public UserPost UploadPost(UserPost userPost);
+        public UserPost EditPost(UserPost userPost);
+        public bool RemovePost(int idPost, int idUser);
+        public IEnumerable<UserPost> GetUserPosts(int id);
+        public IEnumerable<UserPost> GetUserPostsWithFilter(int id, string filterText);
         public Task<User> GetUserAsync(int id);
     }
 }

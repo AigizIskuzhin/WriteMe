@@ -1,0 +1,118 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap');
+.chat_private_header {
+    display: flex;
+    align-items: center;
+    padding: 6px;
+    width: max-content;
+    height: 100%;
+    background-color: rgb(253, 235, 235);
+    /*background-color: var(--light-main-background-color);*/
+    transition: .2s linear;
+    border-radius: 10px;
+    border: 1px transparent solid;
+    gap: 10px;
+    /*font-size: 20px;*/
+}
+.chat_private_header:hover {
+    border-color: var(--border-hover-gray-color);
+}
+.history {
+    height: 100%;
+    width: 80%;
+    margin: 20px 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    flex-direction: column;
+
+
+    background-color: var(--light-main-background-color);
+    padding: 10px;
+    border-radius: 20px;
+
+
+    overflow: hidden;
+    overflow-y: scroll;
+    scrollbar-width: none;
+}
+.message {
+    position: relative;
+    background-color: var(--light-main-background-color);
+    max-width: 65%;
+    padding: 6px 10px;
+    border-radius: 12px;
+    /*border-radius: 0 20px 12px 20px;*/
+    margin-left: 0;
+    margin-right: auto;
+
+    background-color: rgb(253, 235, 235);
+}
+
+.message_right {
+    /*border-radius: 20px 0 12px 20px;*/
+    margin-left: auto;
+    margin-right: 0;
+    background-color: rgb(235, 241, 253);
+}
+
+.message_sent_time {
+    /*position: absolute;*/
+    /*margin-top: 10px;*/
+    width: min-content;
+    font-size: 12px;
+    margin-right: auto;
+    margin-left: 0;
+    color: rgb(160, 160, 160);
+}
+.message_right .message_sent_time {
+    /*right: 0;*/
+    margin-right: 0;
+    margin-left: auto;
+}
+.user_status {
+    color: rgb(180, 180, 180);
+}
+.online {
+    color: green;
+}
+
+
+.ui_button {
+    display: flex;
+    align-items: center;
+    padding: 4px 10px;
+    border-radius: 12px;
+    height: 40px;
+    background-color: var(--light-main-background-color);
+    color: var(--font-dark-color);
+    cursor: pointer;
+    border: 1px transparent solid;
+    transition: .2s linear;
+    width: min-content;
+    white-space: nowrap;
+}
+#sender {
+    width: auto;
+}
+#input {
+    width: 100%;
+    padding: 12px;
+    outline: none;
+}
+
+.bottom_box_container {
+    background: white;
+    gap: 20px;
+    position: sticky;
+    bottom: 0;
+    width: 80%;
+    height: 40px;
+    display: flex;
+    justify-content: stretch;
+    margin-bottom: var(--header-height);
+}
+#input:focus {
+    border-color: gray;
+}
+

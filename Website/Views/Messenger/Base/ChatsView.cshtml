@@ -1,0 +1,14 @@
+﻿@model IEnumerable<Database.DAL.Entities.Chats.Base.Chat>
+@{
+    Layout = null;
+    if (!Model.Any())
+    {
+        <li class="chats_empty">
+            <div class="chat_preview_text">
+                Нету чатов
+            </div>
+        </li>
+    }
+    else foreach (var chat in Model)
+            await Html.RenderPartialAsync("Base/ChatPreview", chat);
+}

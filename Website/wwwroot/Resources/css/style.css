@@ -1,39 +1,79 @@
-
-body{
+:root {
+    --header-height: 50px;
+    --left-menu-row-height: 40px;
+    --ecosystem_icon_border: 1px;
+    --font-light-color: rgb(245,245,245);
+    --font-dark-color: rgb(50, 50, 50);
+    --font-dark-theme-color: rgb(126, 126, 126);
+    --bg-light-color: rgb(245,245,245);
+    --bg-dark-color: rgb(50, 50, 50);
+    --field-hover-dark-color: rgb(180, 180, 180);
+    --border-hover-gray-color: rgb(220, 220, 220);
+    --field-focus-dark-color: rgb(136, 136, 136);
+    --light-main-background-color: rgba(242,242,242,1);
+}
+* {
+    /*font-family: 'Nunito', sans-serif;*/
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    font-family: 'Nunito', sans-serif;
+}
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
     padding: 0;
     margin: 0;
-	font-family: 'Nunito', sans-serif;
+    font-family: 'Nunito', sans-serif;
     color: var(--font-dark-color);
 }
-a{
+::-webkit-scrollbar {
+    display: none;
+}
+#page_wrap {
+    position: relative;
+}
+a {
     color: var(--font-dark-color);
     text-decoration: none;
 }
 .fixed{
     position: fixed;
 }
-#page_layout{
+#page_layout {
     margin: 0 auto;
     display: flex;
     width: max-content;
+    position: relative;
+    height: calc(100vh - 50px);
 }
-#page_layout::before{
+/*#page_layout::before{
     display: flex;
     content: "";
     margin: auto;
-}
+}*/
 #side_bar{
     margin-top: var(--header-height);
     font-size: 20px;
     cursor: pointer;
-    position: fixed;
-    transform: translateX(-230px);
+    /*transform: translateX(-230px);*/
     transition: .5s linear;
     /* border: 3px transparent solid;
     border-radius: 15px; */
+    position: absolute;
+    right: 100%;
+    margin-right: 20px;
+    height: 100%;
 }
-.side_bar_ol{
-    margin-top: 20px;
+.side_bar_nav {
+    position: sticky;
+    top: 50px;
+}
+.side_bar_ol {
+    margin: 0;
+    /*margin-top: 20px;*/
     list-style: none;
     padding: 0;
     transition: .5s linear;
@@ -46,7 +86,7 @@ a{
     /* align-items: center; */
     border-radius: 10px;
     transition: .2s ease;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     box-sizing: border-box;
 }
 /* .side_bar_menu_item::after{
@@ -56,7 +96,7 @@ a{
 } */
 .side_bar_menu_item:hover{
     background: rgba(230,230,230,.5);
-    transform: scale(1.1);
+    /*transform: scale(1.1);*/
     transition: .1s ease;
 }
 
@@ -94,7 +134,7 @@ a{
 .side_bar_menu_item_title{
     margin: auto auto auto 9px
 }
-#page_body{
+#page_body {
     margin-top: var(--header-height);
     float: right;
     width: 800px;
@@ -102,6 +142,8 @@ a{
     height: 100%;
     z-index: 10;
     background: white;
+    display: flex;
+    flex-direction: column;
 }
 #page_header_wrap{
     position: fixed;
@@ -194,11 +236,6 @@ a{
     height: 40px;
     transition: .3s linear;
 }
-#search_icon{
-    position: fixed;
-    transform: translate(10px, 50%);
-    transition: .2s linear;
-}
 #im_search_block:hover #search_icon{
     transform: scale(1.1) translate(9px, 45%);
 }   
@@ -212,19 +249,8 @@ a{
 #im_dialogs_search:focus{
     border-color: var(--field-focus-dark-color);
 }
-.ui_control_item{
-    border-radius: 12px;
-    height: 40px;
-    width: 40px;
-    background: rgba(230,230,230,.7);
-    color:var(--font-dark-color);
-    cursor: pointer;
-    border: 1px transparent solid;
-    transition: .2s linear;
-}
 .ui_control_item:hover{
     border-color: var(--field-hover-dark-color);
-    transform: scale(1.1);
 }
 .ui_control_item-animated{
     color:var(--font-light-color);
@@ -306,16 +332,4 @@ a{
     align-items: center;
     display: flex;
     width: min-content;
-}
-:root {
-    --header-height: 48px;
-    --left-menu-row-height: 40px;
-    --ecosystem_icon_border: 1px;
-    --font-light-color: rgb(245,245,245);
-    --font-dark-color: rgb(50, 50, 50);
-    --font-dark-theme-color: rgb(126, 126, 126);
-    --bg-light-color: rgb(245,245,245);
-    --bg-dark-color: rgb(50, 50, 50);
-    --field-hover-dark-color: rgb(180, 180, 180);
-    --field-focus-dark-color: rgb(136, 136, 136);
 }
