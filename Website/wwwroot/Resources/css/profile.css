@@ -15,7 +15,7 @@
     transition: .5s linear;
     display: flex;
     gap: 20px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     z-index: 13;
     top: 68px;
 }

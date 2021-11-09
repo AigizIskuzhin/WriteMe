@@ -4,7 +4,7 @@
 @{
     bool isOwner = Context.GetConnectedUserId()==Model.OwnerId.ToString();
 }
-<li id="post-@Model.Id" class="post" data-post-id="@Model.Id">
+<li id="post-@Model.Id" class="post" data-post-id="@Model.Id" data-owner-id="@Model.Owner.Id">
     <div class="post_quick_menu">
         @if (isOwner)
         {
