@@ -6,6 +6,7 @@
 }
 <link rel="stylesheet" href="~/Resources/css/profile.css" />
 <link rel="stylesheet" href="~/Resources/css/post.css" />
+<script src="Resources/js/profile.js"></script>
 
 @*<div style="background: white; height: 70px; z-index: 11; width: inherit; position: fixed;"></div>*@
 <div id="user_profile" class="user_profile">
@@ -162,63 +163,6 @@
         })
     }
 
-    // --------- Search posts -----------
-    Document.prototype.createElementFromString = function(str) {
-        const element = new DOMParser().parseFromString(str, 'text/html');
-        const child = element.documentElement.querySelector('body').firstChild;
-        return child;
-    };
-
-    let searchPostsOnInput = (inputId, containerId) => {
-        let input = document.getElementById(inputId);
-        let resultContainer = document.getElementById(containerId);
-        let request;
-        if (input && resultContainer) {
-            input.addEventListener('input',
-                () => {
-                    if (request && request.readyState != 4)
-                        request.abort();
-                    var url = "@Url.Action("SearchUserPosts", "Profile")";
-                request = $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: {
-                        "id": @profileId,
-                        "filterText": input.value
-                    },
-                    success: function(view) {
-                        resultContainer.innerHTML = view;
-                        loadReportBtn();
-                        document.getElementById('profile_posts_container').querySelectorAll('.edit_post_btn').forEach(btn => btn.addEventListener('click',function() {
-                            var post = btn.offsetParent.offsetParent;
-                            var postId = post.getAttribute('data-post-id');
-                            var ownerId = post.getAttribute('data-owner-id');
-                            var postTitle = post.querySelector('.post_title').innerText;
-                            var postDescription = post.querySelector('.post_description').innerText;
-                            var url = "@Url.Action("CreatePostModalForm", "Modals")";
-                            $.ajax({
-                                url: url,
-                                type: "POST",
-                                data: {
-                                    "Id": postId,
-                                    "OwnerId": ownerId,
-                                    "Title": postTitle,
-                                    "Description": postDescription
-                                },
-                                success: function (view) {
-                                    var wrap = document.getElementById('page_modal_wrap');
-                                    if (wrap.innerText != "")
-                                        return;
-                                    wrap.innerHTML = view;
-                                    editPost('edit_post_btn', 'profile_posts_container', 'page_modal_wrap', postId);
-                                }});
-                        }));
-                    }
-                });
-            });
-        }
-    }
-    searchPostsOnInput('ui_posts_search_input', 'profile_posts_container');
 
     loadReportBtn();
 
@@ -250,6 +194,7 @@
             });
         }
     }
+
     function loadReportBtn() {
         var posts = document.querySelectorAll('.report_btn');
         if (posts) {
@@ -274,6 +219,7 @@
             }));
         }
     }
+
     let openCreatePostModalForm = (inputId, containerId) => {
         let input = document.getElementById(inputId);
         let resultContainer = document.getElementById(containerId);
@@ -282,7 +228,7 @@
             input.addEventListener('click', () => {
                 if (request && request.readyState != 4)
                     request.abort();
-                var url = "@Url.Action("CreatePostModalForm", "Modals")";
+                var url = "@Url.Action("CreatePost", "Modals")";
                 request = $.ajax({
                     url: url,
                     type: "POST",
@@ -298,80 +244,6 @@
     }
     //openCreatePostModalForm('open_post_sumbit_form', 'page_modal_wrap');
 
-    function ScrollUp() {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-    let openEditPostModalForm = (inputId, containerId) => {
-        let input = document.getElementById(inputId);
-        let resultContainer = document.getElementById(containerId);
-        let request;
-        if (input && resultContainer) {
-            input.addEventListener('click', () => {
-                if (request && request.readyState != 4)
-                    request.abort();
-                var url = "@Url.Action("CreatePostModalForm", "Modals")";
-                request = $.ajax({
-                    url: url,
-                    type: "POST",
-                    success: function (view) {
-                        if (resultContainer.innerText != "")
-                            return;
-                        resultContainer.innerHTML = view;
-                        sumbitNewPost('create_post_btn', 'profile_posts_container', 'page_modal_wrap');
-                    }
-                });
-            });
-        }
-    }
-    openCreatePostModalForm('open_post_sumbit_form', 'page_modal_wrap');
-
-    let editPost = (inputId, containerId, wrapId, postId) => {
-        let input = document.getElementById(inputId);
-        let resultContainer = document.getElementById(containerId);
-        let wrap = document.getElementById(wrapId);
-        if (!wrap.classList.contains('show-modal'))
-            setTimeout(function () { wrap.classList.add('show-modal'); }, 50);
-        document.querySelectorAll('.close-modal').forEach(c => c.addEventListener('click', closeModal));
-        let request;
-        if (input && resultContainer && wrap) {
-            input.addEventListener('click', () => {
-                if (request && request.readyState != 4)
-                    request.abort();
-                var url = "@Url.Action("EditPost", "Profile")";
-                request = $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: {
-                        "Id": document.getElementById('Id').value,
-                        "Title": document.getElementById('Title').value,
-                        "Description": document.getElementById('Description').value
-                    },
-                    success: function (view) {
-                        //resultContainer.innerHTML = view;
-                        //var t = view;
-                        closeModal();
-                        let element = document.createElementFromString(view);
-
-                        var postTitleEdited = element.querySelector('.post_title').innerText;
-                        var postDescriptionEdited = element.querySelector('.post_description').innerText;
-
-
-                        var defaultPost = document.getElementById('post-' + postId);
-
-                        var postTitle = defaultPost.querySelector('.post_title');
-                        postTitle.innerHTML = postTitleEdited;
-                        var postDescription = defaultPost.querySelector('.post_description');
-                        postDescription.innerHTML = postDescriptionEdited;
-                        //if (resultContainer.children[0].classList.contains('post-smoothpad')) {
-                        //    resultContainer.innerHTML = "";
-                        //    resultContainer.appendChild(element);
-                        //}
-                        //else resultContainer.insertBefore(element, resultContainer.firstChild);
-                    }
-                });
-            });
-        }
-    }
     let sumbitNewPost = (inputId, containerId, wrapId) => {
         let input = document.getElementById(inputId);
         let resultContainer = document.getElementById(containerId);
@@ -407,32 +279,8 @@
             });
         }
     }
-    let uploadPost = (inputId, containerId) => {
-        let input = document.getElementById(inputId);
-        let resultContainer = document.getElementById(containerId);
-        let request;
-        if (input && resultContainer) {
-            input.addEventListener('click', () => {
-                if (request && request.readyState != 4)
-                    request.abort();
-                var url = "profile/uploadpost";
-                request = $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: {
-                        "filterText": input.value
-                    },
-                    success: function (view) {
-                        resultContainer.innerHTML = view;
-                    }
-                });
-            });
-        }
-    }
-    uploadPost('im_dialogs_search', 'profile_posts_container');
-    // --------- Search posts -----------
+    
     window.onscroll = function () { scrollFunction() };
-
     function scrollFunction() {
         return;
         let classList = new Set();
@@ -470,6 +318,7 @@
                 quickBtns.classList.add(hiddenClassName);
         }
     }
+
     function AddCollapsedClass(item) {
         let className = item.classList[0];
         let collapsedClassName = className + "-collapsed";
@@ -498,49 +347,11 @@
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    $(document).ready(function() {
-        var url = "@Url.Action("SearchUserPosts", "Profile")";
-                request = $.ajax({
-                    url: url,
-                    type: "POST",
-                    data: {
-                        "id": @profileId,
-                        "filterText": ""
-                    },
-                    success: function(view) {
-                        document.getElementById('profile_posts_container').innerHTML = view;
-                        loadReportBtn();
-                        document.getElementById('profile_posts_container').querySelectorAll('.edit_post_btn').forEach(btn => btn.addEventListener('click',function() {
-                            var post = btn.offsetParent.offsetParent;
-                            var postId = post.getAttribute('data-post-id');
-                            var ownerId = post.getAttribute('data-owner-id');
-                            var postTitle = post.querySelector('.post_title').innerText;
-                            var postDescription = post.querySelector('.post_description').innerText;
-                            var url = "@Url.Action("CreatePostModalForm", "Modals")";
-                            $.ajax({
-                                url: url,
-                                type: "POST",
-                                data: {
-                                    "Id": postId,
-                                    "OwnerId": ownerId,
-                                    "Title": postTitle,
-                                    "Description": postDescription
-                                },
-                                success: function (view) {
-                                    var wrap = document.getElementById('page_modal_wrap');
-                                    if (wrap.innerText != "")
-                                        return;
-                                    wrap.innerHTML = view;
-                                    editPost('edit_post_btn', 'profile_posts_container', 'page_modal_wrap', postId);
-                                }});
-                        }));
-                    }
-                });
+    $(document).ready(function () {
+        LoadPostsEvents();
+        SearchPosts('ui_posts_search_input', profilePostsContainerId);
+        document.getElementById('open_post_sumbit_form').addEventListener('click', () => {
+            OnCreatePostClick('open_post_sumbit_form');
+        });
     });
-    //function IsSearchInputEmpty(input) {
-    //    var btn = document.getElementById('submit_search');
-    //    if (input.value == "")
-    //        btn.style.display = "none";
-    //    else btn.removeAttribute('style');
-    //}
 </script>

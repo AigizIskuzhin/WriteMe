@@ -3,7 +3,7 @@
 @using Website.Infrastructure.Extensions
 @inject IRepository<User> UsersRepository
 @{
-    bool isMod = UsersRepository.Get(int.Parse(Context.GetConnectedUserId())).Role.Id == 2;
+    bool isMod = (await UsersRepository.GetAsync(int.Parse(Context.GetConnectedUserId()))).Role.Id == 2;
 }
 <!DOCTYPE html>
 <html lang="en">
