@@ -1,8 +1,7 @@
-﻿using System.Linq;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Website.Infrastructure.Extensions
 {
@@ -16,5 +15,6 @@ namespace Website.Infrastructure.Extensions
 
         public static string GetConnectedUserId(this HttpContext context) => context.User.Claims
             .First(claim => claim.Type.Equals("id")).Value;
+        
     }
 }

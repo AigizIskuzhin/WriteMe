@@ -38,17 +38,15 @@ namespace Website.Infrastructure.SignalRHubs
 
         private void SignalRServiceOnUserLeft(object sender, EventArgs<string> e)
         {
-            string connectedUserId = Context.GetConnectedUserId();
 
-            if(Connections.GetConnections(connectedUserId).Any())return;
+            if(Connections.GetConnections(e).Any())return;
             
         }
 
         private void SignalRServiceOnUserJoin(object sender, EventArgs<string> e)
         {
-            string connectedUserId = Context.GetConnectedUserId();
+            //Clients.GroupExcept()
 
-            if(Connections.GetConnections(connectedUserId).Any())return;
         }
 
         public void SendMessage(string text)
@@ -66,15 +64,15 @@ namespace Website.Infrastructure.SignalRHubs
             var connectedUserId = GetConnectedUserID;
             var chatId = GetChatId;
 
-            if(!ChatsToUsers[chatId].Contains(connectedUserId))
-                ChatsToUsers[chatId].Add(connectedUserId);
+            //if (!ChatsToUsers[chatId].Contains(connectedUserId))
+            //    ChatsToUsers[chatId].Add(connectedUserId);
 
-            if (!Connections.GetConnections(connectedUserId).Any())
-                await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
-                    .SendAsync("NotifyAboutReceiverJoin");
-            if(SignalRService.GetConnections(connectedUserId).Any())
-                await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
-                    .SendAsync("NotifyAboutReceiverOnline");
+            //if (!Connections.GetConnections(connectedUserId).Any())
+            //    await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
+            //        .SendAsync("NotifyAboutReceiverJoin");
+            //if(SignalRService.GetConnections(connectedUserId).Any())
+            //    await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
+            //        .SendAsync("NotifyAboutReceiverOnline");
             Connections.Add(connectedUserId, Context.ConnectionId);
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
             await base.OnConnectedAsync();
@@ -91,8 +89,8 @@ namespace Website.Infrastructure.SignalRHubs
 
             Connections.Remove(GetConnectedUserID, Context.ConnectionId);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, GetChatId);
-            if (!SignalRService.GetConnections(connectedUserId).Any())
-                await Clients.GroupExcept(chatId, Enumerable.Empty<string>()).SendAsync("NotifyAboutReceiverOffline");
+            //if (!SignalRService.GetConnections(connectedUserId).Any())
+            //    await Clients.GroupExcept(chatId, Enumerable.Empty<string>()).SendAsync("NotifyAboutReceiverOffline");
                 
             await base.OnDisconnectedAsync(exception);
         }

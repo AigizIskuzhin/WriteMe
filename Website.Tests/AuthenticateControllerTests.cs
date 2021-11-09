@@ -1,6 +1,4 @@
-﻿    using System.Threading.Tasks;
-    using Database.DAL.Entities;
-    using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Website.Controllers;
 using Website.Infrastructure.Services.Interfaces;
@@ -13,7 +11,7 @@ namespace Website.Tests
     {
         #region ConfirmMailForAuthorization
 
-        #region HttpGet ConfirmMailForAuthorization with empty viewModel
+        #region ConfirmMailForAuthorization with empty viewModel
         /// <summary>
         /// HttpGet ConfirmMailForAuthorization with empty viewModel
         /// </summary>
@@ -45,7 +43,7 @@ namespace Website.Tests
         }
         #endregion
 
-        #region HttpPost ConfirmMailForAuthorization with nonvalid mail address
+        #region ConfirmMailForAuthorization with nonvalid mail address
 
         /// <summary>
         /// HttpPost ConfirmMailForAuthorization with nonvalid mail address
@@ -73,7 +71,7 @@ namespace Website.Tests
         }
         #endregion
 
-        #region HttpPost ConfirmMailForAuthorization with right mailAddress format and get error with non existent user
+        #region ConfirmMailForAuthorization with right mailAddress format and get error with non existent user
 
         /// <summary>
         /// HttpPost ConfirmMailForAuthorization with right mailAddress got error with non existent user
@@ -104,8 +102,7 @@ namespace Website.Tests
 
         #endregion
 
-        
-        #region HttpPost ConfirmMailForAuthorization with right mailAddress format and get redirect to password input site
+        #region ConfirmMailForAuthorization with right mailAddress format and get redirect to password input site
 
         /// <summary>
         /// HttpPost ConfirmMailForAuthorization with right mailAddress got error with non existent user
@@ -142,6 +139,8 @@ namespace Website.Tests
 
         #endregion
 
+        #region ConfirmMailForRegistration
+        
         [Fact]
         public void ConfirmMailForRegistration_return_ViewResult()
         {
@@ -160,5 +159,79 @@ namespace Website.Tests
             var errorsCount = viewResult.ViewData.ModelState.ErrorCount;
             Assert.Equal(1, errorsCount);
         }
+
+        
+        #region ConfirmMailForAuthorization with nonvalid mail address
+
+        /// <summary>
+        /// ConfirmMailForAuthorization with nonvalid mail address
+        /// </summary>
+        [Fact]  
+        public void ConfirmMailForRegistration_withNonValidMailAddress_returns_ViewResult_errorWithNonValidMailAddress()
+        {
+            // Arrange
+            var mockService = new Mock<IAuthenticateService>();
+            var controller = new AuthenticateController(mockService.Object);
+            var viewModel = new ConfirmMailViewModel();
+            viewModel.MailAddress = "test";
+
+            // Act
+            var result = controller.ConfirmMailForAuthorization(viewModel);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result.Result);
+            var model = Assert.IsAssignableFrom<ConfirmMailViewModel>(viewResult.ViewData.Model);
+            Assert.Equal(viewModel, model);
+
+            var modelState = viewResult.ViewData.ModelState;
+
+            Assert.False(modelState.IsValid);
+        }
+        #endregion
+
+        #endregion
+
+        #region EnterPassword for authorization
+
+        [Fact]
+        public void EnterPassword_with_noMail_returns_ConfirmMailForAuthorization()
+        {
+            // Arrange
+            var mockService = new Mock<IAuthenticateService>();
+            var controller = new AuthenticateController(mockService.Object);
+            var viewModel = new AuthorizationViewModel();
+
+            // Act
+            var result = controller.EnterPassword(viewModel);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result.Result);
+
+            Assert.IsType<ConfirmMailViewModel>(viewResult.Model);
+            Assert.True(viewResult.ViewName=="ConfirmMailForAuthorization");
+        }
+        #endregion
+
+        #region Enter user info for registration
+        
+        [Fact]
+        public void EnterUserInfo_with_noMail_returns_ConfirmMailForRegistration()
+        {
+            // Arrange
+            var mockService = new Mock<IAuthenticateService>();
+            var controller = new AuthenticateController(mockService.Object);
+            var viewModel = new RegistrationViewModel();
+
+            // Act
+            var result = controller.EnterUserInfo(viewModel);
+
+            // Assert
+            var viewResult = Assert.IsType<ViewResult>(result.Result);
+
+            Assert.IsType<ConfirmMailViewModel>(viewResult.Model);
+            Assert.True(viewResult.ViewName=="ConfirmMailForRegistration");
+        }
+
+        #endregion
     }
 }

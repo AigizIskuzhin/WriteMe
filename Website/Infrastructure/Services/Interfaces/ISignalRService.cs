@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using Website.Infrastructure.SignalRHubs;
 
 namespace Website.Infrastructure.Services.Interfaces
 {
@@ -9,7 +8,9 @@ namespace Website.Infrastructure.Services.Interfaces
         public event EventHandler<EventArgs<string>> UserJoin;
         
         public event EventHandler<EventArgs<string>> UserLeft;
-        public IEnumerable<string> GetConnections(string key);
-        public Task NotifyAboutNewMessage(string userId);
+
+        public ConnectionMapping<string> Connections { get; }
+        public void UserJoining(string id);
+        public void UserLeaving(string id);
     }
 }
