@@ -12,7 +12,7 @@ namespace Website.ViewModels.Messenger
         public int ConnectedUserId { get; set; }
         public int ReceiverId { get; set; }
         public string ReceiverName { get; set; }
-        public IMessage LastMessage => History.Last();
+        public IMessage LastMessage => History.LastOrDefault();
         public bool IsPrivateChat { get; set; }
         public string ReceiverAvatarPath{get;set;}
     }

@@ -7,6 +7,8 @@ using Database.DAL.Entities.Messages.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.Interfaces;
 using Website.Infrastructure.Services.Interfaces;
+using Website.ViewModels.Messenger.Preview;
+using Website.ViewModels.Messenger.Preview.Base;
 
 namespace Website.Infrastructure.Services
 {
@@ -25,10 +27,23 @@ namespace Website.Infrastructure.Services
             ChatParticipantsRepository = chatParticipantsRepository;
         }
 
-        public IEnumerable<Chat> GetUserChats(int userId)
+        public IEnumerable<ChatPreviewViewModel> GetUserChatsPreviews(int userId)
         {
-            return ChatsRepository.Items.Where(chat =>
+            var chats = ChatsRepository.Items.Where(chat =>
                 chat.ChatParticipants.Any(participant => participant.User.Id.Equals(userId)));
+            if(!chats.Any()) yield break;
+            foreach (var chat in chats)
+                if (chat.IsPrivateChat)
+                    yield return new PrivateChatPreviewViewModel
+                    {
+                        Chat = chat,
+                        Receiver = chat.GetReceiverChatParticipant(userId).User
+                    };
+                else
+                    yield return new GroupChatPreviewViewModel
+                    {
+                        Chat = chat
+                    };
         }
 
         public IEnumerable<IMessage> GetPrivateChatHistory(int id)
@@ -42,11 +57,12 @@ namespace Website.Infrastructure.Services
         public Chat GetPrivateChatWithUser(int receiverId, int senderId)
         {
             var chat = ChatsRepository.Items
-                           .FirstOrDefault(privateChat=> 
-                               privateChat.IsPrivateChat && privateChat.MaximumChatParticipants == 2 && 
-                               privateChat.ChatParticipants.Any(participant=>participant.User.Id.Equals(receiverId)) && 
-                               privateChat.ChatParticipants.Any(participant=>participant.User.Id.Equals(receiverId))) 
-                       ?? GetNewChatWithUser(receiverId, senderId);
+                .FirstOrDefault(c => c.MaximumChatParticipants == 2 &&
+                                     c.ChatParticipants.Any(p => p.User.Id.Equals(receiverId)) &&
+                                     c.ChatParticipants.Any(p => p.User.Id.Equals(senderId)));
+
+            if(chat is null) chat = GetNewChatWithUser(receiverId, senderId);
+
             return chat;
         }
 
@@ -63,17 +79,20 @@ namespace Website.Infrastructure.Services
                 MaximumChatParticipants = 2,
             });
 
-            var chatParticipantOne =
-                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Equals(receiver)) ??
-                ChatParticipantsRepository.Add(new() { Chat = chat, User = receiver });
+            var chatParticipantOne = ChatParticipantsRepository.Items
+                                         .FirstOrDefault(p =>
+                                             p.User.Id.Equals(receiverUserId) && p.Chat.Id.Equals(chat.Id)) ?? 
+                                     ChatParticipantsRepository.Add(new() { Chat = chat, User = receiver });
             
-            var chatParticipantTwo =
-                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Equals(sender)) ??
-                ChatParticipantsRepository.Add(new() { Chat = chat, User = sender });
+            var chatParticipantTwo = ChatParticipantsRepository.Items
+                                         .FirstOrDefault(p =>
+                                             p.User.Id.Equals(senderUserId) && p.Chat.Id.Equals(chat.Id)) ?? 
+                                     ChatParticipantsRepository.Add(new() { Chat = chat, User = sender });
 
 
             chat.ChatParticipants.Add(chatParticipantOne);
             chat.ChatParticipants.Add(chatParticipantTwo);
+            ChatsRepository.Update(chat);
             return chat;
         }
 

@@ -40,7 +40,7 @@ namespace Website.Controllers
             if (chatsViewModel.ChatId != 0) return GetChat(chatsViewModel.ChatId);
 
             int connectedUserId = GetConnectedUserID;
-            chatsViewModel.Chats = MessengerService.GetUserChats(connectedUserId);
+            chatsViewModel.ChatsPreviews = MessengerService.GetUserChatsPreviews(connectedUserId);
             return View(chatsViewModel);
         }
         #endregion

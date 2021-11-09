@@ -1,9 +1,9 @@
-﻿@model IEnumerable<Database.DAL.Entities.Chats.Base.Chat>
+﻿@model IEnumerable<Website.ViewModels.Messenger.Preview.Base.ChatPreviewViewModel>
 @{
     Layout = null;
     if (!Model.Any())
     {
-        <li class="chats_empty">
+        <li class="chat">
             <div class="chat_preview_text">
                 Нету чатов
             </div>

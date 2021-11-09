@@ -2,6 +2,9 @@
 @model Website.ViewModels.Messenger.ChatViewModel
 @{
     Layout = null;
+
+    DateTime now = DateTime.Now;
+    DateTime lastDay = now;
 }
 @if (!Model.History.Any())
 {
@@ -13,8 +16,19 @@
 }
 else foreach (var message in Model.History)
 {
-    if (message is ParticipantChatMessage userMessage)
-        await Html.RenderPartialAsync("PrivateChat/PrivateChatMessageView", userMessage, ViewData);
-    else if(message is GeneratedChatMessage generatedMessage)
-        await Html.RenderPartialAsync("Base/MessageView", generatedMessage);
-}
+    var day = message.CreatedDateTime.DayOfYear + 1 == now.DayOfYear ? "Вчера" : message.CreatedDateTime.ToString("M");
+        if (message is ParticipantChatMessage userMessage)
+            await Html.RenderPartialAsync("PrivateChat/PrivateChatMessageView", userMessage, ViewData);
+        else if(message is GeneratedChatMessage generatedMessage)
+            await Html.RenderPartialAsync("Base/MessageView", generatedMessage);
+        
+        if (lastDay.DayOfYear != message.CreatedDateTime.DayOfYear && now.DayOfYear != message.CreatedDateTime.DayOfYear)
+        {
+            <li class="message generated_message day">
+                <div class="message-content">
+                    @day
+                </div>
+            </li>
+            lastDay = message.CreatedDateTime;
+        }
+    }

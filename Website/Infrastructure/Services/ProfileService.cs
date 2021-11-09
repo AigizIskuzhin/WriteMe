@@ -67,6 +67,9 @@ namespace Website.Infrastructure.Services
             userPost.Owner = _Users.Get(userPost.OwnerId);
             return _Posts.Add(userPost);
         }
+
+        #endregion
+        
         #region Edit post
         /// <summary>
         /// Редактирование поста
@@ -88,9 +91,6 @@ namespace Website.Infrastructure.Services
             return postDefault;
         } 
         #endregion
-
-        #endregion
-
         #region DeletePost
         /// <summary>
         /// Удаление поста по указанному id поста и id пользователя
