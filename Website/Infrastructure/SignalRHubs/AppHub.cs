@@ -19,12 +19,11 @@ namespace Website.Infrastructure.SignalRHubs
         }
 
         public IEnumerable<string> GetConnections(string key) => Connections.GetConnections(key);
-        public async Task NotifyAboutNewMessage(string userId)
+        public async Task NotifyAboutNewMessageFromUser(string userId, string senderId)
         {
             foreach (var connection in GetConnections(userId))
                 await Clients.Client(connection).SendAsync("NotificationNewMessage");
         }
-
 
         public override Task OnConnectedAsync()
         {

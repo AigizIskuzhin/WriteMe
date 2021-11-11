@@ -49,11 +49,11 @@ namespace Website.Infrastructure.SignalRHubs
 
         }
 
-        public void SendMessage(string text)
+        public async Task SendMessage(string text)
         {
             if(string.IsNullOrWhiteSpace(text))return;
             MessengerService.SendMessageToChat(int.Parse(GetConnectedUserID), int.Parse(GetChatId), text);
-            NotifyChatAboutNewMessages(GetChatId);
+            await NotifyChatAboutNewMessages(GetChatId);
         }
 
         private async Task NotifyChatAboutNewMessages(string chatId) =>
