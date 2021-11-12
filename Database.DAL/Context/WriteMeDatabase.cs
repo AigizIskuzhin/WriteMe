@@ -1,4 +1,5 @@
 ﻿using Database.DAL.Entities;
+using Database.DAL.Entities.Base;
 using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.DAL.Extensions.MySqlTimeStamps;
@@ -9,6 +10,7 @@ namespace Database.DAL.Context
     public class WriteMeDatabase : DbContext
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Country> Countries { get; set; }
         public DbSet<Role> Roles { get; set; }
 
         public DbSet<UserPost> UserPosts { get; set; }
@@ -64,6 +66,9 @@ namespace Database.DAL.Context
         { }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+
+            #region Configuration timestamps for create and update
+
             builder.Entity<ParticipantChatMessage>().UseBothTimeStampedProperties();
             builder.Entity<Chat>().UseBothTimeStampedProperties();
             builder.Entity<UserPost>().UseBothTimeStampedProperties();
@@ -71,7 +76,43 @@ namespace Database.DAL.Context
             builder.Entity<GeneratedChatMessage>().UseCreationTimeStampOnProperty();
             builder.Entity<ChatParticipant>().UseCreationTimeStampOnProperty();
             builder.Entity<PostReport>().UseCreationTimeStampOnProperty();
-            // Other model creating stuff here ...  
+
+            #endregion
+
+            builder.Entity<Role>().HasData(
+                new Role
+                {
+                    Name = "Пользователь",
+                    Code = "user",
+                    Id = 1
+                },
+                new Role
+                {
+                    Name = "Модератор",
+                    Code="mod",
+                    Id=2
+                },
+                new Role
+                {
+                    Name = "Администратор",
+                    Code="admin",
+                    Id = 3
+                });
+
+            builder.Entity<Country>().HasData(
+                new Country
+                {
+                    CountryCode = 0,
+                    Id = 1,
+                    Name = "Другая страна"
+                },
+                new Country
+                {
+                    CountryCode = 7,
+                    Id = 2,
+                    Name = "Россия"
+
+                });
         }
     }
 }

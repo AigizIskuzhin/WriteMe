@@ -5,6 +5,7 @@ namespace Database.DAL.Entities
 {
     public class Role : NamedEntity
     {
+        public string Code { get; set; }
         public ICollection<User> Users { get; set; }
 
         public Role()

@@ -3,14 +3,16 @@ using System;
 using Database.DAL.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Database.DAL.Migrations
 {
     [DbContext(typeof(WriteMeDatabase))]
-    partial class WriteMeDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20211112111430_fixes")]
+    partial class fixes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

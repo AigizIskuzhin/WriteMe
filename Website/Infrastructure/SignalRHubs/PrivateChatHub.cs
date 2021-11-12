@@ -21,16 +21,18 @@ namespace Website.Infrastructure.SignalRHubs
 
         private readonly ISignalRService SignalRService;
         private readonly IMessengerService MessengerService;
+        private readonly IHubContext<AppHub> AppHub;
 
         private string GetChatId => Context.GetHttpContext().Request.Path.Value.Replace("/privatesignalr/","");
 
         private static readonly ConnectionMapping<string> Connections = new ();
         private static readonly Dictionary<string, List<string>> ChatsToUsers = new();
 
-        public PrivateChatHub(ISignalRService signalRService, IMessengerService messengerService)
+        public PrivateChatHub(ISignalRService signalRService, IMessengerService messengerService, IHubContext<AppHub> appHub)
         {
             SignalRService = signalRService;
             MessengerService = messengerService;
+            AppHub = appHub;
 
             SignalRService.UserJoin += SignalRServiceOnUserJoin;
             SignalRService.UserLeft += SignalRServiceOnUserLeft;
@@ -51,9 +53,20 @@ namespace Website.Infrastructure.SignalRHubs
 
         public async Task SendMessage(string text)
         {
+            var connectedUserId = GetConnectedUserID;
+            var chatId = GetChatId;
+
             if(string.IsNullOrWhiteSpace(text))return;
-            MessengerService.SendMessageToChat(int.Parse(GetConnectedUserID), int.Parse(GetChatId), text);
-            await NotifyChatAboutNewMessages(GetChatId);
+            await MessengerService.SendMessageToChat(int.Parse(connectedUserId), int.Parse(chatId), text);
+            await NotifyChatAboutNewMessages(chatId);
+
+            // MOVED TO MessengerService
+            //var receivers = MessengerService.GetChatParticipantIds(int.Parse(chatId)).Where(r=>r!=connectedUserId);
+            //foreach (var receiver in receivers)
+            //{
+            //    foreach (var connection in SignalRService.Connections.GetConnections(receiver))  
+            //        await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
+            //}
         }
 
         private async Task NotifyChatAboutNewMessages(string chatId) =>
@@ -64,6 +77,7 @@ namespace Website.Infrastructure.SignalRHubs
             var connectedUserId = GetConnectedUserID;
             var chatId = GetChatId;
 
+            //await AppHub.Clients.All.SendAsync("NotifyAboutNewMessage", chatId);
             //if (!ChatsToUsers[chatId].Contains(connectedUserId))
             //    ChatsToUsers[chatId].Add(connectedUserId);
 

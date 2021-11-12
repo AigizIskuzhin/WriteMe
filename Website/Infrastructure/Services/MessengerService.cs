@@ -1,12 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Database.DAL.Entities;
+﻿using Database.DAL.Entities;
 using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Website.Infrastructure.Services.Interfaces;
+using Website.Infrastructure.SignalRHubs;
 using Website.ViewModels.Messenger.Preview;
 using Website.ViewModels.Messenger.Preview.Base;
 
@@ -14,17 +17,26 @@ namespace Website.Infrastructure.Services
 {
     public class MessengerService : IMessengerService
     {
+        private readonly IHubContext<AppHub> AppHub;
+        private readonly ISignalRService SignalService;
+
+
+
         private readonly IRepository<User> UsersRepository;
         private readonly IRepository<Chat> ChatsRepository;
         private readonly IRepository<ChatParticipant> ChatParticipantsRepository;
         public MessengerService(
             IRepository<User> usersRepository,
             IRepository<Chat> chatsRepository, 
-            IRepository<ChatParticipant> chatParticipantsRepository)
+            IRepository<ChatParticipant> chatParticipantsRepository, 
+            IHubContext<AppHub> appHub, 
+            ISignalRService signalService)
         {
             UsersRepository = usersRepository;
             ChatsRepository = chatsRepository;
             ChatParticipantsRepository = chatParticipantsRepository;
+            AppHub = appHub;
+            SignalService = signalService;
         }
 
         public IEnumerable<ChatPreviewViewModel> GetUserChatsPreviews(int userId)
@@ -96,18 +108,22 @@ namespace Website.Infrastructure.Services
             return chat;
         }
 
-        public void SendMessageToChat(int userId, int chatId, string text)
+        public async Task SendMessageToChat(int userId, int chatId, string text)
         {
-            var chatParticipant =
-                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Id.Equals(userId));
-            if (chatParticipant != null)
-                chatParticipant.ChatParticipantMessages.Add(new ParticipantChatMessage
-                {
-                    Chat = chatParticipant.Chat,
-                    ChatParticipantSender = chatParticipant,
-                    Text = text
-                });
-            ChatParticipantsRepository.Update(chatParticipant);
+            var chatParticipants = ChatParticipantsRepository.Items.Where(p => p.Chat.Id.Equals(chatId));
+            var chatParticipant = await chatParticipants.FirstOrDefaultAsync(p => p.User.Id.Equals(userId));
+            chatParticipant?.ChatParticipantMessages.Add(new ParticipantChatMessage
+            {
+                Chat = chatParticipant.Chat,
+                ChatParticipantSender = chatParticipant,
+                Text = text
+            });
+            await ChatParticipantsRepository.UpdateAsync(chatParticipant);
+            
+            foreach (var receiver in chatParticipants.Where(p=>p.User.Id!=userId))
+                foreach (var connection in SignalService.Connections.GetConnections(receiver.User.Id.ToString()))
+                    await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
+            
         }
         
         public IEnumerable<IMessage> GetNewMessagesFromLast(int chatId, int lastMessageId)
@@ -117,6 +133,12 @@ namespace Website.Infrastructure.Services
             return lastMessage is null
                 ? chat.GetHistory()
                 : chat.GetHistory().Where(message => message.CreatedDateTime > lastMessage.CreatedDateTime);
+        }
+
+        public IEnumerable<string> GetChatParticipantIds(int chatId)
+        {
+            foreach (var chatParticipant in ChatParticipantsRepository.Items.Where(p => p.Chat.Id == chatId))
+                yield return chatParticipant.User.Id.ToString();
         }
     }
 }

@@ -9,19 +9,25 @@ namespace Website.Infrastructure.SignalRHubs
 {
     public class AppHub : Hub
     {
-        private readonly ISignalRService SignalRService;
-
-        private static readonly ConnectionMapping<string> Connections = new ();
+        public readonly ISignalRService SignalRService;
 
         public AppHub(ISignalRService signalRService)
         {
             SignalRService = signalRService;
+            //SignalRService.NewMessage += SignalRService_OnNewMessage;
         }
 
-        public IEnumerable<string> GetConnections(string key) => Connections.GetConnections(key);
-        public async Task NotifyAboutNewMessageFromUser(string userId, string senderId)
+        //private void SignalRService_OnNewMessage(object sender, EventArgs<PrivateNotificationMessage> e) =>
+          //  NotifyUserAboutNewMessage(e.Arg.ReceiverId, e.Arg.ChatId);
+
+        private void NotifyUserAboutNewMessage(string receiverID, string chatId)
         {
-            foreach (var connection in GetConnections(userId))
+            foreach (var connection in SignalRService.Connections.GetConnections(receiverID))
+                Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
+        }
+        public async Task NotifyAboutNewMessageFromUser(string userId, string senderId, string text)
+        {
+            foreach (var connection in SignalRService.Connections.GetConnections(userId))
                 await Clients.Client(connection).SendAsync("NotificationNewMessage");
         }
 
@@ -30,10 +36,8 @@ namespace Website.Infrastructure.SignalRHubs
             var connectedUserId = Context.GetConnectedUserId();
             var connectionId = Context.ConnectionId;
             
-            SignalRService.UserJoining(connectedUserId);
-            SignalRService.Connections.Add(connectedUserId, connectionId);
-
-            Connections.Add(connectedUserId, connectionId);
+            SignalRService.UserJoining(connectedUserId,connectionId);
+            
             return base.OnConnectedAsync();
         }
         public override Task OnDisconnectedAsync(Exception? exception)
@@ -41,11 +45,8 @@ namespace Website.Infrastructure.SignalRHubs
             var connectedUserId = Context.GetConnectedUserId();
             var connectionId = Context.ConnectionId;
 
-            
-            SignalRService.UserLeaving(connectedUserId);
-            
-            SignalRService.Connections.Remove(connectedUserId, connectionId);
-            Connections.Remove(connectedUserId, connectionId);
+            SignalRService.UserLeaving(connectedUserId,connectionId);
+
             return base.OnDisconnectedAsync(exception);
         }
     }

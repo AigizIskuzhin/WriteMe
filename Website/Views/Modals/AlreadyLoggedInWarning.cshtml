@@ -14,7 +14,7 @@
     <form class="auth-form" action="@Url.Action("ConfirmMailForAuthorization")" method="POST" asp-anti-forgery="true">
         @*<img class="wallpaper" src="~/Resources/images/wallpaper.png" />*@
         <h3 style="color:red">Вы уже авторизованы</h3>
-        <a class="auth-btn" href="/profile">
+        <a class="auth-btn" href="/profile" style="    background: rgb(242,242,242);box-shadow: 0 0 30px 2px rgba(232,232,232, 0.7);">
             @if (string.IsNullOrWhiteSpace(user.AvatarPath))
             {
                 <svg class="profile_img" style="fill:gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">

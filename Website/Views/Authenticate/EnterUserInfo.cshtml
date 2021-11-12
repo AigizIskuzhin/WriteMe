@@ -1,9 +1,13 @@
-﻿@model Website.ViewModels.RegistrationViewModel
+﻿@using Database.Interfaces
+@using Database.DAL.Entities.Base
+@model Website.ViewModels.RegistrationViewModel
+@inject IRepository<Country> CountriesRepository
 @{
     Layout = null;
 }
 <html lang="ru">
 <link rel="stylesheet" href="~/Resources/css/auth.css" />
+<link rel="stylesheet" href="~/Resources/css/ui.css" />
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
 
 <div class="center-screen auth">
@@ -20,6 +24,7 @@
                 <input id="inputConfirmPassword" class="auth-input" placeholder="Повторите пароль" type="password" asp-for="ConfirmPassword" autocomplete="off"
                        oninput="IsInputEmpty(this), ConfirmPassword(this)" />
                 <span asp-validation-for="ConfirmPassword"></span>
+                <span class="tooltip rightOf" style="color: white">Пароли должны совпадать</span>
             </div>
         </div>
         <div class="auth-section">
@@ -40,9 +45,11 @@
             <div class="auth-row">
                 @* Вариант 1 *@
                 <span class="auth-input-title">Страна</span>
-                <select placeholder="Отчество" class="auth-input pointer" style="margin-right: 0; appearance: none" asp-for="Country">
-                    <option value="none">Не выбрано</option>
-                    <option value="ru">Россия</option>
+                <select class="auth-input pointer" style="margin-right: 0; appearance: none" asp-for="CountryId">
+                    @foreach (var country in CountriesRepository.Items)
+                    {
+                        <option value="@country.Id">@country.Name</option>
+                    }
                 </select>
 
                 @* Вариант 2 *@
@@ -51,13 +58,15 @@
                         <option value="ru">Не выбрано</option>
                         <option value="ru">Россия</option>
                     </select>*@
-                <span asp-validation-for="Country"></span>
+                <span asp-validation-for="CountryId"></span>
             </div>
             <div class="auth-row">
 
                 @* Вариант 1 *@
                 <marquee direction="left" style="width: 55px;" scrolldelay="60" scrollamount="2" class="auth-input-title">Дата рождения</marquee>
-                <input class="auth-input pointer" style="margin-right: 0; padding-left: 12px; padding-right: 0;" type="date" asp-for="Birthday" />
+                <input class="auth-input pointer" style="margin-right: 0; padding-left: 12px; padding-right: 0;" type="date" asp-for="Birthday"
+                       max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd");" placeholder="dd.mm.yyyy" oninput="IsInputEmpty(this)" />
+                <span class="tooltip rightOf" style="color: white">Минимум 18 лет</span>
 
                 @* Вариант 2 *@
                 @*<marquee direction="left" scrolldelay="60" scrollamount="2" class="auth-input-title-two">Год рождения</marquee>
@@ -79,6 +88,7 @@
     requiredInputs.push(document.getElementById('inputPassword'));
     requiredInputs.push(document.getElementById('inputConfirmPassword'));
     requiredInputs.push(document.getElementById('Name'));
+    requiredInputs.push(document.getElementById('Birthday'));
 
 
 

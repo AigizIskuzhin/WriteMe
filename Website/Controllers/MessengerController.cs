@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
@@ -87,11 +88,11 @@ namespace Website.Controllers
         #endregion
 
         #region SendMessageToChat
-        public void SendMessageToChat(int chatId, string text)
+        public async Task SendMessageToChat(int chatId, string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return;
-            MessengerService.SendMessageToChat(GetConnectedUserID, chatId, text);
+            await MessengerService.SendMessageToChat(GetConnectedUserID, chatId, text);
         }
         #endregion
 

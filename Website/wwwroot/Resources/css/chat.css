@@ -64,6 +64,7 @@
     margin-right: auto;
     margin-left: 0;
     color: rgb(160, 160, 160);
+    white-space: nowrap;
 }
 .message_right .message_sent_time {
     /*right: 0;*/

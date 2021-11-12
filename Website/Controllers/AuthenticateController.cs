@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Database.DAL.Entities;
+using Database.DAL.Entities.Base;
+using Database.Interfaces;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;

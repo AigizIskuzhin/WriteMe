@@ -8,9 +8,9 @@ namespace Website.Infrastructure.Services.Extensions
         public static IServiceCollection AddServices(this IServiceCollection services) => services
             .AddTransient<IProfileService,ProfileService>()
             .AddTransient<IAuthenticateService, AuthenticateService>()
+            .AddSingleton<ISignalRService, SignalRService>()
             .AddTransient<IMessengerService, MessengerService>()
             .AddTransient<IFriendsService, FriendsService>()
-            .AddSingleton<ISignalRService, SignalRService>()
             .AddTransient<IPostingService, PostingService>()
             .AddTransient<IFileService, FileService>();
     }
