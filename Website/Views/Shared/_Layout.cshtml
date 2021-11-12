@@ -18,12 +18,7 @@
     <link rel="stylesheet" href="~/Resources/css/modal.css" />
 </head>
 <body>
-    @*<div id="page_wrap">*@
         <div id="page_modal_wrap" class="modal_container">
-            @*@if (Model is ProfileViewModel { IsNew: true })
-                {
-                    @await Html.PartialAsync("~/Views/Modals/GreetingModal.cshtml")
-                }*@
         </div>
         <div id="page_layout">
             <div id="side_bar">
@@ -152,7 +147,6 @@
                 @RenderBody()
             </div>
         </div>
-@*</div>*@
     <script src="~/Resources/lib/signalr/signalr.js"></script>
 <script>
 
