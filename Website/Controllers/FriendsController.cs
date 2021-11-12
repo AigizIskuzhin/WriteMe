@@ -26,29 +26,30 @@ namespace Website.Controllers
             FriendsService = friendsService;
         }
         [Route("/friends")]
-        public // IEnumerable<FriendViewModel>
-            IActionResult Friends(int id)
+        public IActionResult Friends(int id)
         {
             if (id == 0) id = GetConnectedUserID;
             return View("Friends", FriendsService.GetUserFriends(id));
-            //FriendsService.GetUserFriends(id).ToList()[0].Name;
         }
 
-        [Route("/friends.RemoveFriendship")]
-        public string TryRemoveFriendship(int target)
+        [Route("/friends/remove")]
+        public IActionResult TryRemoveFriendship(int target)
         {
             int id = GetConnectedUserID;
-            if (FriendsService.TryRemoveUserFriendship(id, target)) return "Removed";
-            else return "NotRemoved";
+            if (FriendsService.TryRemoveUserFriendship(id, target)) return View("Friends", FriendsService.GetUserFriends(id));
+            else return View("Friends", FriendsService.GetUserFriends(id)); // Error not removed
         }
-        public IActionResult IncomingFriendRequests()
+        [Route("/friends/incoming")]
+        public IActionResult IncomingFriendRequests(int id)
         {
-            return View("IncomingFriendshipRequests");
+            if (id == 0) id = GetConnectedUserID;
+            return View("FriendsIncoming", FriendsService.GetUserIncomingFriendships(id));
         }
-
-        public IActionResult OutgoingFriendRequests()
+        [Route("/friends/outgoing")]
+        public IActionResult OutgoingFriendRequests(int id)
         {
-            return View("OutgoingFriendshipRequests");
+            if (id == 0) id = GetConnectedUserID;
+            return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(id));
         }
     }
 }

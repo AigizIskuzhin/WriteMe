@@ -32,5 +32,11 @@ namespace Website.Tests
             var modelStateEntry = viewResult.ViewData.ModelState[fieldName];
             //Assert.Equal(false, modelStateEntry);
         }
+
+        [Fact]
+        public void test()
+        {
+            Assert.Equal(1, 1);
+        }
     }
 }

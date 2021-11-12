@@ -17,7 +17,7 @@ namespace Database.Builder
             .UseContentRoot(Environment.CurrentDirectory)
             .ConfigureServices(services =>services
                 .AddDbContext<WriteMeDatabase>(opt => 
-                    opt.UseMySql("server=localhost;port=3306;database=writemedatabaseTest;uid=root;password=admin",
+                    opt.UseMySql("server=localhost;port=3306;database=writemedatabaseTest;uid=root;password=root",
                         new MySqlServerVersion(new Version(8, 0, 26)))
                         .EnableSensitiveDataLogging()
                         .EnableDetailedErrors()

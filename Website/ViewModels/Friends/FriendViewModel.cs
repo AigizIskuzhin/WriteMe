@@ -5,5 +5,6 @@
         public int Id;
         public string Name;
         public string PhotoPath;
+        public string FriendshipType;
     }
 }
