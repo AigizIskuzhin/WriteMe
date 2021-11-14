@@ -11,7 +11,7 @@ namespace Database.DAL.Entities.Base
         public string Surname { get; set; }
         public string Patronymic { get; set; }
         public DateTime Birthday { get; set; }
-        public Country Country { get; set; }
+        public  Country Country { get; set; }
     }
 
     public class Country: NamedEntity

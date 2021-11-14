@@ -91,7 +91,8 @@ namespace Website.Infrastructure.Services
             return postDefault;
         } 
         #endregion
-        #region DeletePost
+
+        #region RemovePost
         /// <summary>
         /// Удаление поста по указанному id поста и id пользователя
         /// </summary>
@@ -99,10 +100,13 @@ namespace Website.Infrastructure.Services
         /// <returns></returns>
         public bool RemovePost(int idPost, int idUser)
         {
-            var userPostExist = _Posts.Items.Any(post=>post.Id==idPost&&post.OwnerId==idUser);
-            if(userPostExist)
+            var post = _Posts.Get(idPost);
+            if (post.OwnerId.Equals(idUser))
+            {
+                post = null;
                 _Posts.Remove(idPost);
-            return userPostExist;
+            }
+            return post==null;
         }
         #endregion
     }

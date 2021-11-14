@@ -13,5 +13,7 @@ namespace Website.Infrastructure.Services.Interfaces
         public void SendReportToPost(int postId, int senderId, int reportTypeId, string msg);
         public IEnumerable<PostReport> GetPostsReports();
         public IEnumerable<ReportType> GetReportTypes();
+        public void CloseReport(int reportId);
+        public void CloseReportAndDeletePost(int reportId);
     }
 }

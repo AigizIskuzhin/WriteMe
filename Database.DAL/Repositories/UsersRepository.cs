@@ -14,6 +14,7 @@ namespace Database.DAL.Repositories
         }
 
         public override IQueryable<User> Items => base.Items
-            .Include(user => user.Role);
+            .Include(user => user.Role)
+            .Include(user=>user.Country);
     }
 }

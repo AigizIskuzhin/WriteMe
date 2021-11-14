@@ -46,6 +46,52 @@ function OnEditPostClick(btn) {
         });
 }
 
+function OnRemovePostClick(btn) {
+    if (!btn || !btn.classList.contains('delete_post_btn')) return;
+
+    var post = btn.offsetParent.offsetParent;
+
+    if (!post || !post.classList.contains('post')) return;
+
+    var postId = post.getAttribute('data-post-id');
+    var ownerId = post.getAttribute('data-owner-id');
+    $.ajax({
+        url: "profile/deletepost",
+        type: "POST",
+        data: {
+            "id": postId
+        },
+        success: function (isDeleted) {
+            if (isDeleted) {
+                document.getElementById(profilePostsContainerId).removeChild(post);
+            }
+        }
+    });
+}
+
+function OnReportPostClick(btn) {
+    if (!btn || !btn.classList.contains('report_post_btn')) return;
+
+    var post = btn.offsetParent.offsetParent;
+
+    if (!post || !post.classList.contains('post')) return;
+
+    var postId = post.getAttribute('data-post-id');
+    var ownerId = post.getAttribute('data-owner-id');
+
+    var model = {
+        "postId" : postId
+    }
+    var url = "modals/SendReportModal"
+    AjaxPostQueryWithViewResult(url,
+        model,
+        modalWrapperId,
+        () => {
+            ShowModalWrapper();
+            LoadReportPostForm('send_report', 'report_types', 'report_msg', postId);
+        });
+}
+
 
 let OnCreatePostClick = (inputId) => {
     var input = document.getElementById(inputId);
@@ -126,6 +172,31 @@ let LoadEditPostForm = (submitId, titleId, descriptionId, postId, ownerId) => {
             });
     }
 }
+let LoadReportPostForm = (sendBtnId, reportTypesId, reportMsgId, postId) => {
+    var sendBtn = document.getElementById(sendBtnId);
+    var reportTypes = document.getElementById(reportTypesId);
+    var reportMsg = document.getElementById(reportMsgId);
+
+    if (sendBtn && reportTypes && reportMsg) {
+        sendBtn.addEventListener("click", function () {
+            var selectedReportType = reportTypes.options[reportTypes.selectedIndex].value;
+            var msg = reportMsg.value;
+
+            var model = {
+                "postId": postId,
+                "reportTypeId": selectedReportType,
+                "msg": msg
+            };
+            var url = "profile/SendReportForPost";
+
+            AjaxPostQuery(url,
+                model,
+                () => {
+                    HideModalWrapper();
+                });
+        });
+    }
+}
 
 let LoadCreatePostForm = (submitId, titleId, descriptionId) => {
     var submit = document.getElementById(submitId);
@@ -173,11 +244,11 @@ function LoadPostEvents(post) {
 
     var deleteBtn = post.querySelector('.delete_post_btn');
     if (deleteBtn)
-        deleteBtn.addEventListener('click', () => { });
+        deleteBtn.addEventListener('click', () => { OnRemovePostClick(deleteBtn)});
 
     var reportBtn = post.querySelector('.report_post_btn');
     if (reportBtn)
-        reportBtn.addEventListener('click', ()=>{});
+        reportBtn.addEventListener('click', () => { OnReportPostClick(reportBtn)});
 }
 
 function LoadPostsEvents() {

@@ -79,6 +79,8 @@ namespace Database.DAL.Context
 
             #endregion
 
+            
+
             builder.Entity<Role>().HasData(
                 new Role
                 {
