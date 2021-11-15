@@ -10,14 +10,11 @@ namespace Website.Infrastructure.Services
 {
     public class FriendsService : IFriendsService
     {
-
         private IRepository<FriendshipApplication> _Friendship { get; }
-
         public FriendsService(IRepository<FriendshipApplication> friendship)
         {
             _Friendship = friendship;
         }
-
         public IEnumerable<FriendViewModel> GetUserFriends(int userId)
         {
             if (userId == 0)
@@ -39,7 +36,6 @@ namespace Website.Infrastructure.Services
 
 
         }
-
         public IEnumerable<FriendViewModel> GetUserFilteredFriends(int userId, string filterString)
         {
             if (userId == 0)
@@ -61,19 +57,17 @@ namespace Website.Infrastructure.Services
                 };
             }
         }
-
-
         public bool TryRemoveUserFriendship(int userId, int targetUserId)
         {
             List<FriendshipApplication> targetFriendship = _Friendship.Items.Where(application =>
                 application.UserOne.Id == userId && application.UserTwo.Id == targetUserId &&
-                application.ApplicationStateUserOne ||
+                application.ApplicationStateUserOne == FriendshipStates.Allow ||
                 application.UserOne.Id == targetUserId && application.UserTwo.Id == userId &&
-                application.ApplicationStateUserTwo).ToList();
+                application.ApplicationStateUserTwo == FriendshipStates.Allow).ToList();
             if (targetFriendship.Count > 0)
             {
                 bool oneEqualsId = targetFriendship[0].UserOne.Id == userId;
-                targetFriendship[0].ApplicationStateUserOne = false;
+                targetFriendship[0].ApplicationStateUserOne = FriendshipStates.Deny;
                 _Friendship.Update(targetFriendship[0]);
                 return true;
             }
