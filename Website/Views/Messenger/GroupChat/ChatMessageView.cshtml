@@ -1,5 +1,4 @@
-﻿
-@using static Website.Infrastructure.Converters.TimeOfAdditionConverter
+﻿@using Website.Infrastructure.Extensions
 @model Database.DAL.Entities.Messages.ChatMessage.ParticipantChatMessage
 @{ Layout = null;
                 string userId = ViewData["UserId"].ToString();
@@ -19,6 +18,6 @@
         @Model.Text
     </div>
     <div class="message_sent_time">
-        @ConvertToTime(Model.CreatedDateTime)
+        @Model.CreatedDateTime.ToHoursAndMinutes()
     </div>
 </li>

@@ -56,6 +56,13 @@
 .ui_control_item:hover {
     border-color: var(--border-hover-gray-color);
 }
+.auth-row:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+.auth-row:focus .tooltip {
+    opacity: 0;
+}
 .ui_control_item:hover .tooltip{
     visibility: visible;
     opacity: 1;

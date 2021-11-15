@@ -8,7 +8,7 @@
         <input id="ui_reports_search_input" class="ui_control_item" type="text" placeholder="Искать">
     </div>
 </div>
-<ul class="reports">
+<ul id="reports" class="reports">
     @if (!Model.Any())
     {
         <li class="report no-reports">
@@ -25,3 +25,13 @@
         }
     }
 </ul>
+<script>
+    //$.(document).ready(function () {
+    //    var reports = document.getElementById('reports');
+    //    reports.forEach(report=>() => {
+    //        var deleteReport = report.querySelector('.report-close');
+    //        if (deleteReport) {
+    //        }
+    //    })
+    //});
+</script>

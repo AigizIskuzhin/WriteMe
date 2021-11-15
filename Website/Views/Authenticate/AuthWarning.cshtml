@@ -1,7 +1,11 @@
-﻿@{
-    Layout = null;
-}
+﻿@{ Layout = null; }
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
-<div id="page_modal_wrap" class="modal_container">
-    @Html.Partial("~/Views/Modals/AuthenticateWarning.cshtml")
-</div>
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<div class="center-screen auth">
+    <form class="auth-form" action="@Url.Action("ConfirmMailForAuthorization")" method="POST" asp-anti-forgery="true">
+        @*<img class="wallpaper" src="~/Resources/images/wallpaper.png" />*@
+        <h3 style="color:red">Не авторизованный доступ</h3>
+        <a class="auth-btn" href="/reg">Регистрация</a>
+        <a class="auth-btn" href="/auth">Авторизация</a>
+    </form>
+</div>  

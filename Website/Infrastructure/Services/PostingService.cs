@@ -56,11 +56,10 @@ namespace Website.Infrastructure.Services
         }
 
         public bool RemovePost(int idPost)
-        {
-            var userPostExist = SystemPostsRepository.Items.Any(post=>post.Id==idPost);
-            if(userPostExist)
-                SystemPostsRepository.Remove(idPost);
-            return userPostExist;
+        { 
+            UserPostsRepository.Remove(idPost);
+            var post = PostReportsRepository.Get(idPost);
+            return post==null;
         }
 
         public void SendReportToPost(int postId, int senderId, int reportTypeId, string msg)
@@ -83,5 +82,13 @@ namespace Website.Infrastructure.Services
             PostReportsRepository.Items.OrderByDescending(report => report.CreatedDateTime);
 
         public IEnumerable<ReportType> GetReportTypes() => ReportTypeRepository.Items;
+        public void CloseReport(int reportId) => PostReportsRepository.Remove(reportId);
+
+        public void CloseReportAndDeletePost(int reportId)
+        {
+            var report = PostReportsRepository.Get(reportId);
+            RemovePost(report.Post.Id);
+            PostReportsRepository.Remove(report.Id);
+        }
     }
 }

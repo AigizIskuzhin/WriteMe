@@ -67,6 +67,9 @@ namespace Website.Infrastructure.Services
             userPost.Owner = _Users.Get(userPost.OwnerId);
             return _Posts.Add(userPost);
         }
+
+        #endregion
+        
         #region Edit post
         /// <summary>
         /// Редактирование поста
@@ -89,9 +92,7 @@ namespace Website.Infrastructure.Services
         } 
         #endregion
 
-        #endregion
-
-        #region DeletePost
+        #region RemovePost
         /// <summary>
         /// Удаление поста по указанному id поста и id пользователя
         /// </summary>
@@ -99,10 +100,13 @@ namespace Website.Infrastructure.Services
         /// <returns></returns>
         public bool RemovePost(int idPost, int idUser)
         {
-            var userPostExist = _Posts.Items.Any(post=>post.Id==idPost&&post.OwnerId==idUser);
-            if(userPostExist)
+            var post = _Posts.Get(idPost);
+            if (post.OwnerId.Equals(idUser))
+            {
+                post = null;
                 _Posts.Remove(idPost);
-            return userPostExist;
+            }
+            return post==null;
         }
         #endregion
     }

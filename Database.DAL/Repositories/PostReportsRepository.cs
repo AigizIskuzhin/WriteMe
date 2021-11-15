@@ -12,7 +12,7 @@ namespace Database.DAL.Repositories
 
         public override IQueryable<PostReport> Items => base.Items
             .Include(report => report.Sender)
-            .Include(report=>report.Post)
+            .Include(report=> report.Post)
             .ThenInclude(post=>post.Owner)
             .Include(report=>report.ReportType)
             .Include(report=>report.ReportState);

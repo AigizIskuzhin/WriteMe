@@ -28,10 +28,12 @@ else
         const child = element.documentElement.querySelector('body').firstChild;
         return child;
     };
+    function ScrollHistoryToNewest() {
+        document.getElementById('history').scrollTo(0, document.getElementById('history').scrollHeight);
+    }
 
-    document.getElementById('history').scrollTo(0, document.getElementById('history').scrollHeight);
-
-    var testList;
+    ScrollHistoryToNewest();
+    
     var privateconnection;
     function initPrivateSignalR() {
         privateconnection = new signalR.HubConnectionBuilder()
@@ -57,6 +59,7 @@ else
                 success: function(messages) {
                     var view = document.createElementFromString(messages);
                     history.appendChild(view);
+                    ScrollHistoryToNewest();
 
                 }
             });

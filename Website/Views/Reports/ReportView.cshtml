@@ -2,7 +2,7 @@
 @{
     Layout = null;
 }
-<li id="report-@Model.Id" class="report"  post-id="@Model.Post.Id" sender-id="@Model.Sender.Id">
+<li id="report-@Model.Id" class="report" report-id="@Model.Id"  post-id="@Model.Post.Id" sender-id="@Model.Sender.Id">
     <div class="report_title">
         <div class="report_sender report_title_item">
             <a href="/profile?id=@Model.Sender.Id">
@@ -30,6 +30,13 @@
                 @Model.Commentary
             </div>
         </div>
-        <button class="report_close">Закрыть</button>
+        <form asp-action="CloseReport">
+            <input type="hidden" name="reportId" value="@Model.Id" />
+            <input type="submit" value="Закрыть жалобу" class="report-close" />
+        </form>
+        <form asp-action="CloseReportAndDeletePost">
+            <input type="hidden" name="reportId" value="@Model.Id"/>
+            <input type="submit" value="Удалить пост и закрыть жалобу" class="report-close-delete"/>
+        </form>
     </div>
 </li>

@@ -1,4 +1,5 @@
 ﻿using Database.DAL.Entities;
+using Database.DAL.Entities.Base;
 using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.DAL.Repositories.Base;
@@ -12,6 +13,7 @@ namespace Database.DAL.Repositories.ServicesRegistrar
         public static IServiceCollection AddRepositoriesInDb(this IServiceCollection services) => services
             .AddTransient<IRepository<User>, UsersRepository>()
             .AddTransient<IRepository<Role>, DbRepository<Role>>()
+            .AddTransient<IRepository<Country>, DbRepository<Country>>()
             .AddTransient<IRepository<UserPost>, PostsRepository>()
             .AddTransient<IRepository<SystemPost>, DbRepository<SystemPost>>()
             .AddTransient<IRepository<Chat>, ChatsRepository>()

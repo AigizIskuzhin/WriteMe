@@ -1,46 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using Website.Infrastructure.Extensions;
 using Website.Infrastructure.Services.Interfaces;
 using Website.Infrastructure.SignalRHubs;
 
 namespace Website.Infrastructure.Services
 {
-    public class SignalRService : Hub, ISignalRService
+    public class SignalRService : ConnectionMapping<string>,ISignalRService
     {
+        private readonly IHubContext<AppHub> AppHub;
+
+        public SignalRService(IHubContext<AppHub> appHub)
+        {
+            AppHub = appHub;
+        }
+
         public event EventHandler<EventArgs<string>> UserJoin;
         public event EventHandler<EventArgs<string>> UserLeft;
-
-        private static readonly ConnectionMapping<string> Connections = new ();
-
-        public IEnumerable<string> GetConnections(string key) => Connections.GetConnections(key);
-        public async Task NotifyAboutNewMessage(string userId)
+        public event EventHandler<EventArgs<PrivateNotificationMessage>> NewMessage;
+        public ConnectionMapping<string> Connections { get; } = new();
+        public void UserJoining(string id, string connectionId)
         {
-            foreach (var connection in GetConnections(userId))
-                await Clients.Client(connection).SendAsync("NotificationNewMessage");
+            Connections.Add(id, connectionId);
+            UserJoin?.Invoke(this, id);
         }
 
-
-        public override Task OnConnectedAsync()
+        public void UserLeaving(string id, string connectionId)
         {
-            var connectedUserId = Context.GetConnectedUserId();
-
-            UserJoin?.Invoke(this, connectedUserId);
-
-
-            Connections.Add(Context.GetConnectedUserId(), connectedUserId);
-            return base.OnConnectedAsync();
+            Connections.Remove(id, connectionId);
+            UserLeft?.Invoke(this, id);
         }
-        public override Task OnDisconnectedAsync(Exception? exception)
+
+        public async Task NotifyUserFromPrivateChatAboutNewMessage(string chatId, string senderId)
         {
-            var connectedUserId = Context.GetConnectedUserId();
-
-            UserLeft?.Invoke(this, connectedUserId);
-
-            Connections.Remove(Context.GetConnectedUserId(), connectedUserId);
-            return base.OnDisconnectedAsync(exception);
+            //var receivers = MessengerService.GetChatParticipantIds(int.Parse(chatId)).Where(r=>r!=senderId);
+            //foreach (var receiver in receivers)
+            //    foreach (var connection in Connections.GetConnections(receiver))  
+            //        await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
         }
+
     }
 }

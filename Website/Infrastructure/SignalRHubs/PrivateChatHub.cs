@@ -21,16 +21,18 @@ namespace Website.Infrastructure.SignalRHubs
 
         private readonly ISignalRService SignalRService;
         private readonly IMessengerService MessengerService;
+        private readonly IHubContext<AppHub> AppHub;
 
         private string GetChatId => Context.GetHttpContext().Request.Path.Value.Replace("/privatesignalr/","");
 
         private static readonly ConnectionMapping<string> Connections = new ();
         private static readonly Dictionary<string, List<string>> ChatsToUsers = new();
 
-        public PrivateChatHub(ISignalRService signalRService, IMessengerService messengerService)
+        public PrivateChatHub(ISignalRService signalRService, IMessengerService messengerService, IHubContext<AppHub> appHub)
         {
             SignalRService = signalRService;
             MessengerService = messengerService;
+            AppHub = appHub;
 
             SignalRService.UserJoin += SignalRServiceOnUserJoin;
             SignalRService.UserLeft += SignalRServiceOnUserLeft;
@@ -38,24 +40,33 @@ namespace Website.Infrastructure.SignalRHubs
 
         private void SignalRServiceOnUserLeft(object sender, EventArgs<string> e)
         {
-            string connectedUserId = Context.GetConnectedUserId();
 
-            if(Connections.GetConnections(connectedUserId).Any())return;
+            if(Connections.GetConnections(e).Any())return;
             
         }
 
         private void SignalRServiceOnUserJoin(object sender, EventArgs<string> e)
         {
-            string connectedUserId = Context.GetConnectedUserId();
+            //Clients.GroupExcept()
 
-            if(Connections.GetConnections(connectedUserId).Any())return;
         }
 
-        public void SendMessage(string text)
+        public async Task SendMessage(string text)
         {
+            var connectedUserId = GetConnectedUserID;
+            var chatId = GetChatId;
+
             if(string.IsNullOrWhiteSpace(text))return;
-            MessengerService.SendMessageToChat(int.Parse(GetConnectedUserID), int.Parse(GetChatId), text);
-            NotifyChatAboutNewMessages(GetChatId);
+            await MessengerService.SendMessageToChat(int.Parse(connectedUserId), int.Parse(chatId), text);
+            await NotifyChatAboutNewMessages(chatId);
+
+            // MOVED TO MessengerService
+            //var receivers = MessengerService.GetChatParticipantIds(int.Parse(chatId)).Where(r=>r!=connectedUserId);
+            //foreach (var receiver in receivers)
+            //{
+            //    foreach (var connection in SignalRService.Connections.GetConnections(receiver))  
+            //        await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
+            //}
         }
 
         private async Task NotifyChatAboutNewMessages(string chatId) =>
@@ -66,15 +77,16 @@ namespace Website.Infrastructure.SignalRHubs
             var connectedUserId = GetConnectedUserID;
             var chatId = GetChatId;
 
-            if(!ChatsToUsers[chatId].Contains(connectedUserId))
-                ChatsToUsers[chatId].Add(connectedUserId);
+            //await AppHub.Clients.All.SendAsync("NotifyAboutNewMessage", chatId);
+            //if (!ChatsToUsers[chatId].Contains(connectedUserId))
+            //    ChatsToUsers[chatId].Add(connectedUserId);
 
-            if (!Connections.GetConnections(connectedUserId).Any())
-                await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
-                    .SendAsync("NotifyAboutReceiverJoin");
-            if(SignalRService.GetConnections(connectedUserId).Any())
-                await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
-                    .SendAsync("NotifyAboutReceiverOnline");
+            //if (!Connections.GetConnections(connectedUserId).Any())
+            //    await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
+            //        .SendAsync("NotifyAboutReceiverJoin");
+            //if(SignalRService.GetConnections(connectedUserId).Any())
+            //    await Clients.GroupExcept(chatId, Connections.GetConnections(connectedUserId))
+            //        .SendAsync("NotifyAboutReceiverOnline");
             Connections.Add(connectedUserId, Context.ConnectionId);
             await Groups.AddToGroupAsync(Context.ConnectionId, chatId);
             await base.OnConnectedAsync();
@@ -91,8 +103,8 @@ namespace Website.Infrastructure.SignalRHubs
 
             Connections.Remove(GetConnectedUserID, Context.ConnectionId);
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, GetChatId);
-            if (!SignalRService.GetConnections(connectedUserId).Any())
-                await Clients.GroupExcept(chatId, Enumerable.Empty<string>()).SendAsync("NotifyAboutReceiverOffline");
+            //if (!SignalRService.GetConnections(connectedUserId).Any())
+            //    await Clients.GroupExcept(chatId, Enumerable.Empty<string>()).SendAsync("NotifyAboutReceiverOffline");
                 
             await base.OnDisconnectedAsync(exception);
         }

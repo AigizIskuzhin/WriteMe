@@ -101,7 +101,7 @@ namespace Website.Controllers
         /// <param name="post"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditPost(PostViewModel post) => PartialView("PostView", ProfileService.EditPost(new(){
+        public ActionResult EditPost(PostViewModel post) => View("PostView", ProfileService.EditPost(new(){
             Id = post.Id,
             Title=post.Title,
             Description=post.Description,
@@ -127,10 +127,14 @@ namespace Website.Controllers
         /// <param name="id"></param>
         /// <param name="filterText"></param>
         /// <returns></returns>
-        public ActionResult SearchUserPosts(int id, string filterText)
+        public ActionResult SearchUserPosts(string filterText)
         {
-            id = id == 0 ? GetConnectedUserID : id;
-            return View("PostsView", string.IsNullOrWhiteSpace(filterText) ? ProfileService.GetUserPosts(id) : ProfileService.GetUserPostsWithFilter(id, filterText));
+            string t = HttpContext.Request.Query["id"];
+            int id = string.IsNullOrWhiteSpace(t) ? GetConnectedUserID : int.Parse(t);
+            return View("PostsView",
+                string.IsNullOrWhiteSpace(filterText)
+                    ? ProfileService.GetUserPosts(id)
+                    : ProfileService.GetUserPostsWithFilter(id, filterText));
         }
         #endregion
 

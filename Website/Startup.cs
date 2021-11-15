@@ -65,7 +65,7 @@ namespace Website
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=About}/{action=Index}/{id?}");
-                endpoints.MapHub<SignalRService>("/signalr");
+                endpoints.MapHub<AppHub>("/signalr");
                 endpoints.MapHub<PrivateChatHub>("/privatesignalr/{chatId}");
             });
         }

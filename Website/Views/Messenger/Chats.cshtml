@@ -9,7 +9,7 @@
     </div>
 </div>
 <ul id="chats" class="chats">
-    @{ await Html.RenderPartialAsync("Base/ChatsView", Model.Chats); }
+    @{ await Html.RenderPartialAsync("Base/ChatsPreviews", Model.ChatsPreviews); }
 </ul>
 <script>
     document.getElementById("chats").addEventListener("click", function (e) {

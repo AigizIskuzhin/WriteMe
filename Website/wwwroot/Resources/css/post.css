@@ -1,6 +1,6 @@
 ﻿.post, .post-smoothpad {
     background-color: rgba(230,230,230,.5);
-    padding: 10px 20px 20px 20px;
+    padding: 10px 10px 20px 10px;
     border-radius: 12px;
     min-height: 40px;
     box-sizing: border-box;
@@ -21,12 +21,38 @@
     position: relative;
     box-sizing: border-box;
 }
-.post_owner a{
-    white-space:nowrap;
+.post_owner {
+    background: #eaeaea;
+    border-radius: 8px;
+    border: 1px var(--border-main-color) solid;
+    height: 30px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    overflow: hidden;
+}
+.post_owner_icon_container {
+    height: 100%;
+    background: white;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.owner_icon {
+    height: inherit;
+}
+.post_owner_name {
+    margin-right: 10px;
+}
+.post_header a {
+    white-space: nowrap;
     text-decoration: none;
 }
-.post_owner a:hover {
-    color: orange;
+.post_owner:hover .post_owner_name {
+    color: #be7cff;
+}
+.post_owner:hover {
+    border-color: #dbf
 }
 .post_time {
     white-space: nowrap;
@@ -37,8 +63,6 @@
     font-size: 12px;
     opacity: .0;
     transition: .2s linear;
-
-
     opacity: .5;
     padding-bottom: 6px;
 }

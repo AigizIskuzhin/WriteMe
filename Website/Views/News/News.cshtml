@@ -33,7 +33,7 @@
         return child;
     };
 
-    let searchPostsOnInput = (inputId, containerId) => {
+    let SearchPosts = (inputId, containerId) => {
         let input = document.getElementById(inputId);
         let resultContainer = document.getElementById(containerId);
         let request;
@@ -55,7 +55,7 @@
                             var postId = post.getAttribute('data-post-id');
                             var postTitle = post.querySelector('.post_title').innerText;
                             var postDescription = post.querySelector('.post_description').innerText;
-                            var url = "@Url.Action("CreatePostModalForm", "Modals")";
+                            var url = "@Url.Action("CreatePost", "Modals")";
                             $.ajax({
                                 url: url,
                                 type: "POST",
@@ -77,7 +77,7 @@
             });
         }
     }
-    searchPostsOnInput('ui_posts_search_input', 'profile_posts_container');
+    SearchPosts('ui_posts_search_input', 'profile_posts_container');
 </script>
  }
 else
@@ -91,7 +91,7 @@ else
         return child;
     };
 
-    let searchPostsOnInput = (inputId, containerId) => {
+    let SearchPosts = (inputId, containerId) => {
         let input = document.getElementById(inputId);
         let resultContainer = document.getElementById(containerId);
         let request;
@@ -113,6 +113,6 @@ else
             });
         }
     }
-    searchPostsOnInput('ui_posts_search_input', 'profile_posts_container');
+    SearchPosts('ui_posts_search_input', 'profile_posts_container');
 </script>
 }

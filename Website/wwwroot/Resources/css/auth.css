@@ -32,8 +32,8 @@ h4 {
 
 }
 .auth a, a:link, a:visited {
-    position: absolute;
-    transform: translateX(-50%);
+    /*position: absolute;*/
+    /*transform: translateX(-50%);*/
     text-decoration: none;
     color: rgb(180,180,180);
 }
@@ -63,7 +63,7 @@ h4 {
 .auth-input {
     height: 40px;
     box-sizing: border-box;
-    outline: none;
+    /*outline: none;*/
     border-style: none;
     border-radius: 10px;
     padding: 6px 18px;
@@ -176,11 +176,11 @@ h4 {
     /*width: 100%;*/
     transition: .2s linear;
 }
-.auth-btn:disabled{
-    background-color: transparent;
-    color: rgb(200,200,200);
-    box-shadow: 0 0 10px rgb(200,200,200);
-}
+    .auth-btn:disabled {
+        background-color: transparent;
+        color: rgb(200,200,200);
+        box-shadow: 0 0 10px rgb(200,200,200);
+    }
 .auth-btn:hover:enabled{
     background-color: rgb(20,20,20);
     box-shadow: 0 0 6px 1px rgba(20,20,20);
@@ -217,3 +217,23 @@ h4 {
         pointer-events: none;
         color: #707070;
     }
+
+.auth-btn a {
+    color: rgb(220,220,220);
+}
+.wallpaper{
+    height:120px;
+    overflow:hidden;
+    display:flex;
+    align-items:center;
+}
+.wallpaper img{
+    height:250px;
+}
+.profile_img {
+    width: 120px;
+    padding: 10px;
+    background: white;i
+    border-radius: 20px;
+    margin: 20px 0;
+}

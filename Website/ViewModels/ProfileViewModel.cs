@@ -1,5 +1,6 @@
 ﻿using Database.DAL.Entities;
 using System.Collections.Generic;
+using Website.Infrastructure.Extensions;
 
 namespace Website.ViewModels
 {
@@ -7,7 +8,7 @@ namespace Website.ViewModels
     {
         public string FullName => (User.Name + " " + User.Surname + " " + User.Patronymic).Replace("  ", " ");
         public User User { get; set; }
-        public string UserAge => User.Birthday;
+        public string UserAge => User.Birthday.ToAgeString();
         public bool IsOwner { get; set; }
         public bool IsMod { get; set; }
         public bool IsFriend { get; set; }

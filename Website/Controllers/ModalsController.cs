@@ -6,6 +6,7 @@ using Website.ViewModels.Profile;
 
 namespace Website.Controllers
 {
+    [CustomizedAuthorize]
     public class ModalsController : Controller
     {
         private readonly IPostingService PostingService;
@@ -15,8 +16,10 @@ namespace Website.Controllers
             PostingService = postingService;
         }
         
-        [CustomizedAuthorize]
-        public IActionResult CreatePostModalForm(PostViewModel post) => PartialView(post);
+        public IActionResult CreatePost(PostViewModel post) => View(post);
+        
+        public IActionResult EditPost(PostViewModel post) => View(post);
+
         [Route("/working")]
         public IActionResult WorkingON() => View();
 

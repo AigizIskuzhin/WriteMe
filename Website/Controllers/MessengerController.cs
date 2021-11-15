@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using System.Threading.Tasks;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
@@ -40,7 +41,7 @@ namespace Website.Controllers
             if (chatsViewModel.ChatId != 0) return GetChat(chatsViewModel.ChatId);
 
             int connectedUserId = GetConnectedUserID;
-            chatsViewModel.Chats = MessengerService.GetUserChats(connectedUserId);
+            chatsViewModel.ChatsPreviews = MessengerService.GetUserChatsPreviews(connectedUserId);
             return View(chatsViewModel);
         }
         #endregion
@@ -63,7 +64,7 @@ namespace Website.Controllers
                     IsPrivateChat = chat.IsPrivateChat,
                     ReceiverName = receiver.User.Name,
                     ReceiverId = receiver.Id,
-                    IsReceiverOnline = SignalRService.GetConnections(receiver.User.Id.ToString()).Any(),
+                    IsReceiverOnline = SignalRService.Connections.GetConnections(receiver.User.Id.ToString()).Any(),
                     ReceiverAvatarPath = receiver.User.AvatarPath
                 });
         }
@@ -87,11 +88,11 @@ namespace Website.Controllers
         #endregion
 
         #region SendMessageToChat
-        public void SendMessageToChat(int chatId, string text)
+        public async Task SendMessageToChat(int chatId, string text)
         {
             if (string.IsNullOrWhiteSpace(text))
                 return;
-            MessengerService.SendMessageToChat(GetConnectedUserID, chatId, text);
+            await MessengerService.SendMessageToChat(GetConnectedUserID, chatId, text);
         }
         #endregion
 
@@ -110,7 +111,7 @@ namespace Website.Controllers
                     ConnectedUserId = GetConnectedUserID,
                     ReceiverName = receiver.User.Name,
                     ReceiverId = receiver.Id,
-                    IsReceiverOnline = SignalRService.GetConnections(receiver.User.Id.ToString()).Any()
+                    IsReceiverOnline = SignalRService.Connections.GetConnections(receiver.User.Id.ToString()).Any()
                 });
         }
 

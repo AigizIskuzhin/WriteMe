@@ -1,34 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Database.DAL.Entities;
+﻿using Database.DAL.Entities;
 using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.Interfaces;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using Website.Infrastructure.Services.Interfaces;
+using Website.Infrastructure.SignalRHubs;
+using Website.ViewModels.Messenger.Preview;
+using Website.ViewModels.Messenger.Preview.Base;
 
 namespace Website.Infrastructure.Services
 {
     public class MessengerService : IMessengerService
     {
+        private readonly IHubContext<AppHub> AppHub;
+        private readonly ISignalRService SignalService;
+
+
+
         private readonly IRepository<User> UsersRepository;
         private readonly IRepository<Chat> ChatsRepository;
         private readonly IRepository<ChatParticipant> ChatParticipantsRepository;
         public MessengerService(
             IRepository<User> usersRepository,
             IRepository<Chat> chatsRepository, 
-            IRepository<ChatParticipant> chatParticipantsRepository)
+            IRepository<ChatParticipant> chatParticipantsRepository, 
+            IHubContext<AppHub> appHub, 
+            ISignalRService signalService)
         {
             UsersRepository = usersRepository;
             ChatsRepository = chatsRepository;
             ChatParticipantsRepository = chatParticipantsRepository;
+            AppHub = appHub;
+            SignalService = signalService;
         }
 
-        public IEnumerable<Chat> GetUserChats(int userId)
+        public IEnumerable<ChatPreviewViewModel> GetUserChatsPreviews(int userId)
         {
-            return ChatsRepository.Items.Where(chat =>
+            var chats = ChatsRepository.Items.Where(chat =>
                 chat.ChatParticipants.Any(participant => participant.User.Id.Equals(userId)));
+            if(!chats.Any()) yield break;
+            foreach (var chat in chats)
+                if (chat.IsPrivateChat)
+                    yield return new PrivateChatPreviewViewModel
+                    {
+                        Chat = chat,
+                        Receiver = chat.GetReceiverChatParticipant(userId).User
+                    };
+                else
+                    yield return new GroupChatPreviewViewModel
+                    {
+                        Chat = chat
+                    };
         }
 
         public IEnumerable<IMessage> GetPrivateChatHistory(int id)
@@ -42,11 +69,12 @@ namespace Website.Infrastructure.Services
         public Chat GetPrivateChatWithUser(int receiverId, int senderId)
         {
             var chat = ChatsRepository.Items
-                           .FirstOrDefault(privateChat=> 
-                               privateChat.IsPrivateChat && privateChat.MaximumChatParticipants == 2 && 
-                               privateChat.ChatParticipants.Any(participant=>participant.User.Id.Equals(receiverId)) && 
-                               privateChat.ChatParticipants.Any(participant=>participant.User.Id.Equals(receiverId))) 
-                       ?? GetNewChatWithUser(receiverId, senderId);
+                .FirstOrDefault(c => c.MaximumChatParticipants == 2 &&
+                                     c.ChatParticipants.Any(p => p.User.Id.Equals(receiverId)) &&
+                                     c.ChatParticipants.Any(p => p.User.Id.Equals(senderId)));
+
+            if(chat is null) chat = GetNewChatWithUser(receiverId, senderId);
+
             return chat;
         }
 
@@ -63,32 +91,39 @@ namespace Website.Infrastructure.Services
                 MaximumChatParticipants = 2,
             });
 
-            var chatParticipantOne =
-                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Equals(receiver)) ??
-                ChatParticipantsRepository.Add(new() { Chat = chat, User = receiver });
+            var chatParticipantOne = ChatParticipantsRepository.Items
+                                         .FirstOrDefault(p =>
+                                             p.User.Id.Equals(receiverUserId) && p.Chat.Id.Equals(chat.Id)) ?? 
+                                     ChatParticipantsRepository.Add(new() { Chat = chat, User = receiver });
             
-            var chatParticipantTwo =
-                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Equals(sender)) ??
-                ChatParticipantsRepository.Add(new() { Chat = chat, User = sender });
+            var chatParticipantTwo = ChatParticipantsRepository.Items
+                                         .FirstOrDefault(p =>
+                                             p.User.Id.Equals(senderUserId) && p.Chat.Id.Equals(chat.Id)) ?? 
+                                     ChatParticipantsRepository.Add(new() { Chat = chat, User = sender });
 
 
             chat.ChatParticipants.Add(chatParticipantOne);
             chat.ChatParticipants.Add(chatParticipantTwo);
+            ChatsRepository.Update(chat);
             return chat;
         }
 
-        public void SendMessageToChat(int userId, int chatId, string text)
+        public async Task SendMessageToChat(int userId, int chatId, string text)
         {
-            var chatParticipant =
-                ChatParticipantsRepository.Items.FirstOrDefault(participant => participant.User.Id.Equals(userId));
-            if (chatParticipant != null)
-                chatParticipant.ChatParticipantMessages.Add(new ParticipantChatMessage
-                {
-                    Chat = chatParticipant.Chat,
-                    ChatParticipantSender = chatParticipant,
-                    Text = text
-                });
-            ChatParticipantsRepository.Update(chatParticipant);
+            var chatParticipants = ChatParticipantsRepository.Items.Where(p => p.Chat.Id.Equals(chatId));
+            var chatParticipant = await chatParticipants.FirstOrDefaultAsync(p => p.User.Id.Equals(userId));
+            chatParticipant?.ChatParticipantMessages.Add(new ParticipantChatMessage
+            {
+                Chat = chatParticipant.Chat,
+                ChatParticipantSender = chatParticipant,
+                Text = text
+            });
+            await ChatParticipantsRepository.UpdateAsync(chatParticipant);
+            
+            foreach (var receiver in chatParticipants.Where(p=>p.User.Id!=userId))
+                foreach (var connection in SignalService.Connections.GetConnections(receiver.User.Id.ToString()))
+                    await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
+            
         }
         
         public IEnumerable<IMessage> GetNewMessagesFromLast(int chatId, int lastMessageId)
@@ -98,6 +133,12 @@ namespace Website.Infrastructure.Services
             return lastMessage is null
                 ? chat.GetHistory()
                 : chat.GetHistory().Where(message => message.CreatedDateTime > lastMessage.CreatedDateTime);
+        }
+
+        public IEnumerable<string> GetChatParticipantIds(int chatId)
+        {
+            foreach (var chatParticipant in ChatParticipantsRepository.Items.Where(p => p.Chat.Id == chatId))
+                yield return chatParticipant.User.Id.ToString();
         }
     }
 }

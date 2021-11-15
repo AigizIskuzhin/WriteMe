@@ -17,6 +17,39 @@ namespace Database.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.10");
 
+            modelBuilder.Entity("Database.DAL.Entities.Base.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("CountryCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CountryCode = 0,
+                            Name = "Другая страна"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CountryCode = 7,
+                            Name = "Россия"
+                        });
+                });
+
             modelBuilder.Entity("Database.DAL.Entities.Chats.Base.Chat", b =>
                 {
                     b.Property<int>("Id")
@@ -260,6 +293,9 @@ namespace Database.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Code")
+                        .HasColumnType("longtext");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(256)
@@ -268,6 +304,26 @@ namespace Database.DAL.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "user",
+                            Name = "Пользователь"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "mod",
+                            Name = "Модератор"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "admin",
+                            Name = "Администратор"
+                        });
                 });
 
             modelBuilder.Entity("Database.DAL.Entities.SystemPost", b =>
@@ -302,11 +358,11 @@ namespace Database.DAL.Migrations
                     b.Property<string>("AvatarPath")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Birthday")
-                        .HasColumnType("longtext");
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("datetime(6)");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("longtext");
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreatedDateTime")
                         .ValueGeneratedOnAdd()
@@ -341,6 +397,8 @@ namespace Database.DAL.Migrations
                         .HasColumnType("datetime(6)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("RoleId");
 
@@ -495,11 +553,17 @@ namespace Database.DAL.Migrations
 
             modelBuilder.Entity("Database.DAL.Entities.User", b =>
                 {
+                    b.HasOne("Database.DAL.Entities.Base.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId");
+
                     b.HasOne("Database.DAL.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Country");
 
                     b.Navigation("Role");
                 });
