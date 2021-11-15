@@ -1,4 +1,6 @@
-﻿@model Website.ViewModels.Friends.FriendViewModel
+﻿@using Website.Infrastructure.Services
+@using Website.Infrastructure.Extensions
+@model Website.ViewModels.Friends.FriendViewModel
 
 <li id="friend-@Model.Id" class="friend">
     <div class="friend_preview_title">
@@ -15,6 +17,22 @@
             <div class="friend_type">
                 @Model.FriendshipType
             </div>
+            @if (Model.State == FriendsService.state.incoming)
+            {
+                <form asp-action="AllowIncomingFriendship">
+                    <input name="userId" type="hidden" value="@Context.GetConnectedUserId()" />
+                    <input name="targetUserId" type="hidden" value="@Model.Id" />
+                    <input type="submit" value="Принять"/>
+                </form>
+            }
+            @if (Model.State == FriendsService.state.outgoing)
+            {
+        <form asp-action="TryRemoveOutgoingFriendship">
+            <input name="userId" type="hidden" value="@Context.GetConnectedUserId()" />
+            <input name="targetUserId" type="hidden" value="@Model.Id" />
+            <input type="submit" value="Отменить" />
+        </form>
+            }
         </a>
     </div>
 </li>

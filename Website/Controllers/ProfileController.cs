@@ -5,6 +5,7 @@ using Website.Controllers.Rules;
 using Website.Infrastructure.Extensions;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
+using Website.ViewModels.Friends;
 using Website.ViewModels.Profile;
 
 namespace Website.Controllers
@@ -15,6 +16,7 @@ namespace Website.Controllers
         private readonly IFileService FileService;
         private readonly IProfileService ProfileService;
         private readonly IPostingService PostingService;
+        private readonly IFriendsService FriendsService;
 
         #region Get connected user id
         /// <summary>
@@ -26,11 +28,13 @@ namespace Website.Controllers
         public ProfileController(
             IProfileService profileService,
             IPostingService postingService, 
-            IFileService fileService)
+            IFileService fileService,
+            IFriendsService friendsService)
         {
             ProfileService = profileService;
             PostingService = postingService;
             FileService = fileService;
+            FriendsService = friendsService;
         }
 
         #region Profile
@@ -45,11 +49,17 @@ namespace Website.Controllers
             id = id == 0 ? GetConnectedUserID : id;
             var user = await ProfileService.GetUserAsync(id);
             if (user == null) return RedirectToAction("Profile");
+
+            FriendViewModel FriendViewModel = null;
+
+            if (id != GetConnectedUserID && id != 0)
+                FriendViewModel = FriendsService.GetFriendViewModel(GetConnectedUserID, id);
             return View(new ProfileViewModel
             {
                 User = user,
                 IsOwner = id == GetConnectedUserID,
-                UserPosts = ProfileService.GetUserPosts(id)
+                UserPosts = ProfileService.GetUserPosts(id),
+                FriendViewModel = FriendViewModel
             });
         } 
         #endregion
@@ -148,6 +158,17 @@ namespace Website.Controllers
             PostingService.SendReportToPost(postId, GetConnectedUserID, reportTypeId, msg);
         }
         #endregion
+
+        public IActionResult SendFriendRequest(int targetUserId)
+        {
+            FriendsService.TrySendFriendshipRequest(GetConnectedUserID, targetUserId);
+            return Redirect("/profile?id="+targetUserId);
+        } 
+        public IActionResult RemoveFriend(int targetUserId)
+        {
+            FriendsService.TryRemoveUserFriendship(GetConnectedUserID, targetUserId);
+            return Redirect("/profile?id="+targetUserId);
+        }
         
     }
 }
