@@ -19,8 +19,6 @@ namespace Website.Infrastructure.Services
         // Запрос друзей
         public IEnumerable<FriendViewModel> GetUserFriends(int userId)
         {
-            if (userId == 0)
-                throw new ArgumentNullException(nameof(userId));
             foreach (var application in _Friendship.Items.Where(application =>
                 (application.UserOne.Id == userId || application.UserTwo.Id == userId) &&
                 application.ApplicationStateUserOne == FriendshipStates.Allow &&
@@ -45,71 +43,38 @@ namespace Website.Infrastructure.Services
         // Запрос друзей по ФИО
         public IEnumerable<FriendViewModel> GetUserFilteredFriends(int userId, string filterString)
         {
-            if (userId == 0)
-                throw new ArgumentNullException(nameof(userId));
             foreach (var application in _Friendship.Items.Where(application =>
                 application.UserOne.Id == userId || application.UserTwo.Id == userId))
             {
-                bool oneEqualsId = application.UserOne.Id == userId;
-
-                string targetName = oneEqualsId ? application.UserTwo.Name + " " + application.UserTwo.Surname + " " + application.UserTwo.Patronymic
-                    : application.UserOne.Name + " " + application.UserOne.Surname + " " + application.UserOne.Patronymic;
-                if (!targetName.Contains(filterString)) continue;
-                targetName.Replace("  ", " ");
-                yield return new()
-                {
-                    Id = oneEqualsId ? application.UserTwo.Id : application.UserOne.Id,
-                    Name = targetName,
-                    PhotoPath = ""
-                };
+                var friend = ConstructFriend(userId, application,filterString);
+                if (friend != null)
+                    yield return friend;
+                else 
+                    continue;
             }
         }
 
         // Запрос входящих заявок
         public IEnumerable<FriendViewModel> GetUserIncomingFriendships(int userId)
         {
-            if (userId == 0)
-                throw new ArgumentNullException(nameof(userId));
             foreach (var application in _Friendship.Items.Where(application =>
                 application.UserTwo.Id == userId &&
                 application.ApplicationStateUserTwo == FriendshipStates.Suspence &&
                 application.ApplicationStateUserOne == FriendshipStates.Allow))
             {
-                bool oneEqualsId = application.UserOne.Id == userId;
-
-                string targetName = oneEqualsId ? application.UserTwo.Name + " " + application.UserTwo.Surname + " " + application.UserTwo.Patronymic
-                    : application.UserOne.Name + " " + application.UserOne.Surname + " " + application.UserOne.Patronymic;
-                targetName.Replace("  ", " ");
-                yield return new()
-                {
-                    Id = oneEqualsId ? application.UserTwo.Id : application.UserOne.Id,
-                    Name = targetName,
-                    PhotoPath = ""
-                };
+                yield return ConstructFriend(userId, application);
             }
         }
 
         // Запрос исходящих заявок
         public IEnumerable<FriendViewModel> GetUserOutgoingFriendships(int userId)
         {
-            if (userId == 0)
-                throw new ArgumentNullException(nameof(userId));
             foreach (var application in _Friendship.Items.Where(application =>
                 application.UserOne.Id == userId &&
                 application.ApplicationStateUserOne == FriendshipStates.Allow &&
                 application.ApplicationStateUserTwo == FriendshipStates.Suspence))
             {
-                bool oneEqualsId = application.UserOne.Id == userId;
-
-                string targetName = oneEqualsId ? application.UserTwo.Name + " " + application.UserTwo.Surname + " " + application.UserTwo.Patronymic
-                    : application.UserOne.Name + " " + application.UserOne.Surname + " " + application.UserOne.Patronymic;
-                targetName.Replace("  ", " ");
-                yield return new()
-                {
-                    Id = oneEqualsId ? application.UserTwo.Id : application.UserOne.Id,
-                    Name = targetName,
-                    PhotoPath = ""
-                };
+                yield return ConstructFriend(userId, application);
             }
         }
 
@@ -122,7 +87,6 @@ namespace Website.Infrastructure.Services
                 application.ApplicationStateUserTwo == FriendshipStates.Suspence).ToList();
             if (targetFriendship.Count > 0)
             {
-                bool oneEqualsId = targetFriendship[0].UserOne.Id == userId;
                 targetFriendship[0].ApplicationStateUserOne = FriendshipStates.Deny;
                 _Friendship.Remove(targetFriendship[0].Id);
                 return true;
@@ -140,7 +104,6 @@ namespace Website.Infrastructure.Services
                 application.ApplicationStateUserTwo == FriendshipStates.Allow).ToList();
             if (targetFriendship.Count > 0)
             {
-                bool oneEqualsId = targetFriendship[0].UserOne.Id == userId;
                 targetFriendship[0].ApplicationStateUserOne = FriendshipStates.Deny;
                 _Friendship.Update(targetFriendship[0]);
                 return true;
@@ -149,7 +112,7 @@ namespace Website.Infrastructure.Services
         }
 
         // Ответ на входящую заявку
-        public bool TryResponseIncomingFriendship(int userId, int targetUserId, FriendshipStates responseState)
+        private bool TryResponseIncomingFriendship(int userId, int targetUserId, FriendshipStates responseState)
         {
             List<FriendshipApplication> targetFriendship = _Friendship.Items.Where(application =>
                 application.UserTwo.Id == userId &&
@@ -163,6 +126,32 @@ namespace Website.Infrastructure.Services
                 return true;
             }
             else return false;
+        }
+
+        public bool TryAllowIncomingFriendship(int userId, int targetUserId)
+        {
+            return TryResponseIncomingFriendship(userId, targetUserId, FriendshipStates.Allow);
+        }
+        public bool TryDenyIncomingFriendship(int userId, int targetUserId)
+        {
+            return TryResponseIncomingFriendship(userId, targetUserId, FriendshipStates.Deny);
+        }
+
+        // Сборка FriendViewModel
+        private FriendViewModel ConstructFriend(int userId, FriendshipApplication application, string filterString=null)
+        {
+            bool oneEqualsId = application.UserOne.Id == userId;
+
+            string targetName = oneEqualsId ? application.UserTwo.Name + " " + application.UserTwo.Surname + " " + application.UserTwo.Patronymic
+                : application.UserOne.Name + " " + application.UserOne.Surname + " " + application.UserOne.Patronymic;
+            if (filterString!=null&&!targetName.Contains(filterString)) return null;
+            targetName.Replace("  ", " ");
+            return new()
+            {
+                Id = oneEqualsId ? application.UserTwo.Id : application.UserOne.Id,
+                Name = targetName,
+                PhotoPath = ""
+            };
         }
     }
 }

@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Routing;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
-using Website.ViewModels.Friends;
 
 namespace Website.Controllers
 {
@@ -51,5 +47,40 @@ namespace Website.Controllers
             if (id == 0) id = GetConnectedUserID;
             return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(id));
         }
+
+        [Route("/friends/remove")]
+        public IActionResult TryRemoveUserFriendship(int userId, int targetUserId)
+        {
+            if (FriendsService.TryRemoveUserFriendship(userId, targetUserId))
+                return View("Friends", FriendsService.GetUserFriends(userId));
+            else
+                return View("Friends", FriendsService.GetUserFriends(userId));
+        }
+
+        [Route("/friends/outgoing/remove")]
+        public IActionResult TryRemoveOutgoingFriendship(int userId, int targetUserId)
+        {
+            if (FriendsService.TryRemoveOutgoingFriendship(userId, targetUserId))
+                return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(userId));
+            else
+                return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(userId));
+        }
+        [Route("/friends/incoming/allow")]
+        public IActionResult AllowIncomingFriendship(int userId, int targetUserId)
+        {
+            if (FriendsService.TryAllowIncomingFriendship(userId, targetUserId))
+                return View("Friends", FriendsService.GetUserFriends(userId));
+            else
+                return View("Friends", FriendsService.GetUserFriends(userId));
+        }
+        [Route("/friends/incoming/deny")]
+        public IActionResult DenyIncomingFriendship(int userId, int targetUserId)
+        {
+            if (FriendsService.TryDenyIncomingFriendship(userId, targetUserId))
+                return View("Friends", FriendsService.GetUserFriends(userId));
+            else
+                return View("Friends", FriendsService.GetUserFriends(userId));
+        }
+
     }
 }
