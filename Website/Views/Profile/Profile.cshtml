@@ -1,4 +1,5 @@
 ﻿
+@using Database.DAL.Entities
 @model Website.ViewModels.ProfileViewModel
 @{
     var queryId = Context.Request.Query["id"].ToString();
@@ -116,9 +117,39 @@
             </a>
             if (!Model.IsFriend)
             {
-                <div class="profile_btn">
-                    Добавить в друзья
-                </div>
+                if (Model.FriendViewModel == null)
+                {
+
+                    <div>
+                        <form asp-action="SendFriendRequest">
+                            <input type="hidden" name="targetUserId" value="@profileId"/>
+                            <input type="submit" value="Добавить в друзья" id="add_friend" class="profile_btn" style="width: 100%; border: none;"/>
+                        </form>
+                    </div>
+                    
+        }
+                else
+                {
+                    if (Model.FriendViewModel.FriendshipApplication.ApplicationStateUserOne == FriendshipStates.Allow &&
+                        Model.FriendViewModel.FriendshipApplication.ApplicationStateUserTwo == FriendshipStates.Allow)
+                    {
+                        <div class="profile_btn pressed_btn">
+                            В друзьях
+                        </div>
+                        <div>
+                            <form asp-action="RemoveFriend">
+                                <input type="hidden" name="targetUserId" value="@profileId"/>
+                                <input type="submit" value="Удалить из друзей" id="add_friend" class="profile_btn" style="width: 100%; border: none;"/>
+                            </form>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="profile_btn pressed_btn">
+                            В рассмотрении
+                        </div>
+                    }
+                }
             }
         }
         <a href="/friends?id=@profileId">

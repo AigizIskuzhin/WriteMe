@@ -1,6 +1,7 @@
 ﻿using Database.DAL.Entities;
 using System.Collections.Generic;
 using Website.Infrastructure.Extensions;
+using Website.ViewModels.Friends;
 
 namespace Website.ViewModels
 {
@@ -15,5 +16,6 @@ namespace Website.ViewModels
         public IEnumerable<UserPost> UserPosts { get; set; }
         public bool IsNew => true; //User.IsNew;
         public bool IsPostCreating { get; set; }
+        public FriendViewModel FriendViewModel { get; set; }
     }
 }

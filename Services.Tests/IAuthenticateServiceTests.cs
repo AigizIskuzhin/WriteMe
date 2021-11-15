@@ -51,7 +51,11 @@ namespace Services.Tests
         {
             // Arrange
             var mock = new Mock<IAuthenticateService>();
+
+            mock.Setup(s => s.ConfirmUserAsync("test@mail.ru", "123456")).ReturnsAsync(() => null);
+
             var mockService = mock.Object;
+            
            
             // Act
             var result = mockService.ConfirmUserAsync("test@mail.ru", "123456").Result;

@@ -89,6 +89,10 @@
     white-space: nowrap;
     padding: 2px 8px;
 }
+.ui_btn-selected {
+    background: gray;
+    color: white;
+}
 
 .tooltip {
     position: absolute;
