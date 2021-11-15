@@ -1,0 +1,42 @@
+﻿@model Database.DAL.Entities.PostReport
+@{
+    Layout = null;
+}
+<li id="report-@Model.Id" class="report" report-id="@Model.Id"  post-id="@Model.Post.Id" sender-id="@Model.Sender.Id">
+    <div class="report_title">
+        <div class="report_sender report_title_item">
+            <a href="/profile?id=@Model.Sender.Id">
+                Отправитель: @Model.Sender.Name
+            </a>
+        </div>  
+        <div class="report_target report_title_item">
+            <a href="/profile?id=@Model.Post.Owner.Id#post-@Model.Post.Id">
+                Запись
+            </a>
+        </div>
+        <div class="report_type report_title_item">
+            @Model.ReportType.Name
+        </div>
+        <div class="report_state report_title_item">
+            @Model.ReportState.Name
+        </div>
+    </div>
+    <div class="report_content">
+        <div class="report_sender_msg">
+            <div>
+                Комментарий:
+            </div>
+            <div>
+                @Model.Commentary
+            </div>
+        </div>
+        <form asp-action="CloseReport">
+            <input type="hidden" name="reportId" value="@Model.Id" />
+            <input type="submit" value="Закрыть жалобу" class="report-close" />
+        </form>
+        <form asp-action="CloseReportAndDeletePost">
+            <input type="hidden" name="reportId" value="@Model.Id"/>
+            <input type="submit" value="Удалить пост и закрыть жалобу" class="report-close-delete"/>
+        </form>
+    </div>
+</li>

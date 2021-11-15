@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "GuideLayout";
+}
+<div>
+
+</div>
+<div class="guides_container">
+    <article class="guide_article">
+        <header class="guide_article_header">
+            <h3>Регистрация</h3>
+        </header>
+        <ul class="guide_quick_links">
+            <li><a href="#registration_general" class="guide_quick_link">Общее</a></li>
+            <li><a href="#registration_mail_confirm" class="guide_quick_link">Этап проверки почты</a></li>
+            <li><a class="guide_quick_link">Этап ввода данных</a></li>
+            <li><a href="#registration_wrong_mail" class="guide_quick_link">Неверная почта</a></li>
+            <li><a href="#registration_mail_occupied" class="guide_quick_link">Адрес занят</a></li>
+        </ul>   
+        <section id="registration_general" class="guide_section">
+            <header class="guide_section_header">
+                <h3>Общее</h3>
+            </header>
+            <div class="guide_section_content">
+
+            </div>
+        </section>
+        <section id="registration_mail_confirm" class="guide_section">
+            <header class="guide_section_header">
+                <h3>Этап проверки почты</h3>
+            </header>
+            <div class="guide_section_content">
+                <p>
+                    Данный этап включает в себя ввод почты и проверка на уникальность в системе. Так же учитывается формат почты,
+                    и будет выдана ошибка. Пример:
+                    <br />
+                    Правильные варианты:
+                    <ul>
+                        <li><span>test@mail.ru</span></li>
+                        <li><span>test1@mail1.ru</span></li>
+                        <li><span>test1_t@mail1_t.ru.yandex</span></li>
+                    </ul>
+                    <br />
+                    Неправильные варианты:
+                    <ul>
+                        <li><span>test@mail</span></li>
+                        <li><span>mail.ru</span></li>
+                        <li><span>test</span></li>
+                    </ul>
+                </p>
+            </div>
+        </section>
+        <section id="registration_wrong_mail" class="guide_section">
+            <header class="guide_section_header">
+                <h3>Неверная почта</h3>
+            </header>
+            <div class="guide_section_content">
+                <p>
+                    Если вы получили ошибку "Неверный формат почты", значит вы допустили ошибку в формате введенной почты. Ознакомьтесь 
+                    с правильным форматом почты ниже.
+                    <br/>
+                    Правильные варианты:
+                    <ul>
+                        <li><span>test@mail.ru</span></li>
+                        <li><span>test1@mail1.ru</span></li>
+                        <li><span>test1_t@mail1_t.ru.yandex</span></li>
+                    </ul>
+                </p>
+            </div>
+        </section><section id="registration_mail_occupied" class="guide_section">
+            <header class="guide_section_header">
+                <h3>Адрес занят</h3>
+            </header>
+            <div class="guide_section_content">
+                <p>
+                    Если вы получили ошибку "Адрес занят", значит введенный вами адрес почты уже занят и используется кем-то из пользователей
+                    в системе. Пожалуйста, проверьте правильность введенной почты приведенный ниже, и свяжитесь с администрацией, если кто-то
+                    используют вашу почту.
+                    <br />
+                    Правильные варианты:
+                    <ul>
+                        <li><span>test@mail.ru</span></li>
+                        <li><span>test1@mail1.ru</span></li>
+                        <li><span>test1_t@mail1_t.ru.yandex</span></li>
+                    </ul>
+                </p>
+            </div>
+        </section>
+    </article>
+</div>

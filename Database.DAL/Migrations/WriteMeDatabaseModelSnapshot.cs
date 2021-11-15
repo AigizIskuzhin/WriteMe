@@ -17,84 +17,65 @@ namespace Database.DAL.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.10");
 
-            modelBuilder.Entity("Database.DAL.Entities.Chat.Chat", b =>
+            modelBuilder.Entity("Database.DAL.Entities.Base.Country", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("ChangeDateTime")
+                    b.Property<int>("CountryCode")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Countries");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CountryCode = 0,
+                            Name = "Другая страна"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CountryCode = 7,
+                            Name = "Россия"
+                        });
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Chats.Base.Chat", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("datetime(6)");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsGroupChat")
+                    b.Property<bool>("IsPrivateChat")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<int>("MaximumChatParticipants")
+                        .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Chats");
-                });
-
-            modelBuilder.Entity("Database.DAL.Entities.Chat.ChatMessage", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("DateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<int?>("SenderId1")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Text")
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
-
-                    b.HasIndex("SenderId1");
-
-                    b.ToTable("ChatMessages");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("ChatMessage");
-                });
-
-            modelBuilder.Entity("Database.DAL.Entities.Chat.ChatParticipant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("ChatId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("JoinedDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ChatId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ChatParticipant");
                 });
 
             modelBuilder.Entity("Database.DAL.Entities.FriendshipApplication", b =>
@@ -150,32 +131,131 @@ namespace Database.DAL.Migrations
                     b.ToTable("FriendshipTypes");
                 });
 
-            modelBuilder.Entity("Database.DAL.Entities.Post", b =>
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.ChatParticipant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("CreationDateTime")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("longtext");
-
-                    b.Property<int>("OwnerId")
+                    b.Property<int?>("ChatId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Title")
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("LeftDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ChatParticipants");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.GeneratedChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Text")
                         .HasColumnType("longtext");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OwnerId");
+                    b.HasIndex("ChatId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("GeneratedChatMessages");
                 });
 
-            modelBuilder.Entity("Database.DAL.Entities.Role", b =>
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.ParticipantChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ChatId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ChatParticipantSenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Text")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ChatId");
+
+                    b.HasIndex("ChatParticipantSenderId");
+
+                    b.ToTable("ParticipantChatMessages");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.PostReport", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Commentary")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportStateId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ReportTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SenderId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("ReportStateId");
+
+                    b.HasIndex("ReportTypeId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("PostReports");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.ReportState", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -188,7 +268,85 @@ namespace Database.DAL.Migrations
 
                     b.HasKey("Id");
 
+                    b.ToTable("ReportStates");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.ReportType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ReportTypes");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Role", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Code")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("varchar(256)");
+
+                    b.HasKey("Id");
+
                     b.ToTable("Roles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Code = "user",
+                            Name = "Пользователь"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Code = "mod",
+                            Name = "Модератор"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Code = "admin",
+                            Name = "Администратор"
+                        });
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.SystemPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("SystemPosts");
                 });
 
             modelBuilder.Entity("Database.DAL.Entities.User", b =>
@@ -197,11 +355,18 @@ namespace Database.DAL.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Birthday")
+                    b.Property<string>("AvatarPath")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Country")
-                        .HasColumnType("longtext");
+                    b.Property<DateTime>("Birthday")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
 
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("tinyint(1)");
@@ -227,7 +392,13 @@ namespace Database.DAL.Migrations
                     b.Property<string>("Surname")
                         .HasColumnType("longtext");
 
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime(6)");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
 
                     b.HasIndex("RoleId");
 
@@ -253,53 +424,34 @@ namespace Database.DAL.Migrations
                     b.ToTable("UserConnection");
                 });
 
-            modelBuilder.Entity("Database.DAL.Entities.Chat.GeneratedMessage", b =>
+            modelBuilder.Entity("Database.DAL.Entities.UserPost", b =>
                 {
-                    b.HasBaseType("Database.DAL.Entities.Chat.ChatMessage");
-
-                    b.HasDiscriminator().HasValue("GeneratedMessage");
-                });
-
-            modelBuilder.Entity("Database.DAL.Entities.Chat.UserMessage", b =>
-                {
-                    b.HasBaseType("Database.DAL.Entities.Chat.ChatMessage");
-
-                    b.Property<int>("SenderId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.HasDiscriminator().HasValue("UserMessage");
-                });
+                    b.Property<DateTime>("CreatedDateTime")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime(6)");
 
-            modelBuilder.Entity("Database.DAL.Entities.Chat.ChatMessage", b =>
-                {
-                    b.HasOne("Database.DAL.Entities.Chat.Chat", null)
-                        .WithMany("History")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
 
-                    b.HasOne("Database.DAL.Entities.Chat.ChatParticipant", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId1");
+                    b.Property<int>("OwnerId")
+                        .HasColumnType("int");
 
-                    b.Navigation("Sender");
-                });
+                    b.Property<string>("Title")
+                        .HasColumnType("longtext");
 
-            modelBuilder.Entity("Database.DAL.Entities.Chat.ChatParticipant", b =>
-                {
-                    b.HasOne("Database.DAL.Entities.Chat.Chat", null)
-                        .WithMany("Participants")
-                        .HasForeignKey("ChatId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<DateTime>("UpdatedDateTime")
+                        .ValueGeneratedOnUpdate()
+                        .HasColumnType("datetime(6)");
 
-                    b.HasOne("Database.DAL.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasKey("Id");
 
-                    b.Navigation("User");
+                    b.HasIndex("OwnerId");
+
+                    b.ToTable("UserPosts");
                 });
 
             modelBuilder.Entity("Database.DAL.Entities.FriendshipApplication", b =>
@@ -329,24 +481,89 @@ namespace Database.DAL.Migrations
                     b.Navigation("UserTwoFriendshipType");
                 });
 
-            modelBuilder.Entity("Database.DAL.Entities.Post", b =>
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.ChatParticipant", b =>
                 {
-                    b.HasOne("Database.DAL.Entities.User", "Owner")
+                    b.HasOne("Database.DAL.Entities.Chats.Base.Chat", "Chat")
+                        .WithMany("ChatParticipants")
+                        .HasForeignKey("ChatId");
+
+                    b.HasOne("Database.DAL.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("OwnerId")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.GeneratedChatMessage", b =>
+                {
+                    b.HasOne("Database.DAL.Entities.Chats.Base.Chat", "Chat")
+                        .WithMany("GeneratedChatMessages")
+                        .HasForeignKey("ChatId");
+
+                    b.Navigation("Chat");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.ParticipantChatMessage", b =>
+                {
+                    b.HasOne("Database.DAL.Entities.Chats.Base.Chat", "Chat")
+                        .WithMany("ParticipantChatMessages")
+                        .HasForeignKey("ChatId");
+
+                    b.HasOne("Database.DAL.Entities.Messages.ChatMessage.ChatParticipant", "ChatParticipantSender")
+                        .WithMany("ChatParticipantMessages")
+                        .HasForeignKey("ChatParticipantSenderId");
+
+                    b.Navigation("Chat");
+
+                    b.Navigation("ChatParticipantSender");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.PostReport", b =>
+                {
+                    b.HasOne("Database.DAL.Entities.UserPost", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId");
+
+                    b.HasOne("Database.DAL.Entities.ReportState", "ReportState")
+                        .WithMany()
+                        .HasForeignKey("ReportStateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Owner");
+                    b.HasOne("Database.DAL.Entities.ReportType", "ReportType")
+                        .WithMany()
+                        .HasForeignKey("ReportTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Database.DAL.Entities.User", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId");
+
+                    b.Navigation("Post");
+
+                    b.Navigation("ReportState");
+
+                    b.Navigation("ReportType");
+
+                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Database.DAL.Entities.User", b =>
                 {
+                    b.HasOne("Database.DAL.Entities.Base.Country", "Country")
+                        .WithMany()
+                        .HasForeignKey("CountryId");
+
                     b.HasOne("Database.DAL.Entities.Role", "Role")
                         .WithMany("Users")
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Country");
 
                     b.Navigation("Role");
                 });
@@ -358,11 +575,29 @@ namespace Database.DAL.Migrations
                         .HasForeignKey("UserId");
                 });
 
-            modelBuilder.Entity("Database.DAL.Entities.Chat.Chat", b =>
+            modelBuilder.Entity("Database.DAL.Entities.UserPost", b =>
                 {
-                    b.Navigation("History");
+                    b.HasOne("Database.DAL.Entities.User", "Owner")
+                        .WithMany()
+                        .HasForeignKey("OwnerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Participants");
+                    b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Chats.Base.Chat", b =>
+                {
+                    b.Navigation("ChatParticipants");
+
+                    b.Navigation("GeneratedChatMessages");
+
+                    b.Navigation("ParticipantChatMessages");
+                });
+
+            modelBuilder.Entity("Database.DAL.Entities.Messages.ChatMessage.ChatParticipant", b =>
+                {
+                    b.Navigation("ChatParticipantMessages");
                 });
 
             modelBuilder.Entity("Database.DAL.Entities.Role", b =>

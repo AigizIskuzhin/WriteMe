@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Website.Infrastructure.Services;
 using Website.Infrastructure.Services.Extensions;
+using Website.Infrastructure.SignalRHubs;
 
 namespace Website
 {
@@ -20,7 +21,9 @@ namespace Website
             .AddControllersWithViews().AddRazorRuntimeCompilation()
             .Services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            .AddCookie();
+            .AddCookie()
+            .Services
+            .AddSignalR();
         //.AddLocalization(options => options.ResourcesPath = "Resources")
         //.AddViewLocalization();
         //services.AddLocalization(options=>options.ResourcesPath="Infrastructure/Localization");
@@ -62,6 +65,8 @@ namespace Website
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=About}/{action=Index}/{id?}");
+                endpoints.MapHub<AppHub>("/signalr");
+                endpoints.MapHub<PrivateChatHub>("/privatesignalr/{chatId}");
             });
         }
     }

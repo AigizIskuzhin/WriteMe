@@ -6,11 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database.DAL.Repositories
 {
-    class PostsRepository : DbRepository<Post>
+    class PostsRepository : DbRepository<UserPost>
     {
         public PostsRepository(WriteMeDatabase db) : base(db) {}
 
-        public override IQueryable<Post> Items => base.Items
+        public override IQueryable<UserPost> Items => base.Items
             .Include(post => post.Owner);
     }
 }

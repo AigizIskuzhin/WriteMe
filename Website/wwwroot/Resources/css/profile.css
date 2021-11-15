@@ -1,23 +1,21 @@
-﻿@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap');
-:root{
+﻿:root{
     --light-main-background-color: rgba(242,242,242,1);
 }
 *{
-	font-family: 'Nunito', sans-serif;
+	/*font-family: 'Nunito', sans-serif;*/
     box-sizing: border-box;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
 }
 
 .user_profile {
-    margin-top: 20px;
     width: inherit;
     /* position: sticky; */
-    height: 200px;
+    /*height: 220px;*/
     transition: .5s linear;
     display: flex;
     gap: 20px;
-    overflow: hidden;
+    /*overflow: hidden;*/
     z-index: 13;
     top: 68px;
 }
@@ -27,12 +25,26 @@
 }
 
 .profile_logo {
-    border-radius: 30px;
+    border-radius: 20px;
+    background-color: var(--light-main-background-color);
+    /*max-height: 220px;*/
+    /*width: min-content;*/
+    padding: 10px;
+    transition: .5s linear;
+    position: relative;
+    max-width: 220px;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    /*border-radius: 20px;
     background-color: var(--light-main-background-color);
     height: 100%;
     box-sizing: border-box;
     padding: 10px;
     transition: .5s linear;
+    position: relative;*/
 }
 
 .profile_logo-collapsed {
@@ -41,9 +53,20 @@
 }
 
 .profile_img {
-    border-radius: 25px;
+    border-radius: 14px;
     height: 100%;
     transition: .5s linear;
+    background: white;
+    padding: 4px;
+    max-height: 220px;
+    max-width: 220px;
+    width: 100%;
+    object-fit: cover;
+    /*border-radius: 25px;
+    height: 100%;
+    transition: .5s linear;
+    background: white;
+    padding: 4px;*/
 }
 
 .profile_img-collapsed {
@@ -138,6 +161,10 @@
     width: 100%;
     border-radius: 12px;
     transition: .5s linear;
+    /*display: flex;*/
+    padding: 10px;
+    color: gray;
+    fill: gray;
 }
 
 .profile_info-collapsed {
@@ -145,8 +172,13 @@
     transition: .5s linear;
 }
 
+.profile_info_row {
+    display: flex;
+    align-items: center;
+}  
+
 .profile_page {
-    position: sticky;
+    /*position: sticky;*/
     top: 300px;
     margin-top: 20px;
     /* margin-top: 240px; */
@@ -161,8 +193,8 @@
 }
 
 .profile_stats {
-    width: 200px;
-    min-width: 200px;
+    width: 220px;
+    min-width: 220px;
     transition: .5s linear;
     overflow: hidden;
     display: flex;
@@ -175,6 +207,8 @@
     min-width: 0;
     white-space: nowrap;
 }
+
+ 
 
 .ui_posts_tools, .ui_control_item, #ui_post_search_block{
     z-index: 2;
@@ -191,7 +225,11 @@
     padding: 12px 12px 12px 36px;
     outline: none;
 }
-
+.posts_container {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
 #search_icon {
     position: absolute;
     left: 12px;
@@ -205,16 +243,6 @@
 #open_post_sumbit_form svg{
     vertical-align: baseline;
 }
-.ui_control_item {
-    border-radius: 12px;
-    height: 40px;
-    width: 40px;
-    background-color: var(--light-main-background-color);
-    color: var(--font-dark-color);
-    cursor: pointer;
-    border: 1px transparent solid;
-    transition: .2s linear;
-}
 
 .ui_control_item:hover {
     border-color: var(--field-hover-dark-color);
@@ -226,7 +254,7 @@
     animation-iteration-count: 1;
     animation: btn_click .3s ease-in-out;
 }
-.expanded{
+.ui_expanded{
     width: 100%;
 }
 
@@ -250,5 +278,59 @@
     list-style: none;
 }
 
-    
 
+#upload_btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin: 10px;
+    opacity: .4;
+}
+#upload_btn:hover {
+    opacity: 1;
+}
+
+.profile_mail {
+    white-space: nowrap;
+    background: #e8e8e8;
+    width: min-content;
+    padding: 4px 8px;
+    border-radius: 10px;
+    /*margin-bottom: 10px;*/
+    color: #686868;
+    border: 1px var(--border-main-color) solid;
+}
+
+.day {
+    display: flex;
+    max-width: 100%;
+    margin: 0;
+    white-space: nowrap;
+    color: gray;
+    opacity: .5;
+}
+
+.day:before {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background: gray;
+    margin: auto 10px auto 0;
+    opacity: .5;
+}
+
+.day:after {
+    content: "";
+    width: 100%;
+    height: 1px;
+    background: gray;
+    margin: auto 0 auto 10px;
+    opacity: .5;
+}
+.del {
+    color: #000;
+    background: #ddd;
+    padding: 4px 8px;
+    border-radius: 8px;
+    border: 1px var(--border-main-color) solid;
+}

@@ -60,12 +60,23 @@ namespace Database.DAL.Repositories.Base
 
         public void Remove(int id)
         {
-            throw new System.NotImplementedException();
+            //var item = Get(id);
+            //if (item is null) return;
+            //_db.Entry(item);
+
+            var item = Set.Local.FirstOrDefault(i => i.Id == id) ?? new T { Id = id };
+
+            Database.Remove(item);
+
+            if (AutoSaveChanges)
+                Database.SaveChanges();
         }
 
-        public Task RemoveAsync(int id, CancellationToken cancel = default)
+        public async Task RemoveAsync(int id, CancellationToken cancel = default)
         {
-            throw new System.NotImplementedException();
+            Database.Remove(new T { Id = id });
+            if (AutoSaveChanges)
+                await Database.SaveChangesAsync(cancel).ConfigureAwait(false);
         }
     }
 }

@@ -13,13 +13,13 @@
         <ul id="friends" class="friends">
             @foreach (var friend in Model)
             {
-                Html.RenderPartial("FriendView",friend);
+                Html.RenderPartial("FriendView", friend);
             }
-        </ul>
+        </ul> 
     </div>
 
     <div class="friends_links">
-        <a class="ui_control_item ui_btn" href="/friends">
+        <a class="ui_control_item ui_btn ui_btn-selected" href="/friends">
             Друзья
         </a>
         <a class="ui_control_item ui_btn" href="/friends/incoming">

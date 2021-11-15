@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.AspNetCore.Routing;
 using Website.Controllers.Rules;
+using Website.Infrastructure.Extensions;
 using Website.Infrastructure.Services.Interfaces;
 
 namespace Website.Controllers
@@ -13,10 +14,9 @@ namespace Website.Controllers
         /// <summary>
         /// Получить подключенного пользователя с помощью claims
         /// </summary>
-        private int GetConnectedUserID => int.Parse(User.Claims.First(claim => claim.Type.Equals("id")).Value);
+        private int GetConnectedUserID => int.Parse(User.GetConnectedUserId()); 
         #endregion
-
-        private IFriendsService FriendsService;
+        private readonly IFriendsService FriendsService;
         public FriendsController(IFriendsService friendsService)
         {
             FriendsService = friendsService;
@@ -24,7 +24,7 @@ namespace Website.Controllers
         [Route("/friends")]
         public IActionResult Friends(int id)
         {
-            if (id == 0) id = GetConnectedUserID;
+            if (id == 0) id = int.Parse(HttpContext.GetConnectedUserId());
             return View("Friends", FriendsService.GetUserFriends(id));
         }
 
@@ -51,35 +51,27 @@ namespace Website.Controllers
         [Route("/friends/remove")]
         public IActionResult TryRemoveUserFriendship(int userId, int targetUserId)
         {
-            if (FriendsService.TryRemoveUserFriendship(userId, targetUserId))
-                return View("Friends", FriendsService.GetUserFriends(userId));
-            else
+            FriendsService.TryRemoveUserFriendship(userId, targetUserId);
                 return View("Friends", FriendsService.GetUserFriends(userId));
         }
 
         [Route("/friends/outgoing/remove")]
         public IActionResult TryRemoveOutgoingFriendship(int userId, int targetUserId)
         {
-            if (FriendsService.TryRemoveOutgoingFriendship(userId, targetUserId))
-                return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(userId));
-            else
-                return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(userId));
+            FriendsService.TryRemoveOutgoingFriendship(userId, targetUserId);
+            return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(userId));
         }
         [Route("/friends/incoming/allow")]
         public IActionResult AllowIncomingFriendship(int userId, int targetUserId)
         {
-            if (FriendsService.TryAllowIncomingFriendship(userId, targetUserId))
-                return View("Friends", FriendsService.GetUserFriends(userId));
-            else
-                return View("Friends", FriendsService.GetUserFriends(userId));
+            FriendsService.TryAllowIncomingFriendship(userId, targetUserId);
+            return View("Friends", FriendsService.GetUserFriends(userId));
         }
         [Route("/friends/incoming/deny")]
         public IActionResult DenyIncomingFriendship(int userId, int targetUserId)
         {
-            if (FriendsService.TryDenyIncomingFriendship(userId, targetUserId))
-                return View("Friends", FriendsService.GetUserFriends(userId));
-            else
-                return View("Friends", FriendsService.GetUserFriends(userId));
+            FriendsService.TryDenyIncomingFriendship(userId, targetUserId);
+            return View("Friends", FriendsService.GetUserFriends(userId));
         }
 
     }

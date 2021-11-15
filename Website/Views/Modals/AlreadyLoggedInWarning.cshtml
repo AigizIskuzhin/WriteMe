@@ -1,0 +1,35 @@
+﻿@using Website.Infrastructure.Extensions
+@using Database.Interfaces
+@using Database.DAL.Entities
+@inject IRepository<User> UsersRepository
+@{
+    Layout = null;
+    int userId = int.Parse(Context.GetConnectedUserId());
+    var user = await UsersRepository.GetAsync(userId);
+
+}
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<div class="center-screen auth">
+    <form class="auth-form" action="@Url.Action("ConfirmMailForAuthorization")" method="POST" asp-anti-forgery="true">
+        @*<img class="wallpaper" src="~/Resources/images/wallpaper.png" />*@
+        <h3 style="color:red">Вы уже авторизованы</h3>
+        <a class="auth-btn" href="/profile" style="    background: rgb(242,242,242);box-shadow: 0 0 30px 2px rgba(232,232,232, 0.7);">
+            @if (string.IsNullOrWhiteSpace(user.AvatarPath))
+            {
+                <svg class="profile_img" style="fill:gray" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                    <path d="M 15 3 C 11.686 3 9 5.686 9 9 L 9 10 C 9 13.314 11.686 16 15 16 C 18.314 16 21 13.314 21 10 L 21 9 C 21 5.686 18.314 3 15 3 z M 14.998047 19 C 10.992047 19 5.8520469 21.166844 4.3730469 23.089844 C 3.4590469 24.278844 4.329125 26 5.828125 26 L 24.169922 26 C 25.668922 26 26.539 24.278844 25.625 23.089844 C 24.146 21.167844 19.004047 19 14.998047 19 z">
+                    </path>
+                </svg>
+            }
+            else
+            {
+                <img class="profile_img" src="@user.AvatarPath"/>
+            }
+            <div>
+                @user.Name
+            </div>
+        </a>
+        <a class="auth-btn" href="/exit">Выйти из системы</a>
+    </form>
+</div>  

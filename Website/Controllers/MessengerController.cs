@@ -1,8 +1,10 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq;
+using System.Threading.Tasks;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
+using Website.ViewModels.Messenger;
 
 namespace Website.Controllers
 {
@@ -17,41 +19,110 @@ namespace Website.Controllers
         #endregion
 
         private readonly IMessengerService MessengerService;
+        private readonly ISignalRService SignalRService;
 
         #region ctor
-        public MessengerController(IMessengerService messengerService)
+        public MessengerController(IMessengerService messengerService, ISignalRService signalRService)
         {
             MessengerService = messengerService;
+            SignalRService = signalRService;
         } 
         #endregion
 
-        #region Dialogs
+        #region Chats
+
         /// <summary>
-        /// Открытие страницы диалогов, возврат диалого подключенного пользователя
+        /// Открытие страницы чатов, возвращает чаты подключенного пользователя
         /// </summary>
-        /// <param name="dialogsViewModel"></param>
+        /// <param name="chatsViewModel"></param>   
         /// <returns></returns>
-        public IActionResult Dialogs(DialogsViewModel dialogsViewModel)
+        public IActionResult Chats(ChatsViewModel chatsViewModel)
         {
+            if (chatsViewModel.ChatId != 0) return GetChat(chatsViewModel.ChatId);
+
             int connectedUserId = GetConnectedUserID;
-            dialogsViewModel.Chats = MessengerService.GetUserChats(connectedUserId);
-            var t = dialogsViewModel.Chats.First().History;
-            return View(dialogsViewModel);
+            chatsViewModel.ChatsPreviews = MessengerService.GetUserChatsPreviews(connectedUserId);
+            return View(chatsViewModel);
         }
         #endregion
 
-        #region Chat
+        #region GetChatWithUser
 
+        public IActionResult GetChat(int id)
+        {
+            if (id== 0)
+                return RedirectToAction("Chats");
+
+            var chat = MessengerService.GetChat(id);
+            var receiver = chat.GetReceiverChatParticipant(GetConnectedUserID);
+            return View("Base/ChatView",
+                new ChatViewModel
+                {
+                    Id = chat.Id,
+                    History = chat.GetHistory(), 
+                    ConnectedUserId = GetConnectedUserID,
+                    IsPrivateChat = chat.IsPrivateChat,
+                    ReceiverName = receiver.User.Name,
+                    ReceiverId = receiver.Id,
+                    IsReceiverOnline = SignalRService.Connections.GetConnections(receiver.User.Id.ToString()).Any(),
+                    ReceiverAvatarPath = receiver.User.AvatarPath
+                });
+        }
         /// <summary>
-        /// Возврат чата по указанному ид, подключенного пользователя
+        /// Возврат чата с указанным пользователем, подключенного пользователя
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IActionResult Chat(int id)
+        /// GetPrivateChatWithUser?idId=id
+        public IActionResult GetPrivateChatWithUser(int id)
         {
-            var chat = MessengerService.GetChat(id);
-            return View(chat);
-        } 
+            if (id== 0)
+                return RedirectToAction("Chats");
+
+            var chat = MessengerService.GetPrivateChatWithUser(id, GetConnectedUserID);
+            if (chat is null)
+                return RedirectToAction("Chats");
+            ViewData["UserId"] = GetConnectedUserID;
+            return RedirectPermanent("/messenger/chats?id="+chat.Id);
+        }
         #endregion
+
+        #region SendMessageToChat
+        public async Task SendMessageToChat(int chatId, string text)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                return;
+            await MessengerService.SendMessageToChat(GetConnectedUserID, chatId, text);
+        }
+        #endregion
+
+        #region GetNewMessages
+
+        public IActionResult GetNewMessages(int chatId, int lastMessageId)
+        {
+            var newMessages = MessengerService.GetNewMessagesFromLast(chatId, lastMessageId);
+            var chat = MessengerService.GetChat(chatId);
+            var receiver = chat.GetReceiverChatParticipant(GetConnectedUserID);
+            return View("PrivateChat/PrivateChatHistoryView",
+                new ChatViewModel
+                {
+                    IsPrivateChat = chat.IsPrivateChat,
+                    History = newMessages,
+                    ConnectedUserId = GetConnectedUserID,
+                    ReceiverName = receiver.User.Name,
+                    ReceiverId = receiver.Id,
+                    IsReceiverOnline = SignalRService.Connections.GetConnections(receiver.User.Id.ToString()).Any()
+                });
+        }
+
+        #endregion
+
+        //public IActionResult GetGroupChat(ChatsViewModel chatsViewModel)
+        //{
+        //    if (chatsViewModel.TargetedGroupChatId == 0)
+        //        return RedirectToAction("Dialogs");
+        //    return View("GroupChat");
+        //}
+
     }
 }

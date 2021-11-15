@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Website.Controllers.Rules;
+using Website.Infrastructure.Extensions;
 using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
+using Website.ViewModels.Friends;
 using Website.ViewModels.Profile;
 
 namespace Website.Controllers
@@ -13,18 +13,28 @@ namespace Website.Controllers
     [CustomizedAuthorize]
     public class ProfileController : Controller
     {
+        private readonly IFileService FileService;
         private readonly IProfileService ProfileService;
+        private readonly IPostingService PostingService;
+        private readonly IFriendsService FriendsService;
 
         #region Get connected user id
         /// <summary>
         /// Получить подключенного пользователя с помощью claims
         /// </summary>
-        private int GetConnectedUserID => int.Parse(User.Claims.First(claim => claim.Type.Equals("id")).Value); 
+        private int GetConnectedUserID => int.Parse(User.GetConnectedUserId()); 
         #endregion
 
-        public ProfileController(IProfileService profileService)
+        public ProfileController(
+            IProfileService profileService,
+            IPostingService postingService, 
+            IFileService fileService,
+            IFriendsService friendsService)
         {
             ProfileService = profileService;
+            PostingService = postingService;
+            FileService = fileService;
+            FriendsService = friendsService;
         }
 
         #region Profile
@@ -39,11 +49,17 @@ namespace Website.Controllers
             id = id == 0 ? GetConnectedUserID : id;
             var user = await ProfileService.GetUserAsync(id);
             if (user == null) return RedirectToAction("Profile");
+
+            FriendViewModel FriendViewModel = null;
+
+            if (id != GetConnectedUserID && id != 0)
+                FriendViewModel = FriendsService.GetFriendViewModel(GetConnectedUserID, id);
             return View(new ProfileViewModel
             {
                 User = user,
                 IsOwner = id == GetConnectedUserID,
-                UserPosts = ProfileService.GetUserPosts(id)
+                UserPosts = ProfileService.GetUserPosts(id),
+                FriendViewModel = FriendViewModel
             });
         } 
         #endregion
@@ -51,13 +67,13 @@ namespace Website.Controllers
         // TODO: implement it
         #region Upload profile avatar
         [HttpPost]
-        public ActionResult UploadAvatar(IFormFile uploadedFile)
+        public ActionResult UploadAvatar(IFormFile image)
         {
-            if (uploadedFile != null)
+            if (image != null)
             {
-
+                FileService.Upload(image, HttpContext.GetConnectedUserId());
             }
-            return View("Profile");
+            return RedirectToAction("Profile");
         } 
         #endregion
         
@@ -84,8 +100,7 @@ namespace Website.Controllers
         public ActionResult UploadPost(PostViewModel post) => PartialView("PostView", ProfileService.UploadPost(new(){
             Title=post.Title,
             Description=post.Description,
-            OwnerId = GetConnectedUserID,
-            CreationDateTime=DateTime.Now
+            OwnerId = GetConnectedUserID
             })); 
         #endregion
 
@@ -96,7 +111,7 @@ namespace Website.Controllers
         /// <param name="post"></param>
         /// <returns></returns>
         [HttpPost]
-        public ActionResult EditPost(PostViewModel post) => PartialView("PostView", ProfileService.EditPost(new(){
+        public ActionResult EditPost(PostViewModel post) => View("PostView", ProfileService.EditPost(new(){
             Id = post.Id,
             Title=post.Title,
             Description=post.Description,
@@ -122,11 +137,38 @@ namespace Website.Controllers
         /// <param name="id"></param>
         /// <param name="filterText"></param>
         /// <returns></returns>
-        public ActionResult SearchUserPosts(int id, string filterText)
+        public ActionResult SearchUserPosts(string filterText)
         {
-            id = id == 0 ? GetConnectedUserID : id;
-            return View("PostsView", string.IsNullOrWhiteSpace(filterText) ? ProfileService.GetUserPosts(id) : ProfileService.GetUserPostsWithFilter(id, filterText));
-        } 
+            string t = HttpContext.Request.Query["id"];
+            int id = string.IsNullOrWhiteSpace(t) ? GetConnectedUserID : int.Parse(t);
+            return View("PostsView",
+                string.IsNullOrWhiteSpace(filterText)
+                    ? ProfileService.GetUserPosts(id)
+                    : ProfileService.GetUserPostsWithFilter(id, filterText));
+        }
         #endregion
+
+        #region SendReportForPost
+        /// <summary>
+        /// Append targeted post to report list
+        /// </summary>
+        /// <param name="postId"></param>
+        public void SendReportForPost(int postId, int reportTypeId, string msg)
+        {
+            PostingService.SendReportToPost(postId, GetConnectedUserID, reportTypeId, msg);
+        }
+        #endregion
+
+        public IActionResult SendFriendRequest(int targetUserId)
+        {
+            FriendsService.TrySendFriendshipRequest(GetConnectedUserID, targetUserId);
+            return Redirect("/profile?id="+targetUserId);
+        } 
+        public IActionResult RemoveFriend(int targetUserId)
+        {
+            FriendsService.TryRemoveUserFriendship(GetConnectedUserID, targetUserId);
+            return Redirect("/profile?id="+targetUserId);
+        }
+        
     }
 }

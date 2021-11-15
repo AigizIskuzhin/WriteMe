@@ -8,7 +8,6 @@
 <div class="center-screen auth">
     <form class="auth-form" action=@Url.Action("ConfirmMailForRegistration") method="POST" asp-anti-forgery="true">
         <h3>Регистрация</h3>
-        <input type="hidden" asp-for="IsAuth" />
         <div class="auth-row">
             <input id="MailAddress" autocomplete="off" onkeydown="IsInputEmpty(this)" onkeyup="IsInputEmpty(this)" class="auth-input" placeholder="Почта" type="text" asp-for="MailAddress" />
             @*<div asp-validation-summary="All"></div>*@

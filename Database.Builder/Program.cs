@@ -1,13 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using Database.DAL.Context;
+﻿using Database.DAL.Context;
 using Database.DAL.Entities;
-using Database.DAL.Entities.Chat;
-using Database.DAL.Repositories.ServicesRegistrator;
+using Database.DAL.Repositories.ServicesRegistrar;
 using Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System;
+using System.Threading.Tasks;
 
 namespace Database.Builder
 {
@@ -45,7 +44,7 @@ namespace Database.Builder
             provider.GetRequiredService<WriteMeDatabaseTestInitializer>().InitializeAsync().Wait();
             // Удаление бд, миграция моделей, создание бд (в будущем инициализация данных еще)
 
-            IRepository<Chat> chatRepository = provider.GetRequiredService<IRepository<Chat>>();
+            //IRepository<Chat> chatRepository = provider.GetRequiredService<IRepository<Chat>>();
             IRepository<User> usersRepository = provider.GetRequiredService<IRepository<User>>();
 
             
