@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Website.Infrastructure.Services.Interfaces
+namespace Services.Interfaces
 {
     public interface IProfileService
     {

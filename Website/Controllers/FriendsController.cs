@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 using Microsoft.AspNetCore.Routing;
+using Services.Interfaces;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Extensions;
-using Website.Infrastructure.Services.Interfaces;
 
 namespace Website.Controllers
 {
@@ -39,13 +38,13 @@ namespace Website.Controllers
         public IActionResult IncomingFriendRequests(int id)
         {
             if (id == 0) id = GetConnectedUserID;
-            return View("FriendsIncoming", FriendsService.GetUserIncomingFriendships(id));
+            return View("FriendsIncoming", FriendsService.GetIncomingApplications(id));
         }
         [Route("/friends/outgoing")]
         public IActionResult OutgoingFriendRequests(int id)
         {
             if (id == 0) id = GetConnectedUserID;
-            return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(id));
+            return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(id));
         }
 
         [Route("/friends/remove")]
@@ -59,7 +58,7 @@ namespace Website.Controllers
         public IActionResult TryRemoveOutgoingFriendship(int userId, int targetUserId)
         {
             FriendsService.TryRemoveOutgoingFriendship(userId, targetUserId);
-            return View("FriendsOutgoing", FriendsService.GetUserOutgoingFriendships(userId));
+            return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(userId));
         }
         [Route("/friends/incoming/allow")]
         public IActionResult AllowIncomingFriendship(int userId, int targetUserId)

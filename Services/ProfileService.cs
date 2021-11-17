@@ -1,11 +1,11 @@
 ﻿using Database.DAL.Entities;
 using Database.Interfaces;
+using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Website.Infrastructure.Services.Interfaces;
 
-namespace Website.Infrastructure.Services
+namespace Services
 {
     public class ProfileService : IProfileService
     {

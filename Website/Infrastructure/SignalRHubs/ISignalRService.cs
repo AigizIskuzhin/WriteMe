@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Website.Infrastructure.SignalRHubs;
 
-namespace Website.Infrastructure.Services.Interfaces
+namespace Website.Infrastructure.SignalRHubs
 {
     public interface ISignalRService
     {

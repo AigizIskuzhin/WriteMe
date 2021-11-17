@@ -1,11 +1,11 @@
 ﻿using Database.DAL.Entities;
 using Database.Interfaces;
+using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels.Friends;
 
-namespace Website.Infrastructure.Services
+namespace Services
 {
     public class FriendsService : IFriendsService
     {
@@ -17,34 +17,22 @@ namespace Website.Infrastructure.Services
             UsersRepository = usersRepository;
         }
 
-
-        // Запрос друзей
         public IEnumerable<FriendViewModel> GetUserFriends(int userId)
         {
-            foreach (var application in _Friendship.Items.Where(application =>
-                (application.UserOne.Id == userId || application.UserTwo.Id == userId) &&
-                application.ApplicationStateUserOne == FriendshipStates.Allow &&
-                application.ApplicationStateUserTwo == FriendshipStates.Allow))
-            {
-                yield return ConstructFriend(userId, application);
-            }
-
-
+            return from a in _Friendship.Items.Where(a =>
+                    (a.UserOne.Id == userId || a.UserTwo.Id == userId) &&
+                    a.ApplicationStateUserOne == FriendshipStates.Allow &&
+                    a.ApplicationStateUserTwo == FriendshipStates.Allow)
+                select ConstructFriend(userId, a);
         }
 
         // Запрос друзей по ФИО
-        public IEnumerable<FriendViewModel> GetUserFilteredFriends(int userId, string filterString)
-        {
-            foreach (var application in _Friendship.Items.Where(application =>
-                application.UserOne.Id == userId || application.UserTwo.Id == userId))
-            {
-                var friend = ConstructFriend(userId, application,filterString);
-                if (friend != null)
-                    yield return friend;
-                else 
-                    continue;
-            }
-        }
+        public IEnumerable<FriendViewModel> GetUserFriends(int userId, string filterString) =>
+            from a in _Friendship.Items.Where(a =>
+                (a.UserOne.Id == userId || a.UserTwo.Id == userId) &&
+                a.ApplicationStateUserOne == FriendshipStates.Allow &&
+                a.ApplicationStateUserTwo == FriendshipStates.Allow) 
+            select ConstructFriend(userId, a);
 
         public FriendViewModel GetFriendViewModel(int userId, int targetUserId)
         {
@@ -57,7 +45,7 @@ namespace Website.Infrastructure.Services
         }
 
         // Запрос входящих заявок
-        public IEnumerable<FriendViewModel> GetUserIncomingFriendships(int userId)
+        public IEnumerable<FriendViewModel> GetIncomingApplications(int userId)
         {
             foreach (var application in _Friendship.Items.Where(application =>
                 application.UserTwo.Id == userId &&
@@ -69,15 +57,16 @@ namespace Website.Infrastructure.Services
         }
 
         // Запрос исходящих заявок
-        public IEnumerable<FriendViewModel> GetUserOutgoingFriendships(int userId)
+        public IEnumerable<FriendViewModel> GetOutgoingApplications(int userId)
         {
-            foreach (var application in _Friendship.Items.Where(application =>
-                application.UserOne.Id == userId &&
-                application.ApplicationStateUserOne == FriendshipStates.Allow &&
-                application.ApplicationStateUserTwo == FriendshipStates.Suspence))
-            {
-                yield return ConstructFriend(userId, application, state:state.outgoing);
-            }
+            return from user in _Friendship.Items select ConstructFriend(userId, user);
+            //foreach (var application in _Friendship.Items.Where(application =>
+            //    application.UserOne.Id == userId &&
+            //    application.ApplicationStateUserOne == FriendshipStates.Allow &&
+            //    application.ApplicationStateUserTwo == FriendshipStates.Suspence))
+            //{
+            //    yield return ConstructFriend(userId, application, state:state.outgoing);
+            //}
         }
 
         // Отмена исходящей заявки
@@ -114,28 +103,28 @@ namespace Website.Infrastructure.Services
         }
 
         // Ответ на входящую заявку
-        private bool TryResponseIncomingFriendship(int userId, int targetUserId, FriendshipStates responseState)
+        private bool TryResponseIncomingFriendship(int id, int receiverId, FriendshipStates responseState)
         {
-            var t = GetFriendViewModel(userId, targetUserId);
-            if (t.FriendshipApplication!=null)
+            var t = _Friendship.Get(id);
+            if (t!=null)
             {
-                if (t.FriendshipApplication.UserOne.Id.Equals(userId))
-                    t.FriendshipApplication.ApplicationStateUserOne = responseState;
-                else t.FriendshipApplication.ApplicationStateUserTwo = responseState;
-                _Friendship.Update(t.FriendshipApplication);
+                if(UserOneIsNotReceiver(t, receiverId))
+                    t.ApplicationStateUserTwo = responseState;
+                else t.ApplicationStateUserOne = responseState;
+                _Friendship.Update(t);
                 return true;
             }
-            else return false;
+            return false;
         }
-        
-        public bool TryAllowIncomingFriendship(int userId, int targetUserId)
-        {
-            return TryResponseIncomingFriendship(userId, targetUserId, FriendshipStates.Allow);
-        }
-        public bool TryDenyIncomingFriendship(int userId, int targetUserId)
-        {
-            return TryResponseIncomingFriendship(userId, targetUserId, FriendshipStates.Deny);
-        }
+
+        private bool UserOneIsNotReceiver(FriendshipApplication friendshipApplication, int userId) =>
+            friendshipApplication.UserOne.Id.Equals(userId);
+
+        public bool TryAllowIncomingFriendship(int id, int receiverId) =>
+            TryResponseIncomingFriendship(id, receiverId, FriendshipStates.Allow);
+
+        public bool TryDenyIncomingFriendship(int id, int receiverId) =>
+            TryResponseIncomingFriendship(id, receiverId, FriendshipStates.Deny);
 
         public bool TrySendFriendshipRequest(int userId, int targetUserId)
         {
@@ -157,16 +146,22 @@ namespace Website.Infrastructure.Services
             return false;
         }
 
+        
         // Сборка FriendViewModel
         private FriendViewModel ConstructFriend(int userId, FriendshipApplication application, string filterString=null, state state = state.nil)
         {
+            var friend = UserOneIsNotReceiver(application, userId)
+                ? application.UserOne
+                : application.UserTwo;
+
+            return friend.GetFriendViewModel();
             bool oneEqualsId = application.UserOne.Id == userId;
 
             string targetName = oneEqualsId ? application.UserTwo.Name + " " + application.UserTwo.Surname + " " + application.UserTwo.Patronymic
                 : application.UserOne.Name + " " + application.UserOne.Surname + " " + application.UserOne.Patronymic;
             if (filterString!=null&&!targetName.Contains(filterString)) return null;
-            targetName.Replace("  ", " ");
-            return new()
+            targetName = targetName.Replace("  ", " ");
+            return new FriendViewModel
             {
                 Id = oneEqualsId ? application.UserTwo.Id : application.UserOne.Id,
                 Name = targetName,
@@ -181,6 +176,18 @@ namespace Website.Infrastructure.Services
             incoming=0,
             outgoing=1,
             nil=2
+        }
+
+        private static class UserExtensions
+        {
+            public static FriendViewModel GetFriendViewModel(this User friend) => new FriendViewModel
+            {
+                Name = friend.Name,
+                Surname = friend.Surname,
+                Patronymic = friend.Patronymic,
+                PhotoPath = friend.AvatarPath,
+
+            };
         }
     }
 }

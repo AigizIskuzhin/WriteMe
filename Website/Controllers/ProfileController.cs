@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using System.Threading.Tasks;
 using Website.Controllers.Rules;
 using Website.Infrastructure.Extensions;
-using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
 using Website.ViewModels.Friends;
 using Website.ViewModels.Profile;

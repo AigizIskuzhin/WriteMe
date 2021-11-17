@@ -1,13 +1,15 @@
-﻿using Database.DAL.Entities.Chats.Base;
+﻿using System;
+using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Website.ViewModels.Messenger.Preview.Base;
 
-namespace Website.Infrastructure.Services.Interfaces
+namespace Services.Interfaces
 {
     public interface IMessengerService
     {
+        public event EventHandler<EventArgs<int>> NewMessageOnChat;
         public IEnumerable<ChatPreviewViewModel> GetUserChatsPreviews(int id);
         public IEnumerable<IMessage> GetPrivateChatHistory(int id);
         public Chat GetChat(int id);

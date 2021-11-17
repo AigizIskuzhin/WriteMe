@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.Controllers.Rules;
-using Website.Infrastructure.Services.Interfaces;
+using Website.Infrastructure.SignalRHubs;
 using Website.ViewModels;
 using Website.ViewModels.Messenger;
 

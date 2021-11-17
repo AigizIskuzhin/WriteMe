@@ -1,14 +1,12 @@
-﻿using Microsoft.AspNetCore.Authentication;
+﻿using Database.DAL.Entities;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Database.DAL.Entities;
-using Database.DAL.Entities.Base;
-using Database.Interfaces;
 using Website.Controllers.Rules;
-using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
 
 namespace Website.Controllers

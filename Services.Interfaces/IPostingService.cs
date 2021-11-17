@@ -1,7 +1,7 @@
-﻿using Database.DAL.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Database.DAL.Entities;
 
-namespace Website.Infrastructure.Services.Interfaces
+namespace Services.Interfaces
 {
     public interface IPostingService
     {

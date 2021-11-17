@@ -1,15 +1,20 @@
-﻿using System;
-using System.IO;
-using Database.DAL.Entities;
+﻿using Database.DAL.Entities;
 using Database.Interfaces;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Website.Infrastructure.Services.Interfaces;
+using Services.Interfaces;
+using System;
+using System.IO;
 
-namespace Website.Infrastructure.Services
+namespace Services
 {
     public class FileService : IFileService
     {
+        //public interface IWebHostEnvironment : IHostEnvironment
+        //{
+        //    string WebRootPath { get; set; }
+        //    IFileProvider WebRootFileProvider { get; set; }
+        //}
         private readonly IWebHostEnvironment env;
         private readonly IRepository<User> UsersRepository;
 

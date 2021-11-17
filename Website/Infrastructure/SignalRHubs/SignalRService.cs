@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
-using Website.Infrastructure.Services.Interfaces;
-using Website.Infrastructure.SignalRHubs;
 
-namespace Website.Infrastructure.Services
+namespace Website.Infrastructure.SignalRHubs
 {
     public class SignalRService : ConnectionMapping<string>,ISignalRService
     {

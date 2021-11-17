@@ -1,43 +1,35 @@
-﻿using Database.DAL.Entities;
+﻿using System;
+using Database.DAL.Entities;
 using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
-using Website.Infrastructure.Services.Interfaces;
-using Website.Infrastructure.SignalRHubs;
 using Website.ViewModels.Messenger.Preview;
 using Website.ViewModels.Messenger.Preview.Base;
 
-namespace Website.Infrastructure.Services
+namespace Services
 {
     public class MessengerService : IMessengerService
     {
-        private readonly IHubContext<AppHub> AppHub;
-        private readonly ISignalRService SignalService;
-
-
-
         private readonly IRepository<User> UsersRepository;
         private readonly IRepository<Chat> ChatsRepository;
         private readonly IRepository<ChatParticipant> ChatParticipantsRepository;
         public MessengerService(
             IRepository<User> usersRepository,
             IRepository<Chat> chatsRepository, 
-            IRepository<ChatParticipant> chatParticipantsRepository, 
-            IHubContext<AppHub> appHub, 
-            ISignalRService signalService)
+            IRepository<ChatParticipant> chatParticipantsRepository)
         {
             UsersRepository = usersRepository;
             ChatsRepository = chatsRepository;
             ChatParticipantsRepository = chatParticipantsRepository;
-            AppHub = appHub;
-            SignalService = signalService;
         }
+
+        public event EventHandler<Interfaces.EventArgs<int>> NewMessageOnChat;
 
         public IEnumerable<ChatPreviewViewModel> GetUserChatsPreviews(int userId)
         {
@@ -119,11 +111,12 @@ namespace Website.Infrastructure.Services
                 Text = text
             });
             await ChatParticipantsRepository.UpdateAsync(chatParticipant);
-            
-            foreach (var receiver in chatParticipants.Where(p=>p.User.Id!=userId))
-                foreach (var connection in SignalService.Connections.GetConnections(receiver.User.Id.ToString()))
-                    await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
-            
+
+            NewMessageOnChat.Invoke(this, chatId);
+            //foreach (var receiver in chatParticipants.Where(p=>p.User.Id!=userId))
+            //    foreach (var connection in SignalService.Connections.GetConnections(receiver.User.Id.ToString()))
+            //        await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);
+
         }
         
         public IEnumerable<IMessage> GetNewMessagesFromLast(int chatId, int lastMessageId)
