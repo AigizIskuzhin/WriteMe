@@ -10,3 +10,8 @@ An attempt to demonstrate some kind of work as group of developers with Scrum de
 
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/PresentationSmall.png)
 
+
+Deploying
+-
+Maybe sometime
+
