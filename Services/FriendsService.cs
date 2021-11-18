@@ -37,19 +37,15 @@ namespace Services
             select GetFriendViewModel(application, userId, ApplicationState.outgoing);
 
         // Отмена исходящей заявки
-        public bool TryRemoveOutgoingFriendship(int userId, int targetUserId)
+        public bool TryRemoveOutgoingFriendship(int id)
         {
-            List<FriendshipApplication> targetFriendship = _Friendship.Items.Where(application =>
-                application.UserOne.Id == userId &&
-                application.ApplicationStateUserOne == FriendshipStates.Allow &&
-                application.ApplicationStateUserTwo == FriendshipStates.Suspence).ToList();
-            if (targetFriendship.Count > 0)
-            {
-                targetFriendship[0].ApplicationStateUserOne = FriendshipStates.Deny;
-                _Friendship.Remove(targetFriendship[0].Id);
-                return true;
-            }
-            else return false;
+            var application = _Friendship.Get(id);
+            if (application == null) return false;
+            
+            application.ApplicationStateUserOne = FriendshipStates.Suspence;
+
+            //_Friendship.Remove(id);
+            return true;
         }
 
         // Удаление друга
@@ -73,15 +69,15 @@ namespace Services
         private bool TryResponseIncomingFriendship(int id, int receiverId, FriendshipStates responseState)
         {
             var t = _Friendship.Get(id);
-            if (t!=null)
-            {
-                if(UserOneIsNotReceiver(t, receiverId))
-                    t.ApplicationStateUserTwo = responseState;
-                else t.ApplicationStateUserOne = responseState;
-                _Friendship.Update(t);
-                return true;
-            }
-            return false;
+            if (t == null) return false;
+
+            if(UserOneIsNotReceiver(t, receiverId))
+                t.ApplicationStateUserTwo = responseState;
+            else t.ApplicationStateUserOne = responseState;
+
+            _Friendship.Update(t);
+            
+            return true;
         }
 
 
@@ -96,19 +92,19 @@ namespace Services
             var sender = UsersRepository.Get(userId);
             var receiver = UsersRepository.Get(targetUserId);
 
-            if (!_Friendship.Items.Any(f => f.UserOne.Id.Equals(sender.Id) && f.UserTwo.Id.Equals(receiver.Id) ||
-                                            f.UserOne.Id.Equals(receiver.Id) && f.UserTwo.Id.Equals(sender.Id)))
+            if (_Friendship.Items.Any(f =>
+                f.UserOne.Id.Equals(sender.Id) && f.UserTwo.Id.Equals(receiver.Id) ||
+                f.UserOne.Id.Equals(receiver.Id) && f.UserTwo.Id.Equals(sender.Id)))
+                return false;
+            var t = _Friendship.Add(new FriendshipApplication
             {
-                var t = _Friendship.Add(new FriendshipApplication
-                {
-                    UserOne = sender,
-                    ApplicationStateUserOne = FriendshipStates.Allow,
-                    UserTwo = receiver,
-                    ApplicationStateUserTwo = FriendshipStates.Suspence
-                });
-                return t != null;
-            }
-            return false;
+                UserOne = sender,
+                ApplicationStateUserOne = FriendshipStates.Allow,
+                UserTwo = receiver,
+                ApplicationStateUserTwo = FriendshipStates.Suspence
+            });
+            return t != null;
+
         }
 
         
@@ -116,61 +112,24 @@ namespace Services
         public FriendViewModel GetFriendViewModel(FriendshipApplication application, int userId, ApplicationState state = ApplicationState.friend)
         {
             var friend = GetFriendFromApplication(application, userId);
-            if(state == ApplicationState.friend)
-                if (!application.IsFitCondition(friend.Id))
-                    return null;
-
-            return new()
+            return state switch
             {
-                Name = friend.Name,
-                Surname = friend.Surname,
-                Patronymic = friend.Patronymic,
-                PhotoPath = friend.AvatarPath,
-                ApplicationState = state
+                ApplicationState.friend when !application.IsFriend(friend.Id) => null,
+                ApplicationState.incoming when !application.IsIncoming(friend.Id) => null,
+                ApplicationState.outgoing when !application.IsOutgoing(friend.Id) => null,
+                _ => new FriendViewModel
+                {
+                    Name = friend.Name,
+                    Surname = friend.Surname,
+                    Patronymic = friend.Patronymic,
+                    PhotoPath = friend.AvatarPath,
+                    ApplicationState = state
+                }
             };
         }
         private User GetFriendFromApplication(FriendshipApplication application, int userId) =>
             UserOneIsNotReceiver(application, userId) ? application.UserOne : application.UserTwo;
         private bool UserOneIsNotReceiver(FriendshipApplication application, int userId) =>
             application.UserOne.Id.Equals(userId);
-        private bool ApplicationStateIs(FriendshipApplication a, int userId, ApplicationState state = ApplicationState.friend)
-        {
-            return false;
-            //switch (state)
-            //{
-            //    case ApplicationState.friend:
-            //        return a.ApplicationStateUserOne == a.ApplicationStateUserTwo &&
-            //               a.ApplicationStateUserTwo == FriendshipStates.Allow;
-            //    case ApplicationState.outgoing:
-            //        return UserOneIsNotReceiver(a, userId)
-            //}
-        }
-
-        private bool ApplicationStateIs(FriendshipApplication a, int userId, FriendshipStates state)
-        {
-            return false;
-            //    switch (state)
-            //    {
-            //        case FriendshipStates.Allow:
-            //            return UserOneIsNotReceiver(a, userId)
-            //                ? a.ApplicationStateUserOne == FriendshipStates.Suspence &&
-            //                  a.ApplicationStateUserTwo == FriendshipStates.Allow
-            //                : a.ApplicationStateUserOne == FriendshipStates.Allow &&
-            //                  a.ApplicationStateUserTwo == FriendshipStates.Suspence;
-            //        case FriendshipStates.Suspence:
-            //            return UserOneIsNotReceiver(a, userId)
-            //                ? a.ApplicationStateUserOne == FriendshipStates.Suspence &&
-            //                  a.ApplicationStateUserTwo == FriendshipStates.Allow;
-            //    }
-            //    return UserOneIsNotReceiver(a, userId)
-            //        ? a.ApplicationStateUserOne == FriendshipStates.Suspence &&
-            //          a.ApplicationStateUserTwo == FriendshipStates.Allow;
-        }
-
-
-        //private bool IsOutgoingApplication(FriendshipApplication a, int userId) =>
-        //    UserOneIsNotReceiver(a, userId)
-        //        ? a.ApplicationStateUserOne == FriendshipStates.Suspence &&
-        //          a.ApplicationStateUserTwo == FriendshipStates.Allow
     }
 }

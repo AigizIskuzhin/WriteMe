@@ -13,7 +13,7 @@ namespace Services.Interfaces
         public IEnumerable<FriendViewModel> GetIncomingApplications(int userId);
         public IEnumerable<FriendViewModel> GetOutgoingApplications(int userId);
         public bool TryRemoveUserFriendship(int userId,int targetUserId);
-        public bool TryRemoveOutgoingFriendship(int userId, int targetUserId);
+        public bool TryRemoveOutgoingFriendship(int id);
         public bool TryAllowIncomingFriendship(int userId, int targetUserId);
         public bool TryDenyIncomingFriendship(int userId, int targetUserId);
         public bool TrySendFriendshipRequest(int userId, int targetUserId);
