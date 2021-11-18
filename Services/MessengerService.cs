@@ -9,8 +9,10 @@ using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Website.ViewModels.Messenger;
 using Website.ViewModels.Messenger.Preview;
 using Website.ViewModels.Messenger.Preview.Base;
+using Website.ViewModels.Users;
 
 namespace Services
 {
@@ -40,16 +42,51 @@ namespace Services
                 if (chat.IsPrivateChat)
                     yield return new PrivateChatPreviewViewModel
                     {
-                        Chat = chat,
-                        Receiver = chat.GetReceiverChatParticipant(userId).User
+                        Chat = GetChatViewModel(chat, userId),
+                        Receiver = GetUserViewModel(chat.GetReceiverChatParticipant(userId).User)
                     };
-                else
-                    yield return new GroupChatPreviewViewModel
-                    {
-                        Chat = chat
-                    };
+                //else
+                //    yield return new GroupChatPreviewViewModel
+                //    {
+                //        Chat = get
+                //    };
         }
 
+        public ChatViewModel GetChatViewModel(Chat chat, int userId) => new()
+        {
+            ConnectedUserId = userId,
+            History = from m in chat.GetHistory() select GetMessageViewModel(m)
+        };
+
+        public MessageViewModel GetMessageViewModel(IMessage message) =>
+            message switch
+            {
+                ParticipantChatMessage userMessage => new UserMessageViewModel
+                {
+                    Id = message.Id,
+                    ChatParticipantSender = new()
+                    {
+                        User = GetUserViewModel(userMessage.ChatParticipantSender.User),
+                        CreatedDateTime = userMessage.ChatParticipantSender.CreatedDateTime
+                    },
+                    CreatedDateTime = userMessage.CreatedDateTime,
+                    Text = userMessage.Text
+                },
+                GeneratedChatMessage gMessage => new MessageViewModel
+                {
+                    Id = message.Id, CreatedDateTime = message.CreatedDateTime, Text = message.Text
+                },
+                _ => null
+            };
+
+        public UserViewModel GetUserViewModel(User u) => new UserViewModel
+        {
+            Id=u.Id,
+            Name = u.Name,
+            Surname = u.Surname,
+            Patronymic = u.Patronymic,
+            Birthday = u.Birthday
+        };
         public IEnumerable<IMessage> GetPrivateChatHistory(int id)
         {
             var chat = ChatsRepository.Get(id);
@@ -63,9 +100,7 @@ namespace Services
             var chat = ChatsRepository.Items
                 .FirstOrDefault(c => c.MaximumChatParticipants == 2 &&
                                      c.ChatParticipants.Any(p => p.User.Id.Equals(receiverId)) &&
-                                     c.ChatParticipants.Any(p => p.User.Id.Equals(senderId)));
-
-            if(chat is null) chat = GetNewChatWithUser(receiverId, senderId);
+                                     c.ChatParticipants.Any(p => p.User.Id.Equals(senderId))) ?? GetNewChatWithUser(receiverId, senderId);
 
             return chat;
         }
@@ -112,7 +147,7 @@ namespace Services
             });
             await ChatParticipantsRepository.UpdateAsync(chatParticipant);
 
-            NewMessageOnChat.Invoke(this, chatId);
+            NewMessageOnChat?.Invoke(this, chatId);
             //foreach (var receiver in chatParticipants.Where(p=>p.User.Id!=userId))
             //    foreach (var connection in SignalService.Connections.GetConnections(receiver.User.Id.ToString()))
             //        await AppHub.Clients.Client(connection).SendAsync("NotifyAboutNewMessage", chatId);

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using Database.DAL.Extensions.MySqlTimeStamps.Interfaces;
+﻿using Database.DAL.Extensions.MySqlTimeStamps.Interfaces;
 using Database.Interfaces;
 
 namespace Database.DAL.Entities.Messages.Base

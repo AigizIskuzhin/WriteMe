@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Database.DAL.Entities.Base;
+using Database.DAL.Entities.Chats.Base;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
-using Database.DAL.Entities.Base;
-using Database.DAL.Entities.Chats.Base;
 
 namespace Database.DAL.Entities.Messages.ChatMessage
 {

@@ -1,10 +1,10 @@
-﻿using Database.DAL.Entities;
-using Website.ViewModels.Messenger.Preview.Base;
+﻿using Website.ViewModels.Messenger.Preview.Base;
+using Website.ViewModels.Users;
 
 namespace Website.ViewModels.Messenger.Preview
 {
     public class PrivateChatPreviewViewModel : ChatPreviewViewModel
     {
-        public User Receiver { get; set; }
+        public UserViewModel Receiver { get; set; }
     }
 }
