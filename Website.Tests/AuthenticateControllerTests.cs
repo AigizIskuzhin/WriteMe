@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Website.Controllers;
-using Website.Infrastructure.Services.Interfaces;
+using Services.Interfaces;
 using Website.ViewModels;
 using Xunit;
 
