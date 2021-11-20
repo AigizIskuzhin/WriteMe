@@ -1,12 +1,17 @@
 ﻿using System.Collections.Generic;
-using Database.DAL.Entities;
+using Website.ViewModels.Base;
 
 namespace Website.ViewModels
 {
-    public class PostReportViewModel
+    public class PostReportViewModel : EntityViewModel
     {
         public int SenderId{get; set; }
         public int PostId { get; set; }
-        public IEnumerable<ReportType> ReportTypes { get; set; }
+        public IEnumerable<ReportTypeVM> ReportTypes { get; set; }
+    }
+
+    public class ReportTypeVM : EntityViewModel
+    {
+        public string Name { get; set; }
     }
 }

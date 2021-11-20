@@ -1,12 +1,16 @@
-﻿namespace Website.ViewModels.Profile
+﻿using System;
+using Website.ViewModels.Base;
+
+namespace Website.ViewModels.Profile
 {
-    public class PostViewModel
+    public class PostViewModel : EntityViewModel
     {
-        public int Id { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
-        public int OwnerId {get;set;}
-        public string OwnerName{get;set;}
-        public string CreationDateTime { get; set; }
+        public DateTime CreationDateTime { get; set; }
+    }
+
+    public class SystemPostViewModel : PostViewModel
+    {
     }
 }

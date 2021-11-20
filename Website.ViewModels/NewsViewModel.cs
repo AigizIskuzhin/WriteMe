@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Database.DAL.Entities;
+using Website.ViewModels.Profile;
 
 namespace Website.ViewModels
 {
@@ -7,6 +7,6 @@ namespace Website.ViewModels
     {
         public bool IsAdmin { get; set; }
         
-        public IEnumerable<SystemPost> NewsPosts { get; set; }
+        public IEnumerable<SystemPostViewModel> NewsPosts { get; set; }
     }
 }

@@ -39,7 +39,7 @@ namespace Website.Controllers
         /// <returns></returns>
         public IActionResult Chats(ChatsViewModel chatsViewModel)
         {
-            if (chatsViewModel.ChatId != 0) return GetChat(chatsViewModel.ChatId);
+            if (chatsViewModel.id != 0) return GetChat(chatsViewModel.id);
 
             int connectedUserId = GetConnectedUserID;
             chatsViewModel.ChatsPreviews = MessengerService.GetUserChatsPreviews(connectedUserId);
@@ -54,20 +54,8 @@ namespace Website.Controllers
             if (id== 0)
                 return RedirectToAction("Chats");
 
-            var chat = MessengerService.GetChat(id);
-            var receiver = chat.GetReceiverChatParticipant(GetConnectedUserID);
-            return View("Base/ChatView",
-                new ChatViewModel
-                {
-                    Id = chat.Id,
-                    History = chat.GetHistory(), 
-                    ConnectedUserId = GetConnectedUserID,
-                    IsPrivateChat = chat.IsPrivateChat,
-                    ReceiverName = receiver.User.Name,
-                    ReceiverId = receiver.Id,
-                    IsReceiverOnline = SignalRService.Connections.GetConnections(receiver.User.Id.ToString()).Any(),
-                    ReceiverAvatarPath = receiver.User.AvatarPath
-                });
+            var chat = MessengerService.GetChat(id, GetConnectedUserID);
+            return View("Base/ChatView",chat);
         }
         /// <summary>
         /// Возврат чата с указанным пользователем, подключенного пользователя
@@ -102,18 +90,9 @@ namespace Website.Controllers
         public IActionResult GetNewMessages(int chatId, int lastMessageId)
         {
             var newMessages = MessengerService.GetNewMessagesFromLast(chatId, lastMessageId);
-            var chat = MessengerService.GetChat(chatId);
-            var receiver = chat.GetReceiverChatParticipant(GetConnectedUserID);
-            return View("PrivateChat/PrivateChatHistoryView",
-                new ChatViewModel
-                {
-                    IsPrivateChat = chat.IsPrivateChat,
-                    History = newMessages,
-                    ConnectedUserId = GetConnectedUserID,
-                    ReceiverName = receiver.User.Name,
-                    ReceiverId = receiver.Id,
-                    IsReceiverOnline = SignalRService.Connections.GetConnections(receiver.User.Id.ToString()).Any()
-                });
+            var chat = MessengerService.GetChat(chatId, GetConnectedUserID);
+            chat.History = newMessages;
+            return View("PrivateChat/PrivateChatHistoryView", chat);
         }
 
         #endregion

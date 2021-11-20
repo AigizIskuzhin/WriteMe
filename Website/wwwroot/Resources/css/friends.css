@@ -32,6 +32,9 @@
 }
 
 .friend_preview_title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
     height: 100%;
 }
 
@@ -84,4 +87,11 @@
     display: flex;
     flex-direction: column;
     height: min-content;
+}
+
+.friend_type {
+    background: #c0ffc0;
+    padding: 4px 8px;
+    border-radius: 10px;
+    font-size: 14px;
 }

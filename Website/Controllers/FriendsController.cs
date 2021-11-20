@@ -31,8 +31,8 @@ namespace Website.Controllers
         public IActionResult TryRemoveFriendship(int target)
         {
             int id = GetConnectedUserID;
-            if (FriendsService.TryRemoveUserFriendship(id, target)) return View("Friends", FriendsService.GetUserFriends(id));
-            else return View("Friends", FriendsService.GetUserFriends(id)); // Error not removed
+            FriendsService.TryRemoveUserFriendship(id, target);
+            return View("Friends", FriendsService.GetUserFriends(id)); // Error not removed
         }
         [Route("/friends/incoming")]
         public IActionResult IncomingFriendRequests(int id)
@@ -55,10 +55,10 @@ namespace Website.Controllers
         }
 
         [Route("/friends/outgoing/remove")]
-        public IActionResult TryRemoveOutgoingFriendship(int userId, int targetUserId)
+        public IActionResult TryRemoveOutgoingFriendship(int id)
         {
-            FriendsService.TryRemoveOutgoingFriendship(userId, targetUserId);
-            return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(userId));
+            FriendsService.TryRemoveOutgoingFriendship(id);
+            return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(GetConnectedUserID));
         }
         [Route("/friends/incoming/allow")]
         public IActionResult AllowIncomingFriendship(int userId, int targetUserId)

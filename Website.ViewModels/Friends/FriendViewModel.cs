@@ -1,8 +1,9 @@
-﻿namespace Website.ViewModels.Friends
+﻿using Website.ViewModels.Base;
+
+namespace Website.ViewModels.Friends
 {
-    public class FriendViewModel
+    public class FriendViewModel:EntityViewModel
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }

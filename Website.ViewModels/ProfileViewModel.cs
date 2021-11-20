@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Website.ViewModels.Extensions;
 using Website.ViewModels.Friends;
 using Website.ViewModels.Users;
 

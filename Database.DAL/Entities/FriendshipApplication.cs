@@ -40,5 +40,6 @@ namespace Database.DAL.Entities
 
         private bool IsFitCondition(FriendshipStates friend, FriendshipStates sender, FriendshipStates resultFriend,
             FriendshipStates resultSender) => friend == resultFriend && sender == resultSender;
+        
     }
 }

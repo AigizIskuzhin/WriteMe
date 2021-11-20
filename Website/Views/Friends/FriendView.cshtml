@@ -1,8 +1,8 @@
-﻿@using Website.Infrastructure.Services
-@using Website.Infrastructure.Extensions
+﻿@using Website.Infrastructure.Extensions
+@using Website.ViewModels.Friends
 @model Website.ViewModels.Friends.FriendViewModel
 
-<li id="friend-@Model.Id" class="friend">
+<li id="friend-@Model.Id" class="friend" data-applicaiton-id="@Model.Id">
     <div class="friend_preview_title">
         <a href="/profile?id=@Model.Id">
             <div class="friend_icon_container">
@@ -14,25 +14,35 @@
             <div class="friend_name">
                 @Model.Name
             </div>
-            <div class="friend_type">
-                @Model.FriendshipType
-            </div>
-            @if (Model.State == FriendsService.state.incoming)
+            
+        </a>
+        @if (Model.ApplicationState == ApplicationState.friend)
             {
-                <form asp-action="AllowIncomingFriendship">
+                <div class="friend_type">
+                    Друг
+                </div>
+                
+                <form asp-action="TryRemoveFriendship">
                     <input name="userId" type="hidden" value="@Context.GetConnectedUserId()" />
                     <input name="targetUserId" type="hidden" value="@Model.Id" />
-                    <input type="submit" value="Принять"/>
+                    <input type="submit" value="Удалить из друзей" />
                 </form>
             }
-            @if (Model.State == FriendsService.state.outgoing)
-            {
-        <form asp-action="TryRemoveOutgoingFriendship">
-            <input name="userId" type="hidden" value="@Context.GetConnectedUserId()" />
-            <input name="targetUserId" type="hidden" value="@Model.Id" />
-            <input type="submit" value="Отменить" />
-        </form>
-            }
-        </a>
+        @if (Model.ApplicationState == ApplicationState.incoming)
+        {
+            <form asp-action="AllowIncomingFriendship">
+                <input name="userId" type="hidden" value="@Context.GetConnectedUserId()" />
+                <input name="targetUserId" type="hidden" value="@Model.Id" />
+                <input type="submit" value="Принять"/>
+            </form>
+        }
+        @if (Model.ApplicationState == ApplicationState.outgoing)
+        {
+            <form asp-action="TryRemoveOutgoingFriendship">
+                <input name="userId" type="hidden" value="@Context.GetConnectedUserId()" />
+                <input name="targetUserId" type="hidden" value="@Model.Id" />
+                <input type="submit" value="Отменить" />
+            </form>
+        }
     </div>
 </li>

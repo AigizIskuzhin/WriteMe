@@ -17,24 +17,86 @@ namespace Services
             UsersRepository = usersRepository;
         }
 
-        public IEnumerable<FriendViewModel> GetUserFriends(int userId) =>
-            from a in _Friendship.Items.Where(a =>
-                (a.UserOne.Id == userId || a.UserTwo.Id == userId) &&
-                a.ApplicationStateUserOne == FriendshipStates.Allow &&
-                a.ApplicationStateUserTwo == FriendshipStates.Allow)
-            select GetFriendViewModel(a, userId, ApplicationState.friend);
+        public FriendViewModel GetFriendViewModel(int currentUserId, int userId)
+        {
+            var application = _Friendship.Items.FirstOrDefault(a =>
+                a.UserOne.Id.Equals(currentUserId) && a.UserTwo.Id.Equals(userId) ||
+                a.UserOne.Id.Equals(userId) && a.UserTwo.Id.Equals(currentUserId));
+
+            return GetFriendViewModel(application, userId);
+        }
+        public FriendViewModel GetFriendViewModel(FriendshipApplication application, int userId)
+        {
+            var friend = GetFriendFromApplication(application, userId);
+            var f = new FriendViewModel
+            {
+                Id = application.Id,
+                Name = friend.Name,
+                Surname = friend.Surname,
+                Patronymic = friend.Patronymic,
+                PhotoPath = friend.AvatarPath
+            };
+            if (application.IsFriend(friend.Id))
+                f.ApplicationState = ApplicationState.friend;
+            if (application.IsIncoming(friend.Id))
+                f.ApplicationState = ApplicationState.incoming;
+            if (application.IsOutgoing(friend.Id))
+                f.ApplicationState = ApplicationState.outgoing;
+            return f;
+        }
+        public FriendViewModel GetFriendViewModel(FriendshipApplication application, int userId, ApplicationState state)
+        {
+            var friend = GetFriendFromApplication(application, userId);
+            return state switch
+            {
+                ApplicationState.friend when !application.IsFriend(friend.Id) => null,
+                ApplicationState.incoming when !application.IsIncoming(friend.Id) => null,
+                ApplicationState.outgoing when !application.IsOutgoing(friend.Id) => null,
+                _ => new FriendViewModel
+                {
+                    Id = application.Id,
+                    Name = friend.Name,
+                    Surname = friend.Surname,
+                    Patronymic = friend.Patronymic,
+                    PhotoPath = friend.AvatarPath,
+                    ApplicationState = state
+                }
+            };
+        }
+        private User GetFriendFromApplication(FriendshipApplication application, int userId) =>
+            UserOneIsNotSender(application, userId) ? application.UserTwo : application.UserOne;
+        private bool UserOneIsNotSender(FriendshipApplication application, int userId) =>
+            application.UserOne.Id.Equals(userId);
+
+        public IEnumerable<FriendViewModel> GetUserFriends(int userId)
+        {
+            var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
+            foreach (var a in applications)
+                yield return GetFriendViewModel(a, userId,
+                    ApplicationState.friend);
+        }
 
         // Запрос друзей по ФИО
         public IEnumerable<FriendViewModel> GetUserFriends(int userId, string filter) =>
             GetUserFriends(userId).Where(a => a.IsFitsCondition(filter));
 
         // Запрос входящих заявок
-        public IEnumerable<FriendViewModel> GetIncomingApplications(int userId) => from application in _Friendship.Items
-            select GetFriendViewModel(application, userId, ApplicationState.incoming);
+        public IEnumerable<FriendViewModel> GetIncomingApplications(int userId)
+        {
+            var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
+            foreach (var a in applications)
+                yield return GetFriendViewModel(a, userId,
+                    ApplicationState.incoming);
+        }
 
         // Запрос исходящих заявок
-        public IEnumerable<FriendViewModel> GetOutgoingApplications(int userId) => from application in _Friendship.Items
-            select GetFriendViewModel(application, userId, ApplicationState.outgoing);
+        public IEnumerable<FriendViewModel> GetOutgoingApplications(int userId) 
+        {
+            var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
+            foreach (var a in applications)
+                yield return GetFriendViewModel(a, userId,
+                    ApplicationState.outgoing);
+        }
 
         // Отмена исходящей заявки
         public bool TryRemoveOutgoingFriendship(int id)
@@ -71,7 +133,7 @@ namespace Services
             var t = _Friendship.Get(id);
             if (t == null) return false;
 
-            if(UserOneIsNotReceiver(t, receiverId))
+            if(UserOneIsNotSender(t, receiverId))
                 t.ApplicationStateUserTwo = responseState;
             else t.ApplicationStateUserOne = responseState;
 
@@ -79,7 +141,6 @@ namespace Services
             
             return true;
         }
-
 
         public bool TryAllowIncomingFriendship(int id, int receiverId) =>
             TryResponseIncomingFriendship(id, receiverId, FriendshipStates.Allow);
@@ -107,29 +168,5 @@ namespace Services
 
         }
 
-        
-        
-        public FriendViewModel GetFriendViewModel(FriendshipApplication application, int userId, ApplicationState state = ApplicationState.friend)
-        {
-            var friend = GetFriendFromApplication(application, userId);
-            return state switch
-            {
-                ApplicationState.friend when !application.IsFriend(friend.Id) => null,
-                ApplicationState.incoming when !application.IsIncoming(friend.Id) => null,
-                ApplicationState.outgoing when !application.IsOutgoing(friend.Id) => null,
-                _ => new FriendViewModel
-                {
-                    Name = friend.Name,
-                    Surname = friend.Surname,
-                    Patronymic = friend.Patronymic,
-                    PhotoPath = friend.AvatarPath,
-                    ApplicationState = state
-                }
-            };
-        }
-        private User GetFriendFromApplication(FriendshipApplication application, int userId) =>
-            UserOneIsNotReceiver(application, userId) ? application.UserOne : application.UserTwo;
-        private bool UserOneIsNotReceiver(FriendshipApplication application, int userId) =>
-            application.UserOne.Id.Equals(userId);
     }
 }

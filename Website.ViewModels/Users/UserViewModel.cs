@@ -8,7 +8,10 @@ namespace Website.ViewModels.Users
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
+        public string MailAddress { get; set; }
+        public string Country { get; set; }
         public DateTime Birthday { get; set; }
+        public string AvatarPath { get; set; }
         public string ShortName
         {
             get

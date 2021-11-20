@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using Website.Controllers.Rules;
 using Website.ViewModels;
@@ -31,7 +32,11 @@ namespace Website.Controllers
             var model = new PostReportViewModel
             {
                 PostId = postId,
-                ReportTypes = PostingService.GetReportTypes()
+                ReportTypes = from r in PostingService.GetReportTypes() select new ReportTypeVM
+                {
+                    Id = r.Id,
+                    Name = r.Name
+                }
             };
 
             return View(model);

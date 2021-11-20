@@ -1,5 +1,5 @@
 ﻿@using Website.Infrastructure.Extensions
-@model Database.DAL.Entities.SystemPost
+@model Website.ViewModels.Profile.SystemPostViewModel
 <li id="post-@Model.Id" class="post">
     <div class="post_quick_menu">
         <div class="quick_btn edit_post_btn">
@@ -40,6 +40,6 @@
         @Model.Description
     </div>
     <div class="post_time">
-        @Model.CreatedDateTime.ToLastMessageReceive()
+        @Model.CreationDateTime.ToLastMessageReceive()
     </div>
 </li>

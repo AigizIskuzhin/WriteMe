@@ -7,10 +7,10 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Website.Data
 {
-    static class DatabaseServiceRegistrar
+    static class DatabaseRegistrarExtenstion
     {
         public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration Configuration) => services
-           .AddDbContext<WriteMeDatabase>(opt =>
+            .AddDbContext<WriteMeDatabase>(opt =>
             {
                 var type = Configuration["Type"];
                 switch (type)
@@ -19,21 +19,24 @@ namespace Website.Data
                     default: throw new InvalidOperationException($"Тип подключения {type} не поддерживается");
 
                     case "MSSQL":
+                        throw new NotImplementedException();
                         opt.UseSqlServer(Configuration.GetConnectionString(type));
                         break;
                     case "SQLite":
+                        throw new NotImplementedException();
                         opt.UseSqlite(Configuration.GetConnectionString(type));
                         break;
                     case "MySql":
                         opt.UseMySql(Configuration.GetConnectionString(type), new MySqlServerVersion(new Version(8,0,26)));
                         break;
                     case "InMemory":
+                        throw new NotImplementedException();
                         opt.UseInMemoryDatabase("Bookinist.db");
                         break;
                 }
             })
-           //.AddTransient<DbInitializer>()
-           .AddRepositoriesInDb()
+            //.AddTransient<DbInitializer>()
+            .AddRepositoriesInDb()
         ;
     }
 }

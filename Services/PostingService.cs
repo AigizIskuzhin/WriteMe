@@ -3,6 +3,7 @@ using Database.Interfaces;
 using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using Website.ViewModels.Profile;
 
 namespace Services
 {
@@ -28,22 +29,38 @@ namespace Services
             ReportTypeRepository = reportTypeRepository;
         }
 
-        public IEnumerable<SystemPost> GetSystemPosts()=> SystemPostsRepository.Items
-            .OrderByDescending(post => post.CreatedDateTime);
+        private SystemPostViewModel GetSystemPostViewModel(SystemPost p) => new()
+        {
+            Id = p.Id,
+            Title = p.Title,
+            Description = p.Description,
+            CreationDateTime = p.CreatedDateTime
+        };
 
-        public IEnumerable<SystemPost> GetSystemPostsWithFilter(string filter) => SystemPostsRepository.Items
-            .Where(post => (post.Title != null && post.Title.Contains(filter) || 
-                           post.Description != null && post.Description.Contains(filter)))
-            .OrderByDescending(post => post.CreatedDateTime);
 
-        public SystemPost UploadPost(SystemPost systemPost)
+        public IEnumerable<SystemPostViewModel> GetSystemPosts() =>
+            (from p in SystemPostsRepository.Items select GetSystemPostViewModel(p)
+            ).OrderByDescending(post => post.CreationDateTime);
+
+        public IEnumerable<SystemPostViewModel> GetSystemPostsWithFilter(string filter) =>
+            (from p in SystemPostsRepository.Items.Where(post => post.Title != null && post.Title.Contains(filter) ||
+                                                                 post.Description != null && post.Description.Contains(filter))
+                select GetSystemPostViewModel(p))
+            .OrderByDescending(post => post.CreationDateTime);
+
+        public SystemPostViewModel UploadPost(SystemPostViewModel systemPost)
         {
             if (string.IsNullOrWhiteSpace(systemPost.Title) && string.IsNullOrWhiteSpace(systemPost.Description))
                 return null;
-            return SystemPostsRepository.Add(systemPost);
+            var t = SystemPostsRepository.Add(new SystemPost()
+            {
+                Title = systemPost.Title,
+                Description = systemPost.Description
+            });
+            return GetSystemPostViewModel(t);
         }
 
-        public SystemPost EditPost(SystemPost systemPost)
+        public SystemPostViewModel EditPost(SystemPostViewModel systemPost)
         {
             var postDefault = SystemPostsRepository.Get(systemPost.Id);
 
@@ -52,7 +69,7 @@ namespace Services
 
             SystemPostsRepository.Update(postDefault);
 
-            return postDefault;
+            return GetSystemPostViewModel(postDefault);
         }
 
         public bool RemovePost(int idPost)
