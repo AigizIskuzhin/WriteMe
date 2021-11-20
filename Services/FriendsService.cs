@@ -34,7 +34,7 @@ namespace Services
                 Name = friend.Name,
                 Surname = friend.Surname,
                 Patronymic = friend.Patronymic,
-                PhotoPath = friend.AvatarPath
+                AvatarPath = friend.AvatarPath
             };
             if (application.IsFriend(friend.Id))
                 f.ApplicationState = ApplicationState.friend;
@@ -58,7 +58,7 @@ namespace Services
                     Name = friend.Name,
                     Surname = friend.Surname,
                     Patronymic = friend.Patronymic,
-                    PhotoPath = friend.AvatarPath,
+                    AvatarPath = friend.AvatarPath,
                     ApplicationState = state
                 }
             };
