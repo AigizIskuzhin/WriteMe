@@ -31,9 +31,10 @@ namespace Services
             var f = new FriendViewModel
             {
                 Id = application.Id,
+                UserId = friend.Id,
                 Name = friend.Name,
-                Surname = friend.Surname,
-                Patronymic = friend.Patronymic,
+                Surname = friend.Surname ?? "",
+                Patronymic = friend.Patronymic ?? "",
                 AvatarPath = friend.AvatarPath
             };
             if (application.IsFriend(friend.Id))
@@ -55,9 +56,10 @@ namespace Services
                 _ => new FriendViewModel
                 {
                     Id = application.Id,
+                    UserId = friend.Id,
                     Name = friend.Name,
-                    Surname = friend.Surname,
-                    Patronymic = friend.Patronymic,
+                    Surname = friend.Surname ?? "",
+                    Patronymic = friend.Patronymic ?? "",
                     AvatarPath = friend.AvatarPath,
                     ApplicationState = state
                 }
