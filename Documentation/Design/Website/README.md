@@ -1,4 +1,5 @@
 # WriteMe website concept
+![](https://github.com/AigizIskuzhin/WriteMe/blob/release/Documentation/Design/Website/Images/Logo.png)
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/PresentationSmall.png)
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Registration.png)
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/Authorization.png)
