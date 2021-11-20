@@ -31,9 +31,10 @@ namespace Website.Controllers
         public IActionResult TryRemoveFriendship(int target)
         {
             int id = GetConnectedUserID;
-            FriendsService.TryRemoveUserFriendship(id, target);
-            return View("Friends", FriendsService.GetUserFriends(id)); // Error not removed
+            FriendsService.TryRemoveUserFriendship(target, id);
+            return RedirectToAction("Friends");
         }
+
         [Route("/friends/incoming")]
         public IActionResult IncomingFriendRequests(int id)
         {
@@ -47,30 +48,30 @@ namespace Website.Controllers
             return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(id));
         }
 
-        [Route("/friends/remove")]
-        public IActionResult TryRemoveUserFriendship(int userId, int targetUserId)
-        {
-            FriendsService.TryRemoveUserFriendship(userId, targetUserId);
-                return View("Friends", FriendsService.GetUserFriends(userId));
-        }
+        //[Route("/friends/remove")]
+        //public IActionResult TryRemoveUserFriendship(int userId, int targetUserId)
+        //{
+        //    FriendsService.TryRemoveUserFriendship(userId, targetUserId);
+        //        return View("Friends", FriendsService.GetUserFriends(userId));
+        //}
 
         [Route("/friends/outgoing/remove")]
         public IActionResult TryRemoveOutgoingFriendship(int id)
         {
             FriendsService.TryRemoveOutgoingFriendship(id);
-            return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(GetConnectedUserID));
+            return RedirectToAction("OutgoingFriendRequests");
         }
         [Route("/friends/incoming/allow")]
-        public IActionResult AllowIncomingFriendship(int userId, int targetUserId)
+        public IActionResult AllowIncomingFriendship(int target)
         {
-            FriendsService.TryAllowIncomingFriendship(userId, targetUserId);
-            return View("Friends", FriendsService.GetUserFriends(userId));
+            FriendsService.TryAllowIncomingFriendship(target, GetConnectedUserID);
+            return RedirectToAction("IncomingFriendRequests");
         }
         [Route("/friends/incoming/deny")]
-        public IActionResult DenyIncomingFriendship(int userId, int targetUserId)
+        public IActionResult DenyIncomingFriendship(int target)
         {
-            FriendsService.TryDenyIncomingFriendship(userId, targetUserId);
-            return View("Friends", FriendsService.GetUserFriends(userId));
+            FriendsService.TryDenyIncomingFriendship(target, GetConnectedUserID);
+            return RedirectToAction("IncomingFriendRequests" );
         }
 
     }

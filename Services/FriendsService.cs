@@ -123,20 +123,15 @@ namespace Services
         }
 
         // Удаление друга
-        public bool TryRemoveUserFriendship(int userId, int targetUserId)
+        public bool TryRemoveUserFriendship(int id, int targetUserId)
         {
-            List<FriendshipApplication> targetFriendship = _Friendship.Items.Where(application =>
-                application.UserOne.Id == userId && application.UserTwo.Id == targetUserId &&
-                application.ApplicationStateUserOne == FriendshipStates.Allow ||
-                application.UserOne.Id == targetUserId && application.UserTwo.Id == userId &&
-                application.ApplicationStateUserTwo == FriendshipStates.Allow).ToList();
-            if (targetFriendship.Count > 0)
-            {
-                targetFriendship[0].ApplicationStateUserOne = FriendshipStates.Deny;
-                _Friendship.Update(targetFriendship[0]);
-                return true;
-            }
-            return false;
+            var application = _Friendship.Get(id);
+            
+            if (application == null) return false;
+
+            application.ApplicationStateUserOne = FriendshipStates.Suspence;
+            _Friendship.Update(application);
+            return true;
         }
 
         // Ответ на входящую заявку
@@ -145,9 +140,10 @@ namespace Services
             var t = _Friendship.Get(id);
             if (t == null) return false;
 
-            if(UserOneIsNotSender(t, receiverId))
+            if (UserOneIsNotSender(t, receiverId))
+                t.ApplicationStateUserOne = responseState;
+            else
                 t.ApplicationStateUserTwo = responseState;
-            else t.ApplicationStateUserOne = responseState;
 
             _Friendship.Update(t);
             
