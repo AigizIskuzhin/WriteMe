@@ -17,6 +17,7 @@ namespace Website
 
         public void ConfigureServices(IServiceCollection services) => services
             .AddDatabase(Configuration.GetSection("Database"))
+            .AddHubServices()
             .AddServicesLibrary()
             .AddControllersWithViews().AddRazorRuntimeCompilation()
             .Services
