@@ -37,7 +37,8 @@ namespace Services.Interfaces
                 Id = user.Id,
                 Name = user.Name,
                 Surname = user.Surname,
-                Patronymic = user.Patronymic
+                Patronymic = user.Patronymic,
+                AvatarPath = user.AvatarPath
             };
 
         public IEnumerable<PreviewProfileViewModel> GetUsersPreviews(string filter)

@@ -13,7 +13,7 @@ namespace Website.Controllers
         {
             UsersService = usersService;
         }
-
+        [Route("/users")]
         public IActionResult Users() => View(UsersService.GetUsersPreviews());
     }
 }
