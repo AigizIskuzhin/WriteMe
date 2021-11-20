@@ -24,16 +24,21 @@ else foreach (var message in Model.History)
                 <div class="message-content">
                     @day
                 </div>
-            </li> 
-              lastDay = message.CreatedDateTime.DayOfYear;
+            </li>
+            lastDay = message.CreatedDateTime.DayOfYear;
             day = lastDay + 1 == now ? "Вчера" : message.CreatedDateTime.ToString("M");
-                
+
         }
         if (message is UserMessageViewModel userMessage)
             await Html.RenderPartialAsync("PrivateChat/PrivateChatMessageView", userMessage, ViewData);
         else
             await Html.RenderPartialAsync("Base/MessageView", message);
-
-
-
+        if (message.Id.Equals(Model.History.Last().Id))
+        {
+            <li class="message generated_message day">
+                <div class="message-content">
+                    @day
+                </div>
+            </li>   
+        }
     }
