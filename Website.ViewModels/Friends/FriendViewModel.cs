@@ -7,7 +7,7 @@ namespace Website.ViewModels.Friends
         public string Name { get; set; }
         public string Surname { get; set; }
         public string Patronymic { get; set; }
-        public string PhotoPath { get; set; }
+        public string AvatarPath { get; set; }
         public string FriendshipType { get; set; }
         public ApplicationState ApplicationState { get; set; }
 
