@@ -115,7 +115,7 @@ namespace Services
             Title = p.Title,
             Owner = GetViewModel(p.Owner)
         };
-        public static UserViewModel GetViewModel(User u) => new()
+        public static UserViewModel GetViewModel(User u) => u!=null?new UserViewModel
         {
             Id=u.Id,
             Name = u.Name,
@@ -123,7 +123,7 @@ namespace Services
             Patronymic = u.Patronymic,
             Birthday = u.Birthday,
             AvatarPath = u.AvatarPath
-        };
+        }:null;
 
         #region RemovePost
         /// <summary>
