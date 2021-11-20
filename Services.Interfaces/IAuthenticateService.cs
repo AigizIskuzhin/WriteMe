@@ -1,16 +1,15 @@
-﻿using Database.DAL.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Website.ViewModels;
+using Website.ViewModels.Users;
 
 namespace Services.Interfaces
 {
     public interface IAuthenticateService
     {
-        public IEnumerable<User> Users { get; }
-        public Task<User> ConfirmUserAsync(string mail, string password);
-        public Task<User> RegisterAsync(RegistrationViewModel registrationViewModel);
-        public Task<User> IsUserExistAsync(string mailAddress);
+        public Task<UserViewModel> ConfirmUserAsync(string mail, string password);
+        public Task<UserViewModel> RegisterAsync(RegistrationViewModel registrationViewModel);
+        public Task<UserViewModel> IsUserExistAsync(string mailAddress);
 
     }
 }

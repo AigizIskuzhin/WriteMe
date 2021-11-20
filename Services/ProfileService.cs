@@ -58,15 +58,7 @@ namespace Services
         public async Task<UserViewModel> GetUserAsync(int id)
         {
             var u = await _Users.GetAsync(id);
-            return new()
-            {
-                Id = u.Id,
-                Name = u.Name,
-                Surname = u.Surname,
-                Patronymic = u.Patronymic,
-                Birthday = u.Birthday,
-                AvatarPath = u.AvatarPath
-            };
+            return GetViewModel(u);
         }
 
         #endregion

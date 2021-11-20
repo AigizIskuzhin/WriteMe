@@ -17,6 +17,8 @@ namespace Services.Interfaces
         public IEnumerable<ProfileViewModel> GetUsersProfiles();
         public IEnumerable<ProfileViewModel> GetUsersProfiles(string filter);
         public ProfileViewModel GetUserProfileViewModel(int id);
+
+        public IEnumerable<UserViewModel> GetUsers();
     }
 
     public class UsersService : IUsersService
@@ -41,10 +43,10 @@ namespace Services.Interfaces
                 AvatarPath = user.AvatarPath
             };
 
-        public IEnumerable<PreviewProfileViewModel> GetUsersPreviews(string filter)
-        {
-            throw new System.NotImplementedException();
-        }
+        public IEnumerable<PreviewProfileViewModel> GetUsersPreviews(string filter) =>
+            from user in UsersRepository.Items.Where(u =>
+                u.Name.Contains(filter) || u.Surname.Contains(filter) || u.Patronymic.Contains(filter))
+            select ConvertToPreviewVM(user);
 
         public PreviewProfileViewModel GetUserPreview(int id)
         {
@@ -70,5 +72,17 @@ namespace Services.Interfaces
         {
             throw new System.NotImplementedException();
         }
+
+        public IEnumerable<UserViewModel> GetUsers() => from user in UsersRepository.Items select GetViewModel(user);
+            
+        public static UserViewModel GetViewModel(User u) => new()
+        {
+            Id=u.Id,
+            Name = u.Name,
+            Surname = u.Surname,
+            Patronymic = u.Patronymic,
+            Birthday = u.Birthday,
+            AvatarPath = u.AvatarPath
+        };
     }
 }
