@@ -8,7 +8,9 @@ An attempt to demonstrate some kind of work as group of developers with Scrum de
 - ![Group VKontakte](https://vk.com/writemedev)
 - ![Design](https://github.com/AigizIskuzhin/WriteMe/tree/release/Documentation/Design/Website)
 
+![](https://github.com/AigizIskuzhin/WriteMe/blob/release/Documentation/Design/Website/Images/Logo.png)
 ![ ](https://github.com/AigizIskuzhin/WriteMe/blob/dev/Documentation/Design/Website/Images/PresentationSmall.png)
+![](https://github.com/AigizIskuzhin/WriteMe/blob/release/Documentation/Design/Website/Images/UqIN12sZJik.jpg)
 
 
 Deploying
