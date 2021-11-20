@@ -11,9 +11,16 @@
             </div>
         </div>
         <ul id="friends" class="friends">
-            @foreach (var friend in Model)
+            @if (!Model.Any())
             {
-                Html.RenderPartial("FriendView", friend);
+
+            }
+            else
+            {
+                @foreach (var friend in Model)
+                {
+                    Html.RenderPartial("FriendView", friend);
+                }
             }
         </ul> 
     </div>

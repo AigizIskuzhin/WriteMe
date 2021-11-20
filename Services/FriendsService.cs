@@ -72,8 +72,12 @@ namespace Services
         {
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
-                yield return GetFriendViewModel(a, userId,
+            {
+                var friend = GetFriendViewModel(a, userId,
                     ApplicationState.friend);
+                if (friend is not null)
+                    yield return friend;
+            }
         }
 
         // Запрос друзей по ФИО
@@ -85,8 +89,12 @@ namespace Services
         {
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
-                yield return GetFriendViewModel(a, userId,
+            {
+                var friend = GetFriendViewModel(a, userId,
                     ApplicationState.incoming);
+                if (friend is not null)
+                    yield return friend;
+            }
         }
 
         // Запрос исходящих заявок
@@ -94,8 +102,12 @@ namespace Services
         {
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
-                yield return GetFriendViewModel(a, userId,
+            {
+                var friend = GetFriendViewModel(a, userId,
                     ApplicationState.outgoing);
+                if (friend is not null)
+                    yield return friend;
+            }
         }
 
         // Отмена исходящей заявки

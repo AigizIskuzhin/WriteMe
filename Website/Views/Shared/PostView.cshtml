@@ -1,4 +1,5 @@
 ﻿@using Website.ViewModels
+@using Website.ViewModels.Profile
 @model Website.ViewModels.Profile.PostViewModel
 @{
     Layout = null;
@@ -8,5 +9,5 @@
     if(Model is UserPostViewModel userPost)
         Html.RenderPartial("UserPostView",userPost);
     else
-        Html.RenderPartial("SystemPostView", Model);
+        Html.RenderPartial("SystemPostView", Model as SystemPostViewModel);
 }
