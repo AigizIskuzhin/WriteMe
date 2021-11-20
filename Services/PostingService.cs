@@ -3,6 +3,7 @@ using Database.Interfaces;
 using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
+using Website.ViewModels;
 using Website.ViewModels.Profile;
 
 namespace Services
@@ -95,10 +96,18 @@ namespace Services
             });
         }
 
-        public IEnumerable<PostReport> GetPostsReports() =>
-            PostReportsRepository.Items.OrderByDescending(report => report.CreatedDateTime);
+        public IEnumerable<PostReportViewModel> GetPostsReports() => from report in
+            PostReportsRepository.Items.OrderByDescending(report => report.CreatedDateTime) select new PostReportViewModel
+        {
+            Id = report.Id,
+            PostId = report.PostId
+        };
 
-        public IEnumerable<ReportType> GetReportTypes() => ReportTypeRepository.Items;
+        public IEnumerable<ReportTypeVM> GetReportTypes() => from report in ReportTypeRepository.Items select new ReportTypeVM
+        {
+            Id = report.Id,
+            Name = report.Name
+        };
         public void CloseReport(int reportId) => PostReportsRepository.Remove(reportId);
 
         public void CloseReportAndDeletePost(int reportId)

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Services.Interfaces;
 using Website.Controllers.Rules;
 using Website.ViewModels;
@@ -27,20 +26,11 @@ namespace Website.Controllers
         public IActionResult AlreadyLoggedIn() => View("AlreadyLoggedInWarning");
         
         [CustomizedAuthorize]
-        public IActionResult SendReportModal(int postId)
+        public IActionResult SendReportModal(int postId) => View(new PostReportViewModel
         {
-            var model = new PostReportViewModel
-            {
-                PostId = postId,
-                ReportTypes = from r in PostingService.GetReportTypes() select new ReportTypeVM
-                {
-                    Id = r.Id,
-                    Name = r.Name
-                }
-            };
-
-            return View(model);
-        }
+            PostId = postId,
+            ReportTypes = PostingService.GetReportTypes()
+        });
 
         [CustomizedAuthorize]
         public IActionResult UploadAvatarModal() => View("UploadAvatar");
