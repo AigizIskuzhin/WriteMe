@@ -1,10 +1,12 @@
-﻿@using Website.Infrastructure.Extensions
-@using Website.ViewModels.Friends
+﻿@using Website.ViewModels.Friends
 @model Website.ViewModels.Friends.FriendViewModel
+@{
+    bool isOwner = (bool)ViewData["isOwner"];
+}
 
 <li id="friend-@Model.Id" class="friend" data-applicaiton-id="@Model.Id">
     <div class="friend_preview_title">
-        <a href="/profile?id=@Model.Id">
+        <a href="/profile?id=@Model.UserId">
 
             <div class="friend_icon_container">
                 
@@ -31,24 +33,33 @@
                     Друг
                 </div>
                 
-                <form asp-action="TryRemoveFriendship">
-                    <input name="target" type="hidden" value="@Model.Id" />
-                    <input type="submit" value="Удалить из друзей" />
-                </form>
+                if (isOwner)
+                {
+                    <form asp-action="TryRemoveFriendship">
+                        <input name="target" type="hidden" value="@Model.Id" />
+                        <input type="submit" value="Удалить из друзей" />
+                    </form>
+                }
             }
         @if (Model.ApplicationState == ApplicationState.incoming)
         {
-            <form asp-action="AllowIncomingFriendship">
-                <input name="target" type="hidden" value="@Model.Id" />
-                <input type="submit" value="Принять"/>
-            </form>
+            if (isOwner)
+            {
+                <form asp-action="AllowIncomingFriendship">
+                    <input name="target" type="hidden" value="@Model.Id"/>
+                    <input type="submit" value="Принять"/>
+                </form>
+            }
         }
         @if (Model.ApplicationState == ApplicationState.outgoing)
         {
+            if (isOwner)
+            {
             <form asp-action="TryRemoveOutgoingFriendship">
                 <input name="target" type="hidden" value="@Model.Id" />
                 <input type="submit" value="Отменить" />
             </form>
+            }
         }
     </div>
 </li>

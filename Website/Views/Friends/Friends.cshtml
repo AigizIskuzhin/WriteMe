@@ -1,6 +1,11 @@
-﻿@model IEnumerable<Website.ViewModels.Friends.FriendViewModel>
+﻿@using Website.Infrastructure.Extensions
+@model IEnumerable<Website.ViewModels.Friends.FriendViewModel>
 <link rel="stylesheet" href="~/Resources/css/friends.css" />
-
+<script src="Resources/js/profile.js"></script>
+@{
+    var queryId = Context.Request.Query["id"].ToString();
+    string profileId = String.IsNullOrWhiteSpace(queryId) ? Context.GetConnectedUserId() : queryId;
+}
 <div style="display: flex; height: 100%;">
     <div class="ui_70">
         <div class="ui_header">
@@ -11,11 +16,8 @@
             </div>
         </div>
         <ul id="friends" class="friends">
-            @foreach (var friend in Model)
-            {
-                Html.RenderPartial("FriendView", friend);
-            }
-        </ul> 
+            @await Html.PartialAsync("FriendsView", Model)
+        </ul>
     </div>
 
     <div class="friends_links">
@@ -30,3 +32,8 @@
         </a>
     </div>
 </div>
+<script>
+    $(document).ready(function () {
+        SearchUsers('ui_friends_search_input', 'friends', '@Url.Action("SearchFriends")', '@profileId');
+    });
+</script>

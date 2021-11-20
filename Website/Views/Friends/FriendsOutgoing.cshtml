@@ -11,10 +11,7 @@
             </div>
         </div>
         <ul id="friends" class="friends">
-            @foreach (var friend in Model)
-            {
-                Html.RenderPartial("FriendView", friend);
-            }
+            @await Html.PartialAsync("FriendsView", Model)
         </ul> 
     </div>
 

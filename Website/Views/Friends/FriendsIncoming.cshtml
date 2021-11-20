@@ -11,16 +11,8 @@
             </div>
         </div>
         <ul id="friends" class="friends">
-            @if (!Model.Any())
-            {
-
-            }
-            else
-            {
-                @foreach (var friend in Model)
-                {
-                    Html.RenderPartial("FriendView", friend);
-                }
+            @{
+                await Html.RenderPartialAsync("FriendsView", Model);
             }
         </ul> 
     </div>
