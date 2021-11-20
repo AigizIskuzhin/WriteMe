@@ -1,5 +1,5 @@
 ﻿using Moq;
-using Website.Infrastructure.Services.Interfaces;
+using Services.Interfaces;
 using Xunit;
 
 namespace Services.Tests
