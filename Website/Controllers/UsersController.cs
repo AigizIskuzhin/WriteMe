@@ -15,5 +15,8 @@ namespace Website.Controllers
         }
         [Route("/users")]
         public IActionResult Users() => View(UsersService.GetUsersPreviews());
+
+        public IActionResult SearchUsers(string filter) =>
+            View("UsersView", string.IsNullOrWhiteSpace(filter)?UsersService.GetUsersPreviews():UsersService.GetUsersPreviews(filter));
     }
 }

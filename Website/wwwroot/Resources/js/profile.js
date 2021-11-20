@@ -119,7 +119,8 @@ function AjaxPostQueryWithViewResult(url, model, containerId, delegate) {
             var container = document.getElementById(containerId);
             if (container)
                 container.innerHTML = viewResult;
-            delegate();
+            if (delegate)
+                delegate();
         }
     });
 }
