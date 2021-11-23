@@ -63,8 +63,7 @@ namespace Website.Controllers
             });
         } 
         #endregion
-
-        // TODO: implement it
+        
         #region Upload profile avatar
         [HttpPost]
         public ActionResult UploadAvatar(IFormFile image)
@@ -77,7 +76,6 @@ namespace Website.Controllers
         } 
         #endregion
         
-        // TODO: implement it
         #region Remove profile avatar
         [HttpPost]
         public ActionResult RemoveAvatar(IFormFile uploadedFile)
@@ -137,10 +135,9 @@ namespace Website.Controllers
         /// <param name="id"></param>
         /// <param name="filterText"></param>
         /// <returns></returns>
-        public ActionResult SearchUserPosts(string filterText)
+        public ActionResult SearchUserPosts(string filterText, int id)
         {
-            string t = HttpContext.Request.Query["id"];
-            int id = string.IsNullOrWhiteSpace(t) ? GetConnectedUserID : int.Parse(t);
+            id = id== 0 ? GetConnectedUserID : id;
             return View("PostsView",
                 string.IsNullOrWhiteSpace(filterText)
                     ? ProfileService.GetUserPosts(id)

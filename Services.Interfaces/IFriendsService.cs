@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Database.DAL.Entities;
 using Website.ViewModels.Friends;
 
 namespace Services.Interfaces
@@ -7,8 +6,8 @@ namespace Services.Interfaces
     public interface IFriendsService
     {
         public FriendViewModel GetFriendViewModel(int currentUserId, int userId);
-        public FriendViewModel GetFriendViewModel(FriendshipApplication application, int userId);
-        public FriendViewModel GetFriendViewModel(FriendshipApplication application, int userId,
+        public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId);
+        public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId,
             ApplicationState state);
         public IEnumerable<FriendViewModel> GetUserFriends(int userId);
         public IEnumerable<FriendViewModel> GetUserFriends(int userId, string filter);

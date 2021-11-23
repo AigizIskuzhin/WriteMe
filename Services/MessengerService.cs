@@ -90,7 +90,8 @@ namespace Services
             Name = u.Name,
             Surname = u.Surname,
             Patronymic = u.Patronymic,
-            Birthday = u.Birthday
+            Birthday = u.Birthday,
+            AvatarPath = u.AvatarPath
         };
         public IEnumerable<MessageViewModel> GetPrivateChatHistory(int id)
         {

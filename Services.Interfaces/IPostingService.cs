@@ -6,6 +6,7 @@ namespace Services.Interfaces
 {
     public interface IPostingService
     {
+        public bool IsAdmin(int userId);
         public IEnumerable<SystemPostViewModel> GetSystemPosts();
         public IEnumerable<SystemPostViewModel> GetSystemPostsWithFilter(string filter);
         public SystemPostViewModel UploadPost(SystemPostViewModel systemPost);

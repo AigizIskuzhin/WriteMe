@@ -16,9 +16,9 @@ namespace Website.Controllers
             PostingService = postingService;
         }
         
-        public IActionResult CreatePost(PostViewModel post) => View(post);
+        public IActionResult CreatePost(UserPostViewModel post) => View(post);
         
-        public IActionResult EditPost(PostViewModel post) => View(post);
+        public IActionResult EditPost(UserPostViewModel post) => View(post);
 
         [Route("/working")]
         public IActionResult WorkingON() => View();

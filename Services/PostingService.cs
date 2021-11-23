@@ -30,18 +30,28 @@ namespace Services
             ReportTypeRepository = reportTypeRepository;
         }
 
-        private SystemPostViewModel GetSystemPostViewModel(SystemPost p) => new()
+        private SystemPostViewModel GetSystemPostViewModel(SystemPost p) => p != null
+            ? new SystemPostViewModel
+            {
+                Id = p.Id,
+                Title = p.Title,
+                Description = p.Description,
+                CreationDateTime = p.CreatedDateTime
+            }
+            : null;
+
+
+        public bool IsAdmin(int userId)
         {
-            Id = p.Id,
-            Title = p.Title,
-            Description = p.Description,
-            CreationDateTime = p.CreatedDateTime
-        };
+            var user = UsersRepository.Get(userId);
+            return user.Role.Id == 3;
+        }
 
-
-        public IEnumerable<SystemPostViewModel> GetSystemPosts() =>
-            (from p in SystemPostsRepository.Items select GetSystemPostViewModel(p)
-            ).OrderByDescending(post => post.CreationDateTime);
+        public IEnumerable<SystemPostViewModel> GetSystemPosts()
+        {
+            foreach (var p in SystemPostsRepository.Items)
+                yield return GetSystemPostViewModel(p);
+        }
 
         public IEnumerable<SystemPostViewModel> GetSystemPostsWithFilter(string filter) =>
             (from p in SystemPostsRepository.Items.Where(post => post.Title != null && post.Title.Contains(filter) ||

@@ -67,6 +67,7 @@ namespace Website.Controllers
         public IActionResult OutgoingFriendRequests(int id)
         {
             if (id == 0) id = GetConnectedUserID;
+            ViewData["isOwner"] = id == GetConnectedUserID;
             return View("FriendsOutgoing", FriendsService.GetOutgoingApplications(id));
         }
         #endregion
@@ -85,15 +86,16 @@ namespace Website.Controllers
         public IActionResult IncomingFriendRequests(int id)
         {
             if (id == 0) id = GetConnectedUserID;
+            ViewData["isOwner"] = id == GetConnectedUserID;
             return View("FriendsIncoming", FriendsService.GetIncomingApplications(id));
         }
         #endregion
 
         #region Allow incoming friend request   
         [Route("/friends/incoming/allow")]
-        public IActionResult AllowIncomingFriendship(int target)
+        public IActionResult AllowIncomingFriendship(int id)
         {
-            FriendsService.TryAllowIncomingFriendship(target, GetConnectedUserID);
+            FriendsService.TryAllowIncomingFriendship(id, GetConnectedUserID);
             return RedirectToAction("IncomingFriendRequests");
         }
         #endregion

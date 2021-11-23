@@ -1,7 +1,7 @@
 ﻿@model Website.ViewModels.UserPostViewModel
 @using Website.Infrastructure.Extensions
 @{
-    bool isOwner = Context.GetConnectedUserId()==Model.OwnerId.ToString();
+    bool isOwner = Context.GetConnectedUserId()==Model.Owner.Id.ToString();
 }
 <li id="post-@Model.Id" class="post" data-post-id="@Model.Id" data-owner-id="@Model.Owner.Id">
     <div class="post_quick_menu">

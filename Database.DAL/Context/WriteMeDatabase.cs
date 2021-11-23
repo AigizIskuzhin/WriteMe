@@ -72,6 +72,7 @@ namespace Database.DAL.Context
             builder.Entity<ParticipantChatMessage>().UseBothTimeStampedProperties();
             builder.Entity<Chat>().UseBothTimeStampedProperties();
             builder.Entity<UserPost>().UseBothTimeStampedProperties();
+            builder.Entity<SystemPost>().UseBothTimeStampedProperties();
             builder.Entity<User>().UseBothTimeStampedProperties();
             builder.Entity<GeneratedChatMessage>().UseCreationTimeStampOnProperty();
             builder.Entity<ChatParticipant>().UseCreationTimeStampOnProperty();

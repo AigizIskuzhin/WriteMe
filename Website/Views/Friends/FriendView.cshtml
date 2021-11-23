@@ -46,7 +46,7 @@
             if (isOwner)
             {
                 <form asp-action="AllowIncomingFriendship">
-                    <input name="target" type="hidden" value="@Model.Id"/>
+                    <input name="id" type="hidden" value="@Model.Id"/>
                     <input type="submit" value="Принять"/>
                 </form>
             }
@@ -56,7 +56,7 @@
             if (isOwner)
             {
             <form asp-action="TryRemoveOutgoingFriendship">
-                <input name="target" type="hidden" value="@Model.Id" />
+                <input name="id" type="hidden" value="@Model.Id" />
                 <input type="submit" value="Отменить" />
             </form>
             }

@@ -21,15 +21,12 @@ namespace Website.ViewModels
 
         [Display(Name = "Имя")]
         [Required(ErrorMessage = "Обязательно к заполнению")]
-        [RegularExpression("[a-zA-ZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя]", ErrorMessage = "Разрешен ввод только кириллицы/латиницы")]
         public string Name { get; set; }
 
         [Display(Name = "Фамилия", Prompt = "Фамилия")]
-        [RegularExpression("[a-zA-ZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя]", ErrorMessage = "Разрешен ввод только кириллицы/латиницы")]
         public string Surname { get; set; }
 
         [Display(Name = "Отчество")]
-        [RegularExpression("[a-zA-ZАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯабвгдеёжзийклмнопрстуфхцчшщъыьэюя]", ErrorMessage = "Разрешен ввод только кириллицы/латиницы")]
         public string Patronymic { get; set; }
 
         [Display(Name = "Дата рождения")]

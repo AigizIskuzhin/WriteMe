@@ -9,8 +9,4 @@ namespace Website.ViewModels.Profile
         public string Description { get; set; }
         public DateTime CreationDateTime { get; set; }
     }
-
-    public class SystemPostViewModel : PostViewModel
-    {
-    }
 }
