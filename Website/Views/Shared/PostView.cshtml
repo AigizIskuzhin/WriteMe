@@ -1,12 +1,13 @@
-﻿@using Database.DAL.Entities
-@model Database.DAL.Entities.Post
+﻿@using Website.ViewModels
+@using Website.ViewModels.Profile
+@model Website.ViewModels.Profile.PostViewModel
 @{
     Layout = null;
 }
 @if (Model != null)
 {
-    if(Model is UserPost userPost)
+    if(Model is UserPostViewModel userPost)
         Html.RenderPartial("UserPostView",userPost);
-    else if(Model is SystemPost systemPost)
-        Html.RenderPartial("SystemPostView", systemPost);
+    else
+        Html.RenderPartial("SystemPostView", Model as SystemPostViewModel);
 }

@@ -6,7 +6,9 @@ namespace Database.DAL.Entities
 {
     public class PostReport : Entity, ICreateUpdateTimeStampedEntity
     {
+        public int PostId { get; set; }
         public UserPost Post { get; set; }
+        public int SenderId { get; set; }
         public User Sender { get; set; }
         public string Commentary { get; set; }
         public int ReportTypeId { get; set; }

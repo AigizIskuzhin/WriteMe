@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Website.Infrastructure.Services;
-using Website.Infrastructure.Services.Extensions;
+using Services;
+using Website.Data;
 using Website.Infrastructure.SignalRHubs;
 
 namespace Website
@@ -17,7 +17,8 @@ namespace Website
 
         public void ConfigureServices(IServiceCollection services) => services
             .AddDatabase(Configuration.GetSection("Database"))
-            .AddServices()
+            .AddHubServices()
+            .AddServicesLibrary()
             .AddControllersWithViews().AddRazorRuntimeCompilation()
             .Services
             .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

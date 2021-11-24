@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using Website.Controllers.Rules;
-using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
 using Website.ViewModels.Profile;
 
@@ -16,9 +16,9 @@ namespace Website.Controllers
             PostingService = postingService;
         }
         
-        public IActionResult CreatePost(PostViewModel post) => View(post);
+        public IActionResult CreatePost(UserPostViewModel post) => View(post);
         
-        public IActionResult EditPost(PostViewModel post) => View(post);
+        public IActionResult EditPost(UserPostViewModel post) => View(post);
 
         [Route("/working")]
         public IActionResult WorkingON() => View();
@@ -26,16 +26,11 @@ namespace Website.Controllers
         public IActionResult AlreadyLoggedIn() => View("AlreadyLoggedInWarning");
         
         [CustomizedAuthorize]
-        public IActionResult SendReportModal(int postId)
+        public IActionResult SendReportModal(int postId) => View(new PostReportViewModel
         {
-            var model = new PostReportViewModel
-            {
-                PostId = postId,
-                ReportTypes = PostingService.GetReportTypes()
-            };
-
-            return View(model);
-        }
+            PostId = postId,
+            ReportTypes = PostingService.GetReportTypes()
+        });
 
         [CustomizedAuthorize]
         public IActionResult UploadAvatarModal() => View("UploadAvatar");

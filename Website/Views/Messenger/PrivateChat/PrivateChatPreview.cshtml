@@ -1,4 +1,4 @@
-﻿@using Database.DAL.Entities.Messages.ChatMessage
+﻿@using Website.ViewModels.Messenger.Preview.Base
 @model Website.ViewModels.Messenger.Preview.PrivateChatPreviewViewModel
 @{ Layout = null; }
 <li id="chat-@Model.Chat.Id" class="chat" data-chat-id="@Model.Chat.Id" data-receiver-user-id="@Model.Receiver.Id">
@@ -26,7 +26,7 @@
     @if (Model.LastMessage != null)
     {
         <div class="chat_last_message">
-            @if (Model.LastMessage is ParticipantChatMessage privateUserMessage)
+            @if (Model.LastMessage is UserMessageViewModel privateUserMessage)
             {
                 <div class="message_sender" style="margin-right: 4px;">@privateUserMessage.ChatParticipantSender.User.Name:</div>
                 <div class="message-content">@Model.LastMessage.Text</div>

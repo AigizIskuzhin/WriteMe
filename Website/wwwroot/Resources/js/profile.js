@@ -119,7 +119,8 @@ function AjaxPostQueryWithViewResult(url, model, containerId, delegate) {
             var container = document.getElementById(containerId);
             if (container)
                 container.innerHTML = viewResult;
-            delegate();
+            if (delegate)
+                delegate();
         }
     });
 }
@@ -198,7 +199,7 @@ let LoadReportPostForm = (sendBtnId, reportTypesId, reportMsgId, postId) => {
     }
 }
 
-let LoadCreatePostForm = (submitId, titleId, descriptionId) => {
+let LoadCreatePostForm = (submitId, titleId, descriptionId, mode) => {
     var submit = document.getElementById(submitId);
     var titleInput = document.getElementById(titleId);
     var descriptionInput = document.getElementById(descriptionId);
@@ -226,12 +227,37 @@ let LoadCreatePostForm = (submitId, titleId, descriptionId) => {
                             posts.innerHTML = "";
                             posts.appendChild(post);
                         }
-                        else posts.insertBefore(element, posts.firstChild);
+                        else posts.insertBefore(post, posts.firstChild);
 
                         HideModalWrapper();
 
                         LoadPostEvents(post);
                     }
+                });
+            });
+    }
+}
+
+let LoadCreatePostNewsForm = (submitId, titleId, descriptionId) => {
+    var submit = document.getElementById(submitId);
+    var titleInput = document.getElementById(titleId);
+    var descriptionInput = document.getElementById(descriptionId);
+    if (submit && titleInput && descriptionInput) {
+        descriptionInput.addEventListener('input', () => {
+            if (descriptionInput.value == "")
+                submit.disabled = true;
+            else submit.disabled = false;
+        });
+        submit.addEventListener('click',
+            () => {
+                var title = titleInput.value;
+                var description = descriptionInput.value;
+                var model = postModel(null, null, title, description);
+                var url = "news/UploadPost";
+                window.$.ajax({
+                    url: url,
+                    type: "POST",
+                    data: model
                 });
             });
     }
@@ -257,14 +283,15 @@ function LoadPostsEvents() {
         .forEach(post => LoadPostEvents(post));
 }
 
-let SearchPosts = (inputId, containerId) => {
+let SearchPosts = (inputId, containerId, profileId) => {
     let input = document.getElementById(inputId);
     let resultContainer = document.getElementById(containerId);
     if (input && resultContainer) {
         input.addEventListener('input',
             () => {
                 var model = {
-                    "filterText": input.value
+                    "filterText": input.value,
+                    "id": profileId
                 };
                 var url = "profile/SearchUserPosts";
 

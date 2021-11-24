@@ -1,15 +1,13 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Database.DAL.Entities;
-using Database.DAL.Entities.Base;
-using Database.Interfaces;
 using Website.Controllers.Rules;
-using Website.Infrastructure.Services.Interfaces;
 using Website.ViewModels;
+using Website.ViewModels.Users;
 
 namespace Website.Controllers
 {
@@ -22,9 +20,7 @@ namespace Website.Controllers
             AuthenticateService = authenticateService;
         }
 
-        
-        [OnAuthorizeAttribute]
-        [Route("auth")]
+        [OnAuthorizeAttribute, Route("auth")]
         public async Task<IActionResult> ConfirmMailForAuthorization(ConfirmMailViewModel confirmMailViewModel)
         {
             if (ModelState.IsValid)
@@ -85,12 +81,12 @@ namespace Website.Controllers
             }
             return View(authorizationViewModel);
         }
-        private async Task Authenticate(User user)
+        private async Task Authenticate(UserViewModel user)
         {
             var claims = new List<Claim>
             {
                 new(ClaimsIdentity.DefaultNameClaimType, user.Surname+" "+user.Name+" "+user.Patronymic),
-                new(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name),
+                //new(ClaimsIdentity.DefaultRoleClaimType, user.Role.Name),
                 new("id",user.Id.ToString())
             };
             ClaimsIdentity claimsIdentity = new ClaimsIdentity(claims, "ApplicationCookie", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);

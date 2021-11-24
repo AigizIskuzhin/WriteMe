@@ -24,13 +24,15 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database.DAL\Database.DAL.csproj" />
     <ProjectReference Include="..\Database.Interfaces\Database.Interfaces.csproj" />
+    <ProjectReference Include="..\Services.Interfaces\Services.Interfaces.csproj" />
+    <ProjectReference Include="..\Services\Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Infrastructure\Data\" />
-    <Folder Include="ViewModels\Base\" />
+    <Folder Include="Infrastructure\Services\Extensions\" />
+    <Folder Include="ViewModels\" />
     <Folder Include="wwwroot\Resources\images\" />
   </ItemGroup>
 

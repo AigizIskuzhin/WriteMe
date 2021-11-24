@@ -1,9 +1,9 @@
 ﻿@using Website.Infrastructure.Extensions
-@model Database.DAL.Entities.Messages.ChatMessage.ParticipantChatMessage
+@model Website.ViewModels.Messenger.Preview.Base.UserMessageViewModel
 @{ Layout = null;
                 string userId = Context.GetConnectedUserId();
                 string advancedClass = String.Empty;
-                int senderId = @Model.ChatParticipantSender.User.Id;
+                int senderId = Model.ChatParticipantSender.User.Id;
                 bool isConnectedUser = senderId.ToString().Equals(userId);
 
                 if (isConnectedUser)

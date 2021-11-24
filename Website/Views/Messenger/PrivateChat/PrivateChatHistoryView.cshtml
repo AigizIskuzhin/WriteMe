@@ -1,14 +1,20 @@
-﻿@using Database.DAL.Entities.Messages.ChatMessage
+﻿@using Website.ViewModels.Messenger.Preview.Base
 @model Website.ViewModels.Messenger.ChatViewModel
 @{
     Layout = null;
 
     int now = DateTime.Now.DayOfYear;
-    var firstMessage = Model.History.First();
-    int lastDay = firstMessage.CreatedDateTime.DayOfYear;
-    string day = firstMessage.CreatedDateTime.DayOfYear + 1 == now ? "Вчера" : firstMessage.CreatedDateTime.ToString("M");
+    bool any = Model.History.Any();
+    var firstMessage = Model.History.FirstOrDefault();
+    int lastDay = 0;
+    string day = "";
+    if (firstMessage != null)
+    {
+        lastDay = firstMessage.CreatedDateTime.DayOfYear;
+        day = firstMessage.CreatedDateTime.DayOfYear + 1 == now ? "Вчера" : firstMessage.CreatedDateTime.ToString("M");
+    }
 }
-@if (!Model.History.Any())
+@if (!any)
 {
     <li class="message none generated_message">
         <div class="message_content">
@@ -18,22 +24,34 @@
 }
 else foreach (var message in Model.History)
     {
-        if (lastDay != message.CreatedDateTime.DayOfYear)
+        if (firstMessage != null)
         {
+            if (lastDay != message.CreatedDateTime.DayOfYear)
+            {
             <li class="message generated_message day">
-                <div class="message-content">
-                    @day
-                </div>
-            </li> 
-              lastDay = message.CreatedDateTime.DayOfYear;
-            day = lastDay + 1 == now ? "Вчера" : message.CreatedDateTime.ToString("M");
-                
+            <div class="message-content">
+                       @day
+                       </div>
+                       </li>
+                lastDay = message.CreatedDateTime.DayOfYear;
+                day = lastDay + 1 == now ? "Вчера" : message.CreatedDateTime.ToString("M");
+
+            }
         }
-        if (message is ParticipantChatMessage userMessage)
+        if (message is UserMessageViewModel userMessage)
             await Html.RenderPartialAsync("PrivateChat/PrivateChatMessageView", userMessage, ViewData);
-        else if (message is GeneratedChatMessage generatedMessage)
-            await Html.RenderPartialAsync("Base/MessageView", generatedMessage);
+        else
+            await Html.RenderPartialAsync("Base/MessageView", message);
 
-
-
+        if (firstMessage != null)
+        {
+            if (message.Id.Equals(Model.History.Last().Id)&&message.CreatedDateTime.DayOfYear!=now)
+            {
+                <li class="message generated_message day">
+                    <div class="message-content">
+                        @day
+                    </div>
+                </li>
+            }
+        }
     }

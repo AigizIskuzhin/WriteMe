@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Services.Interfaces;
 using Website.Controllers.Rules;
-using Website.Infrastructure.Services.Interfaces;
 
 namespace Website.Controllers
 {

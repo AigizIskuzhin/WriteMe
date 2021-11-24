@@ -53,9 +53,12 @@ namespace Database.DAL.Repositories.Base
                 Database.SaveChanges();
         }
 
-        public Task UpdateAsync(T item, CancellationToken cancel = default)
+        public async Task UpdateAsync(T item, CancellationToken cancel = default)
         {
-            throw new System.NotImplementedException();
+            if (item is null) throw new ArgumentNullException(nameof(item));
+            Database.Entry(item).State = EntityState.Modified;
+            if (AutoSaveChanges)
+                await Database.SaveChangesAsync(cancel).ConfigureAwait(false);
         }
 
         public void Remove(int id)

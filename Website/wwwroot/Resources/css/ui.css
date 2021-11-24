@@ -19,11 +19,6 @@
     width: max-content;
 }
 
-#ui_posts_search_input, #ui_reports_search_input, #ui_reports_search_input, #ui_chats_search_input {
-    width: 100%;
-    padding: 12px 12px 12px 36px;
-    outline: none;
-}
 
 #search_icon {
     position: absolute;
@@ -73,6 +68,11 @@
     background-color: var(--font-dark-color);
     animation-iteration-count: 1;
     animation: btn_click .3s ease-in-out;
+}
+.ui_search_input {
+    width: 100%;
+    padding: 12px 12px 12px 36px;
+    outline: none;
 }
 
 .ui_expanded {

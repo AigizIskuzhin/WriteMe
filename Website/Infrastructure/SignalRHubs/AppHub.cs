@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.SignalR;
 using Website.Infrastructure.Extensions;
-using Website.Infrastructure.Services.Interfaces;
 
 namespace Website.Infrastructure.SignalRHubs
 {
