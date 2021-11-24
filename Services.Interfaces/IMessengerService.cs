@@ -1,6 +1,4 @@
 ﻿using System;
-using Database.DAL.Entities.Chats.Base;
-using Database.DAL.Entities.Messages.Base;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Website.ViewModels.Messenger;
