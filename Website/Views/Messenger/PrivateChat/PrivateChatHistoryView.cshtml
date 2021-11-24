@@ -45,7 +45,7 @@ else foreach (var message in Model.History)
 
         if (firstMessage != null)
         {
-            if (message.Id.Equals(Model.History.Last().Id))
+            if (message.Id.Equals(Model.History.Last().Id)&&message.CreatedDateTime.DayOfYear!=now)
             {
                 <li class="message generated_message day">
                     <div class="message-content">
