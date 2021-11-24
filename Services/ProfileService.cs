@@ -122,7 +122,9 @@ namespace Services
             Surname = u.Surname,
             Patronymic = u.Patronymic,
             Birthday = u.Birthday,
-            AvatarPath = u.AvatarPath
+            AvatarPath = u.AvatarPath,
+            MailAddress = u.MailAddress,
+            Country = u.Country.Name
         }:null;
 
         #region RemovePost
