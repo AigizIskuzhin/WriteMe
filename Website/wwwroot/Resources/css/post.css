@@ -1,0 +1,123 @@
+﻿.post, .post-smoothpad {
+    background-color: rgba(230,230,230,.5);
+    padding: 10px 10px 20px 10px;
+    border-radius: 12px;
+    min-height: 40px;
+    box-sizing: border-box;
+    position: relative;
+}
+.post-smoothpad {
+    padding: 10px 20px;
+}
+.post:first-child {
+        margin-top: 0;
+    }
+.post_header {
+    width:min-content;
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin-bottom: 4px;
+    position: relative;
+    box-sizing: border-box;
+}
+.post_owner {
+    background: #eaeaea;
+    border-radius: 8px;
+    border: 1px var(--border-main-color) solid;
+    height: 30px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    overflow: hidden;
+}
+.post_owner_icon_container {
+    height: 100%;
+    background: white;
+    padding: 4px;
+    border-radius: 6px;
+}
+
+.owner_icon {
+    height: inherit;
+}
+.post_owner_name {
+    margin-right: 10px;
+}
+.post_header a {
+    white-space: nowrap;
+    text-decoration: none;
+}
+.post_owner:hover .post_owner_name {
+    color: #be7cff;
+}
+.post_owner:hover {
+    border-color: #dbf
+}
+.post_time {
+    white-space: nowrap;
+    position: absolute;
+    right: 10px;
+    bottom: 0;
+    padding-bottom: 0;
+    font-size: 12px;
+    opacity: .0;
+    transition: .2s linear;
+    opacity: .5;
+    padding-bottom: 6px;
+}
+/*.post:hover .post_time {
+    opacity: .5;
+    padding-bottom: 6px;
+}*/
+.post_title {
+    margin-bottom: 6px;
+}
+.post:hover .post_quick_menu {
+    opacity: 1;
+    top: 10px;
+}
+.post_quick_menu {
+    /*height: 20px;*/
+    /*border: 1px gray solid;*/
+    /*margin: auto 0 auto auto;*/
+
+    position: absolute;
+    right: 10px;
+    top: 0px;
+    display: flex;
+    gap: 10px;
+    transition: .2s linear;
+    opacity:0;
+    /*overflow: visible;*/
+}
+.quick_btn {
+    height: 20px;
+    width: 20px;
+    cursor: pointer;
+    display: flex;
+}
+.quick_btn:hover{
+
+}
+.quick_btn:hover .quick_btn_icon{
+    fill: rgb(30,30,30);
+}
+.quick_btn_icon {
+    fill: rgb(140,140,140);
+}
+.quick_btn_icon svg{
+    overflow: visible;
+    vertical-align: inherit;
+}
+.hidden{
+    visibility: collapse;
+    opacity:0;
+}
+
+
+.quick_btn:hover .tooltip {
+    visibility: visible;
+    opacity: 1;
+    transition: .3s linear;
+}

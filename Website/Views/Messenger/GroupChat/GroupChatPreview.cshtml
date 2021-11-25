@@ -1,0 +1,22 @@
+﻿@*@model Website.ViewModels.ChatViewModel
+@{
+    Layout = null;
+    var title = Model;
+    var lastMessage = Model.History.OrderByDescending(m => m.CreatedDateTime).FirstOrDefault();
+}
+<li id="chat-@Model.Id" class="chat" data-private-chat-id="@Model.Id">
+    <div class="chat_title">
+        @title
+    </div>
+    <div class="chat_preview_message">
+        @if (lastMessage is GroupChatParticipantMessage groupChatParticipantMessage)
+        {
+            <div class="message_sender">@groupChatParticipantMessage.Sender.User.Name</div>
+            <div class="message-content">@lastMessage.Text</div>
+        }
+        else
+        {
+            <div class="message-content">@lastMessage.Text</div>
+        }
+    </div>
+</li>*@

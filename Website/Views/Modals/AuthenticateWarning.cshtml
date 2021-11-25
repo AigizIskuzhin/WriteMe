@@ -1,0 +1,9 @@
+﻿@{ Layout = null; }
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<div class="center-screen auth">
+    <form class="auth-form" action="@Url.Action(" ConfirmMailForAuthorization")" method="POST" asp-anti-forgery="true">
+        <img class="wallpaper" src="~/Resources/images/wallpaper.png" />
+        <a class="auth-btn" href="/reg">Регистрация</a>
+        <a class="auth-btn" href="/auth">Авторизация</a>
+    </form>
+</div>  

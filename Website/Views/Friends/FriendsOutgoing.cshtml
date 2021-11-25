@@ -1,0 +1,22 @@
+﻿@model IEnumerable<Website.ViewModels.Friends.FriendViewModel>
+<link rel="stylesheet" href="~/Resources/css/friends.css" />
+
+<div style="display: flex; height: 100%;">
+    <div class="ui_70">
+        <ul id="friends" class="friends">
+            @await Html.PartialAsync("FriendsView", Model)
+        </ul>
+    </div>
+
+    <div class="friends_links">
+        <a class="ui_control_item ui_btn" href="/friends">
+            Друзья
+        </a>
+        <a class="ui_control_item ui_btn" href="/friends/incoming">
+            Входящие заявки
+        </a>
+        <a class="ui_control_item ui_btn ui_btn-selected" href="/friends/outgoing">
+            Исходящие заявки
+        </a>
+    </div>
+</div>

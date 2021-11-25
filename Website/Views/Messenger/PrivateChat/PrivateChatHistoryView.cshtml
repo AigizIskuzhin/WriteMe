@@ -1,0 +1,57 @@
+﻿@using Website.ViewModels.Messenger.Preview.Base
+@model Website.ViewModels.Messenger.ChatViewModel
+@{
+    Layout = null;
+
+    int now = DateTime.Now.DayOfYear;
+    bool any = Model.History.Any();
+    var firstMessage = Model.History.FirstOrDefault();
+    int lastDay = 0;
+    string day = "";
+    if (firstMessage != null)
+    {
+        lastDay = firstMessage.CreatedDateTime.DayOfYear;
+        day = firstMessage.CreatedDateTime.DayOfYear + 1 == now ? "Вчера" : firstMessage.CreatedDateTime.ToString("M");
+    }
+}
+@if (!any)
+{
+    <li class="message none generated_message">
+        <div class="message_content">
+            Записей нет
+        </div>
+    </li>
+}
+else foreach (var message in Model.History)
+    {
+        if (firstMessage != null)
+        {
+            if (lastDay != message.CreatedDateTime.DayOfYear)
+            {
+            <li class="message generated_message day">
+            <div class="message-content">
+                       @day
+                       </div>
+                       </li>
+                lastDay = message.CreatedDateTime.DayOfYear;
+                day = lastDay + 1 == now ? "Вчера" : message.CreatedDateTime.ToString("M");
+
+            }
+        }
+        if (message is UserMessageViewModel userMessage)
+            await Html.RenderPartialAsync("PrivateChat/PrivateChatMessageView", userMessage, ViewData);
+        else
+            await Html.RenderPartialAsync("Base/MessageView", message);
+
+        if (firstMessage != null)
+        {
+            if (message.Id.Equals(Model.History.Last().Id)&&message.CreatedDateTime.DayOfYear!=now)
+            {
+                <li class="message generated_message day">
+                    <div class="message-content">
+                        @day
+                    </div>
+                </li>
+            }
+        }
+    }

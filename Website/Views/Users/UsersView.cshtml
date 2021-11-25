@@ -1,0 +1,9 @@
+﻿@model IEnumerable<Website.ViewModels.Users.PreviewProfileViewModel>
+@{ Layout = null;}
+@if (Model.Any())
+{
+    foreach (var user in Model)
+    {
+        @await Html.PartialAsync("UserPreviewView", user)
+    }
+}

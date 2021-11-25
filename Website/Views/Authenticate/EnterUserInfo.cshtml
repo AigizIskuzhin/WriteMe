@@ -1,0 +1,216 @@
+﻿@using Database.Interfaces
+@using Database.DAL.Entities.Base
+@model Website.ViewModels.RegistrationViewModel
+@inject IRepository<Country> CountriesRepository
+@{
+    Layout = null;
+}
+<html lang="ru">
+<link rel="stylesheet" href="~/Resources/css/auth.css" />
+<link rel="stylesheet" href="~/Resources/css/ui.css" />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nunito:wght@600&display=swap">
+
+<div class="center-screen auth">
+    <form class="auth-form" asp-action="EnterUserInfo" asp-controller="Authenticate" asp-anti-forgery="true" style="gap:20px">
+        <h3>Регистрация</h3>
+        <div class="auth-section">
+            <h4>Данные для входа</h4>
+            <div class="auth-row">
+                <input id="inputPassword" class="auth-input" placeholder="Пароль" type="password" asp-for="Password" autocomplete="off"
+                       oninput="IsInputEmpty(this)" />
+                <span asp-validation-for="Password"></span>
+            </div>
+            <div class="auth-row">
+                <input id="inputConfirmPassword" class="auth-input" placeholder="Повторите пароль" type="password" asp-for="ConfirmPassword" autocomplete="off"
+                       oninput="IsInputEmpty(this), ConfirmPassword(this)" />
+                <span asp-validation-for="ConfirmPassword"></span>
+                <span class="tooltip rightOf" style="color: white">Пароли должны совпадать</span>
+            </div>
+        </div>
+        <div class="auth-section">
+            <h4>Личные данные</h4>
+            <div class="auth-row">
+                <input placeholder="Фамилия" class="auth-input" type="text" asp-for="Surname" />
+                <span asp-validation-for="Surname"></span>
+            </div>
+            <div class="auth-row">
+                <input placeholder="Имя" class="auth-input" type="text" asp-for="Name"
+                       oninput="IsInputEmpty(this)" />
+                <span asp-validation-for="Name"></span>
+            </div>
+            <div class="auth-row">
+                <input placeholder="Отчество" class="auth-input" type="text" asp-for="Patronymic" />
+                <span asp-validation-for="Patronymic"></span>
+            </div>
+            <div class="auth-row">
+                @* Вариант 1 *@
+                <span class="auth-input-title">Страна</span>
+                <select class="auth-input pointer" style="margin-right: 0; appearance: none" asp-for="CountryId">
+                    @foreach (var country in CountriesRepository.Items)
+                    {
+                        <option value="@country.Id">@country.Name</option>
+                    }
+                </select>
+
+                @* Вариант 2 *@
+                @*<span class="auth-input-title-two">Страна</span>
+                    <select class="auth-input variant-two" style="margin-right: 0" asp-for="Country">
+                        <option value="ru">Не выбрано</option>
+                        <option value="ru">Россия</option>
+                    </select>*@
+                <span asp-validation-for="CountryId"></span>
+            </div>
+            <div class="auth-row">
+
+                @* Вариант 1 *@
+                <marquee direction="left" style="width: 55px;" scrolldelay="60" scrollamount="2" class="auth-input-title">Дата рождения</marquee>
+                <input class="auth-input pointer" style="margin-right: 0; padding-left: 12px; padding-right: 0;" type="date" asp-for="Birthday"
+                       max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" placeholder="dd.mm.yyyy" oninput="IsInputEmpty(this)" />
+                <span class="tooltip rightOf" style="color: white">Минимум 18 лет</span>
+
+                @* Вариант 2 *@
+                @*<marquee direction="left" scrolldelay="60" scrollamount="2" class="auth-input-title-two">Год рождения</marquee>
+                    <input class="auth-input variant-two" style="margin-right: 0" type="date" asp-for="Birthday" />*@
+                <span asp-validation-for="Birthday"></span>
+            </div>
+        </div>
+        <input type="hidden" asp-for="MailAddress" />
+        <div class="auth-row" style="margin-top: 20px;">
+            <input id="submit" class="auth-btn pointer" disabled onmousemove="ShowError(this), CheckRequiredInputs()" onmouseleave="HideError(this)" style="width: 100%;" type="submit" value="Зарегистрироваться" />
+            <span class="field-validation-error rightOf submit-error">Заполните указанные данные</span>
+        </div>
+    </form>
+</div>
+
+
+<script>
+    let requiredInputs = new Array();
+    requiredInputs.push(document.getElementById('inputPassword'));
+    requiredInputs.push(document.getElementById('inputConfirmPassword'));
+    requiredInputs.push(document.getElementById('Name'));
+    requiredInputs.push(document.getElementById('Birthday'));
+
+
+
+
+
+    let inputHasError = false;
+    let inputErrors = document.getElementsByClassName('field-validation-error');
+    document.addEventListener("DOMContentLoaded",
+        function (event) {
+            if (inputErrors.length != 0) {
+                for (let inputError of inputErrors) {
+
+                    if (!inputError.classList.contains('submit-error'))
+                        setTimeout(function () {
+                            if (inputError.innerText != "") {
+                                inputHasError = true;
+                            }
+                            AddVisibleClass(inputError);
+                        },
+                            500);
+                }
+            }
+        });
+
+    function IsSubmitError(inputError) {
+        for (let item of inputError.parentElement.children) {
+            if (item.classList.contains("auth-btn"))
+                return true;
+        }
+        return false;
+    }
+
+    function IsRequiredInputsEmpty() {
+        for (var i = 0; i < requiredInputs.length; i++) {
+            var input = requiredInputs[i];
+            if (input.value == "")
+                return true;
+        }
+        return false;
+    }
+
+
+    let submitBtn = document.getElementById('submit');
+
+    function IsInputEmpty(input) {
+        let inputError = GetInputSpanErrorField(input);
+        if (inputError != null)
+            if (inputError.innerText != "" && inputError.innerText != "Обязательное поле")
+                AddVisibleClass(inputError);
+
+        submitBtn.disabled = IsRequiredInputsEmpty();
+        if (input.value == "") {
+            inputError.innerText = "Обязательное поле";
+            AddVisibleClass(inputError);
+        } else {
+            inputHasError = false;
+            RemoveVisibleClass(inputError);
+            HideError(submitBtn);
+            //inputError.value = "";
+        }
+    }
+
+    function ShowError(input) {
+        if (!input.disabled) {
+            HideError(input);
+            return;
+        }
+        let spanError = GetInputSpanErrorField(input);
+        if (spanError.innerText != "") {
+
+            if (inputHasError)
+                spanError.innerText = "Исправьте введенные данные";
+            else spanError.innerText = "Заполните указанные данные";
+            setTimeout(function () {
+                AddVisibleClass(spanError);
+            },
+                150);
+        }
+
+    }
+
+    function HideError(input) {
+        setTimeout(function () {
+            for (let item of input.parentElement.children)
+                if (item.classList.contains("field-validation-error")) {
+                    if (item.value != "") {
+                        if (!item.classList.contains("submit-error"))
+                            item.value = "";
+                        RemoveVisibleClass(item);
+                    }
+                }
+        }, 150);
+    }
+
+    function AddVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (!element.hasAttribute("style"))
+            element.setAttribute("style", "width: " + element.scrollWidth + "px;");
+    }
+
+    function RemoveVisibleClass(element) {
+        let className = element.classList[0];
+        let visibleClassName = className + "-visible";
+        if (element.hasAttribute("style"))
+            element.removeAttribute("style");
+    }
+
+    function GetInputSpanErrorField(input) {
+        for (let item of input.parentElement.children)
+            if (item.classList.contains("field-validation-error") || item.classList.contains("field-validation-valid"))
+                return item;
+    }
+    function CheckRequiredInputs() {
+        for (var i = 0; i < requiredInputs.length; i++) {
+            var input = requiredInputs[i];
+            var spanError = GetInputSpanErrorField(input);
+            if (input.value == "")
+                if (spanError.innerText == "") {
+                    spanError.innerText = "Обязательное поле";
+                    AddVisibleClass(spanError);
+                }
+        }
+    }
+</script>

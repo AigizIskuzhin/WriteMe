@@ -1,0 +1,18 @@
+﻿@using Website.Infrastructure.Extensions
+@model Website.ViewModels.Messenger.Preview.Base.UserMessageViewModel
+@{ Layout = null;
+                string userId = Context.GetConnectedUserId();
+                string advancedClass = String.Empty;
+                int senderId = Model.ChatParticipantSender.User.Id;
+                bool isConnectedUser = senderId.ToString().Equals(userId);
+
+                if (isConnectedUser)
+                    advancedClass = "message_right"; }
+<li id="message-@Model.Id" class="message @advancedClass" data-participant-message-id="@Model.Id" data-message-owner-id="@senderId">
+    <div class="message_content">
+        @Model.Text
+    </div>
+    <div class="message_sent_time">
+        @Model.CreatedDateTime.ToHoursAndMinutes()
+    </div>
+</li>

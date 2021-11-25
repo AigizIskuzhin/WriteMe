@@ -1,0 +1,92 @@
+﻿@using Website.ViewModels.Messenger
+@model ChatViewModel
+@{
+    ViewData.Add("ChatId", Model.Id);
+    ViewData.Add("UserId", Model.ConnectedUserId);
+}
+<link rel="stylesheet" href="~/Resources/css/chats.css" />
+<link rel="stylesheet" href="~/Resources/css/chat.css" />
+<link rel="stylesheet" href="~/Resources/css/ui.css" />
+
+@if (Model.IsPrivateChat)
+{
+    await Html.RenderPartialAsync("PrivateChat/PrivateChatView", Model, ViewData);
+}
+else
+{
+    await Html.RenderPartialAsync("GroupChat/GroupChatView", Model, ViewData);
+}
+
+<div class="bottom_box_container">
+    <input id="input" class="ui_control_item" placeholder="Введите сообщение"/>
+    <div id="sender" class="ui_button ui_control_item">Отправить</div>
+</div>
+<script src="~/Resources/lib/signalr/signalr.js"></script>
+<script>
+    Document.prototype.createElementFromString = function (str) {
+        const element = new DOMParser().parseFromString(str, 'text/html');
+        const child = element.documentElement.querySelector('body').firstChild;
+        return child;
+    };
+    function ScrollHistoryToNewest() {
+        document.getElementById('history').scrollTo(0, document.getElementById('history').scrollHeight);
+    }
+
+    ScrollHistoryToNewest();
+    
+    var privateconnection;
+    function initPrivateSignalR() {
+        privateconnection = new signalR.HubConnectionBuilder()
+            .withUrl("/privatesignalr/@Model.Id")
+            .configureLogging(signalR.LogLevel.Information)
+            .build();
+        privateconnection.start();
+        privateconnection.serverTimeoutInMilliseconds = 1000 * 60 * 10;
+
+        privateconnection.on("OnNewMessages", function () {
+            var history = document.getElementById('history');
+            var lastMessageId = history.lastElementChild.getAttribute('data-generated-message-id');
+            if (lastMessageId == null)
+                lastMessageId = history.lastElementChild.getAttribute('data-participant-message-id');
+            var url = "@Url.Action("GetNewMessages")";
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: {
+                    "chatId": @Model.Id,
+                    "lastMessageId": lastMessageId
+                },
+                success: function(messages) {
+                    var view = document.createElementFromString(messages);
+                    history.appendChild(view);
+                    ScrollHistoryToNewest();
+
+                }
+            });
+        })
+
+        privateconnection.on("NotifyAboutReceiverOnline", function() {
+            var receiver_status = document.getElementById('receiver_status');
+            if (!receiver_status.classList.contains("online"))
+                receiver_status.classList.add("online");
+        })
+        privateconnection.on("NotifyAboutReceiverOffline", function () {
+            var receiver_status = document.getElementById('receiver_status');
+            if (receiver_status.classList.contains("online"))
+                receiver_status.classList.remove("online");
+        })
+
+
+    }
+
+    initPrivateSignalR();
+
+    document.getElementById('sender').addEventListener('click',
+        function() {
+            var input = document.getElementById('input');
+            var text = input.value;
+            input.value = null;
+
+            privateconnection.invoke("SendMessage", text);
+        });
+</script>

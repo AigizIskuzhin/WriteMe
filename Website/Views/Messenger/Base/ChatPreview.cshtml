@@ -1,0 +1,9 @@
+﻿@using Website.ViewModels.Messenger.Preview
+@model Website.ViewModels.Messenger.Preview.Base.ChatPreviewViewModel
+@{
+    Layout = null;
+    if (Model is PrivateChatPreviewViewModel privateChatVVM)
+        await Html.RenderPartialAsync("PrivateChat/PrivateChatPreview", privateChatVVM);
+    else if(Model is GroupChatPreviewViewModel groupChatVVM) 
+        await Html.RenderPartialAsync("GroupChat/GroupChatPreview", groupChatVVM);
+}
