@@ -1,23 +1,17 @@
 ﻿using System.Collections.Generic;
 using Website.ViewModels.Base;
+using Website.ViewModels.Profile;
+using Website.ViewModels.Users;
 
 namespace Website.ViewModels
 {
     public class PostReportViewModel : EntityViewModel
     {
-        public int SenderId{get; set; }
-        public string SenderName { get; set; }
-        public int postownerid { get; set; }
-        public string reportType { get; set; }
-        public string reportState { get; set; }
-        public string comment { get; set; }
-        public int PostId { get; set; }
-
+        public UserViewModel Sender { get; set; }
+        public PostViewModel Post { get; set; }
+        public ReportTypeVM ReportType { get; set; }
+        public ReportStateVM ReportState { get; set; }
+        public string Commentary { get; set; }
         public IEnumerable<ReportTypeVM> ReportTypes { get; set; }
-    }
-
-    public class ReportTypeVM : EntityViewModel
-    {
-        public string Name { get; set; }
     }
 }

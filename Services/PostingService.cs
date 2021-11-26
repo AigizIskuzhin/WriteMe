@@ -30,16 +30,6 @@ namespace Services
             ReportTypeRepository = reportTypeRepository;
         }
 
-        private SystemPostViewModel GetSystemPostViewModel(SystemPost p) => p != null
-            ? new SystemPostViewModel
-            {
-                Id = p.Id,
-                Title = p.Title,
-                Description = p.Description,
-                CreationDateTime = p.CreatedDateTime
-            }
-            : null;
-
 
         public bool IsAdmin(int userId)
         {
@@ -50,26 +40,23 @@ namespace Services
         public IEnumerable<SystemPostViewModel> GetSystemPosts()
         {
             foreach (var p in SystemPostsRepository.Items)
-                yield return GetSystemPostViewModel(p);
+                yield return p.GetViewModel();
         }
 
         public IEnumerable<SystemPostViewModel> GetSystemPostsWithFilter(string filter) =>
             (from p in SystemPostsRepository.Items.Where(post => post.Title != null && post.Title.Contains(filter) ||
                                                                  post.Description != null && post.Description.Contains(filter))
-                select GetSystemPostViewModel(p))
+                select p.GetViewModel())
             .OrderByDescending(post => post.CreationDateTime);
 
-        public SystemPostViewModel UploadPost(SystemPostViewModel systemPost)
-        {
-            if (string.IsNullOrWhiteSpace(systemPost.Title) && string.IsNullOrWhiteSpace(systemPost.Description))
-                return null;
-            var t = SystemPostsRepository.Add(new SystemPost()
-            {
-                Title = systemPost.Title,
-                Description = systemPost.Description
-            });
-            return GetSystemPostViewModel(t);
-        }
+        public SystemPostViewModel UploadPost(SystemPostViewModel systemPost) =>
+            string.IsNullOrWhiteSpace(systemPost.Title) && string.IsNullOrWhiteSpace(systemPost.Description)
+                ? null
+                : SystemPostsRepository.Add(new SystemPost
+                {
+                    Title = systemPost.Title,
+                    Description = systemPost.Description
+                }).GetViewModel();
 
         public SystemPostViewModel EditPost(SystemPostViewModel systemPost)
         {
@@ -80,7 +67,7 @@ namespace Services
 
             SystemPostsRepository.Update(postDefault);
 
-            return GetSystemPostViewModel(postDefault);
+            return postDefault.GetViewModel();
         }
 
         public bool RemovePost(int idPost)
@@ -107,22 +94,15 @@ namespace Services
         }
 
         public IEnumerable<PostReportViewModel> GetPostsReports() => from report in
-            PostReportsRepository.Items.OrderByDescending(report => report.CreatedDateTime) select new PostReportViewModel
-        {
-            Id = report.Id,
-            PostId = report.PostId,
-            postownerid = report.Post.Owner.Id,
-            comment = report.Commentary,
-            reportState = report.ReportState.Name,
-            reportType = report.ReportType.Name,
-            SenderName = report.Sender.Name
-        };
+                PostReportsRepository.Items.OrderByDescending(report => report.CreatedDateTime)
+            select report.GetViewModel();
 
         public IEnumerable<ReportTypeVM> GetReportTypes() => from report in ReportTypeRepository.Items select new ReportTypeVM
         {
             Id = report.Id,
             Name = report.Name
         };
+
         public void CloseReport(int reportId) => PostReportsRepository.Remove(reportId);
 
         public void CloseReportAndDeletePost(int reportId)
