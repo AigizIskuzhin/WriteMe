@@ -9,16 +9,22 @@ namespace Database.DAL.Context
 {
     public class WriteMeDatabase : DbContext
     {
+        #region Users
         public DbSet<User> Users { get; set; }
         public DbSet<Country> Countries { get; set; }
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Role> Roles { get; set; } 
+        #endregion
 
+        #region Posts
         public DbSet<UserPost> UserPosts { get; set; }
-        public DbSet<SystemPost> SystemPosts { get; set; }
-        
+        public DbSet<SystemPost> SystemPosts { get; set; } 
+        #endregion
+
+        #region Reports
         public DbSet<ReportType> ReportTypes { get; set; }
         public DbSet<ReportState> ReportStates { get; set; }
-        public DbSet<PostReport> PostReports { get; set; }
+        public DbSet<PostReport> PostReports { get; set; } 
+        #endregion
 
         #region Chat
 
@@ -58,7 +64,6 @@ namespace Database.DAL.Context
         #endregion
 
         #endregion
-
         public DbSet<FriendshipApplication> FriendshipApplications { get; set; }
         public DbSet<FriendshipType> FriendshipTypes { get; set; }
 
@@ -79,28 +84,27 @@ namespace Database.DAL.Context
             builder.Entity<PostReport>().UseCreationTimeStampOnProperty();
 
             #endregion
-
             
-
+            #region Default data
             builder.Entity<Role>().HasData(
-                new Role
-                {
-                    Name = "Пользователь",
-                    Code = "user",
-                    Id = 1
-                },
-                new Role
-                {
-                    Name = "Модератор",
-                    Code="mod",
-                    Id=2
-                },
-                new Role
-                {
-                    Name = "Администратор",
-                    Code="admin",
-                    Id = 3
-                });
+                    new Role
+                    {
+                        Name = "Пользователь",
+                        Code = "user",
+                        Id = 1
+                    },
+                    new Role
+                    {
+                        Name = "Модератор",
+                        Code = "mod",
+                        Id = 2
+                    },
+                    new Role
+                    {
+                        Name = "Администратор",
+                        Code = "admin",
+                        Id = 3
+                    });
 
             builder.Entity<Country>().HasData(
                 new Country
@@ -116,6 +120,15 @@ namespace Database.DAL.Context
                     Name = "Россия"
 
                 });
+
+            builder.Entity<ReportType>().HasData(
+                new ReportType { Name = "Мат" },
+                new ReportType { Name = "Другое" });
+
+            builder.Entity<ReportState>().HasData(
+                new ReportState { Name = "В процессе" },
+                new ReportState { Name = "Рассмотрено" }); 
+            #endregion
         }
     }
 }
