@@ -33,7 +33,7 @@ namespace Services
                                      (post.Title != null && post.Title.Contains(filterText) ||
                                       post.Description != null && post.Description.Contains(filterText)))
                 .OrderByDescending(post => post.CreatedDateTime)
-            select GetViewModel(p);
+            select p.GetViewModel();
         #endregion
             
         #region GetUserPosts
@@ -43,10 +43,10 @@ namespace Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public IEnumerable<UserPostViewModel> GetUserPosts(int id) => from p in _Posts.Items
+        public IEnumerable<UserPostViewModel> GetUserPosts(int id) => from post in _Posts.Items
                 .Where(post => post.OwnerId.Equals(id))
                 .OrderByDescending(post => post.CreatedDateTime)
-            select GetViewModel(p);
+            select post.GetViewModel();
         #endregion
 
         #region GetUserAsync
@@ -58,7 +58,7 @@ namespace Services
         public async Task<UserViewModel> GetUserAsync(int id)
         {
             var u = await _Users.GetAsync(id);
-            return GetViewModel(u);
+            return u?.GetViewModel();
         }
 
         #endregion
@@ -80,7 +80,7 @@ namespace Services
                 Description = userPost.Description
             };
             var p = _Posts.Add(post);
-            return p != null ? GetViewModel(p) : null;
+            return p?.GetViewModel();
         }
 
         #endregion
@@ -96,37 +96,16 @@ namespace Services
             var postDefault = _Posts.Get(userPost.Id);
 
             if (postDefault.OwnerId != userPost.OwnerId)
-                return GetViewModel(postDefault);
+                return postDefault.GetViewModel();
 
             postDefault.Title = userPost.Title;
             postDefault.Description = userPost.Description;
 
             _Posts.Update(postDefault);
 
-            return GetViewModel(postDefault);
+            return postDefault.GetViewModel();
         } 
         #endregion
-
-        public static UserPostViewModel GetViewModel(UserPost p) => new()
-        {
-            Id = p.Id,
-            CreatedDateTime = p.CreatedDateTime,
-            Description = p.Description,
-            Title = p.Title,
-            Owner = GetViewModel(p.Owner)
-        };
-        public static UserViewModel GetViewModel(User u) => u!=null?new UserViewModel
-        {
-            Id=u.Id,
-            Name = u.Name,
-            Surname = u.Surname,
-            Patronymic = u.Patronymic,
-            Birthday = u.Birthday,
-            AvatarPath = u.AvatarPath,
-            MailAddress = u.MailAddress,
-            Country = u.Country.Name,
-            IsMode = u.Role.Id==2||u.Role.Id==3
-        }:null;
 
         #region RemovePost
         /// <summary>
