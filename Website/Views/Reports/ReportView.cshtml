@@ -1,24 +1,24 @@
-﻿@model Database.DAL.Entities.PostReport
+﻿@model Website.ViewModels.PostReportViewModel
 @{
     Layout = null;
 }
-<li id="report-@Model.Id" class="report" report-id="@Model.Id"  post-id="@Model.Post.Id" sender-id="@Model.Sender.Id">
+<li id="report-@Model.Id" class="report" report-id="@Model.Id"  post-id="@Model.PostId" sender-id="@Model.SenderId">
     <div class="report_title">
         <div class="report_sender report_title_item">
-            <a href="/profile?id=@Model.Sender.Id">
-                Отправитель: @Model.Sender.Name
+            <a href="/profile?id=@Model.SenderId">
+                Отправитель: @Model.SenderName
             </a>
         </div>  
         <div class="report_target report_title_item">
-            <a href="/profile?id=@Model.Post.Owner.Id#post-@Model.Post.Id">
+            <a href="/profile?id=@Model.postownerid#post-@Model.PostId">
                 Запись
             </a>
         </div>
         <div class="report_type report_title_item">
-            @Model.ReportType.Name
+            @Model.reportType
         </div>
         <div class="report_state report_title_item">
-            @Model.ReportState.Name
+            @Model.reportState
         </div>
     </div>
     <div class="report_content">
@@ -27,7 +27,7 @@
                 Комментарий:
             </div>
             <div>
-                @Model.Commentary
+                @Model.comment
             </div>
         </div>
         <form asp-action="CloseReport">

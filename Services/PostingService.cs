@@ -110,7 +110,12 @@ namespace Services
             PostReportsRepository.Items.OrderByDescending(report => report.CreatedDateTime) select new PostReportViewModel
         {
             Id = report.Id,
-            PostId = report.PostId
+            PostId = report.PostId,
+            postownerid = report.Post.Owner.Id,
+            comment = report.Commentary,
+            reportState = report.ReportState.Name,
+            reportType = report.ReportType.Name,
+            SenderName = report.Sender.Name
         };
 
         public IEnumerable<ReportTypeVM> GetReportTypes() => from report in ReportTypeRepository.Items select new ReportTypeVM

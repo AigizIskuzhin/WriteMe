@@ -1,9 +1,8 @@
-﻿@using Database.Interfaces
-@using Database.DAL.Entities
-@using Website.Infrastructure.Extensions
-@inject IRepository<User> UsersRepository
+﻿@using Website.Infrastructure.Extensions
+@using IProfileService = Services.Interfaces.IProfileService
+@inject IProfileService ProfileService
 @{
-    bool isMod = (await UsersRepository.GetAsync(int.Parse(Context.GetConnectedUserId()))).Role.Id == 2;
+    bool isMod = ProfileService.GetUserAsync(int.Parse(Context.GetConnectedUserId())).Result.IsMode;
 }
 <!DOCTYPE html>
 <html lang="en">

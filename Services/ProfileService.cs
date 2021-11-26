@@ -124,7 +124,8 @@ namespace Services
             Birthday = u.Birthday,
             AvatarPath = u.AvatarPath,
             MailAddress = u.MailAddress,
-            Country = u.Country.Name
+            Country = u.Country.Name,
+            IsMode = u.Role.Id==2||u.Role.Id==3
         }:null;
 
         #region RemovePost

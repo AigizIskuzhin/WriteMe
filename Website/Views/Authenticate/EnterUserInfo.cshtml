@@ -65,7 +65,7 @@
                 @* Вариант 1 *@
                 <marquee direction="left" style="width: 55px;" scrolldelay="60" scrollamount="2" class="auth-input-title">Дата рождения</marquee>
                 <input class="auth-input pointer" style="margin-right: 0; padding-left: 12px; padding-right: 0;" type="date" asp-for="Birthday"
-                       max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd");" placeholder="dd.mm.yyyy" oninput="IsInputEmpty(this)" />
+                       max="@DateTime.Now.AddYears(-18).ToString("yyyy-MM-dd")" placeholder="dd.mm.yyyy" oninput="IsInputEmpty(this)" />
                 <span class="tooltip rightOf" style="color: white">Минимум 18 лет</span>
 
                 @* Вариант 2 *@

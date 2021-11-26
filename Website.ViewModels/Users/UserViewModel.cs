@@ -12,6 +12,7 @@ namespace Website.ViewModels.Users
         public string Country { get; set; }
         public DateTime Birthday { get; set; }
         public string AvatarPath { get; set; }
+        public bool IsMode { get; set; }
         public string ShortName
         {
             get
