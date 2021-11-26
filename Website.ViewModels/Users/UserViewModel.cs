@@ -3,6 +3,12 @@ using Website.ViewModels.Base;
 
 namespace Website.ViewModels.Users
 {
+    public enum AccessLevel
+    {
+        user = 1,
+        mod = 2,
+        admin = 3
+    }
     public class UserViewModel : EntityViewModel
     {
         public string Name { get; set; }
@@ -13,6 +19,7 @@ namespace Website.ViewModels.Users
         public DateTime Birthday { get; set; }
         public string AvatarPath { get; set; }
         public bool IsMode { get; set; }
+        public AccessLevel AccessLevel { get; set; } = AccessLevel.user;
         public string ShortName
         {
             get

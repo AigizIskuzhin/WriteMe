@@ -18,22 +18,13 @@ namespace Services
         }
 
         public IEnumerable<PreviewProfileViewModel> GetUsersPreviews() =>
-            from user in UsersRepository.Items select ConvertToPreviewVM(user);
-
-        private static PreviewProfileViewModel ConvertToPreviewVM(User user) =>
-            new()
-            {
-                Id = user.Id,
-                Name = user.Name,
-                Surname = user.Surname,
-                Patronymic = user.Patronymic,
-                AvatarPath = user.AvatarPath
-            };
+            from user in UsersRepository.Items select user.GetPreviewViewModel();
+        
 
         public IEnumerable<PreviewProfileViewModel> GetUsersPreviews(string filter) =>
             from user in UsersRepository.Items.Where(u =>
                 u.Name.Contains(filter) || u.Surname.Contains(filter) || u.Patronymic.Contains(filter))
-            select ConvertToPreviewVM(user);
+            select user.GetPreviewViewModel();
 
         public PreviewProfileViewModel GetUserPreview(int id)
         {
