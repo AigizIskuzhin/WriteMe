@@ -18,69 +18,16 @@ namespace Services
             _Friendship = friendship;
             UsersRepository = usersRepository;
         }
-        public static UserViewModel GetViewModel(User u) => new()
-        {
-            Id = u.Id,
-            Name = u.Name,
-            Surname = u.Surname,
-            Patronymic = u.Patronymic,
-            Birthday = u.Birthday,
-            AvatarPath = u.AvatarPath
-        };
-        public FriendshipApplicationVM GetViewModel(FriendshipApplication apl)
-        {
-            //
-            if (apl == null) return null;
-            //
-            FriendshipApplicationVM t = new()
-            {
-                UserOne = GetViewModel(apl.UserOne),
-                UserTwo = GetViewModel(apl.UserTwo),
-                ApplicationStateUserTwo = apl.ApplicationStateUserTwo switch
-                {
-                    FriendshipStates.Allow => FriendshipStatesVM.Allow,
-                    FriendshipStates.Suspence => FriendshipStatesVM.Suspence,
-                    FriendshipStates.Deny => FriendshipStatesVM.Deny,
-                    _ => throw new ArgumentOutOfRangeException()
-                },
-                ApplicationStateUserOne = apl.ApplicationStateUserOne switch
-                {
-                    FriendshipStates.Allow => FriendshipStatesVM.Allow,
-                    FriendshipStates.Suspence => FriendshipStatesVM.Suspence,
-                    FriendshipStates.Deny => FriendshipStatesVM.Deny,
-                    _ => throw new ArgumentOutOfRangeException()
-                }
-            };
-            return t;
-        }
+
+
         public FriendViewModel GetFriendViewModel(int currentUserId, int userId)
         {
             var application = _Friendship.Items.FirstOrDefault(a =>
                 a.UserOne.Id.Equals(currentUserId) && a.UserTwo.Id.Equals(userId) ||
                 a.UserOne.Id.Equals(userId) && a.UserTwo.Id.Equals(currentUserId));
-            var aplVM = GetViewModel(application);
-            return GetFriendViewModel(aplVM, currentUserId);
-        }
-        public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId)
-        {
-            if (application == null) return null;
-            var friend = GetFriendFromApplication(application, userId);
-            var f = new FriendViewModel
-            {
-                Id = application.Id,
-                UserId = friend.Id,
-                Name = friend.Name,
-                Surname = friend.Surname ?? "",
-                Patronymic = friend.Patronymic ?? "",
-                AvatarPath = friend.AvatarPath
-            };
-            if (application.IsFriend(friend.Id))
-                f.ApplicationState = ApplicationState.friend;
-            if (application.IsIncoming(friend.Id))
-                f.ApplicationState = ApplicationState.incoming;
-            if (application.IsOutgoing(friend.Id))
-                f.ApplicationState = ApplicationState.outgoing;
-            return f;
+            if (application is null) return null;
+            var aplVM = application.GetViewModel();
+            return aplVM.GetFriendViewModel(currentUserId);
         }
         public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId, ApplicationState state)
         {
@@ -114,7 +61,7 @@ namespace Services
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
             {
-                var aplVM = GetViewModel(a);
+                var aplVM = a.GetViewModel();
                 var friend = GetFriendViewModel(aplVM, userId,
                     ApplicationState.friend);
                 if (friend is not null)
@@ -132,7 +79,7 @@ namespace Services
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
             {
-                var aplVM = GetViewModel(a);
+                var aplVM = a.GetViewModel();
                 var friend = GetFriendViewModel(aplVM, userId,
                     ApplicationState.incoming);
                 if (friend is not null)
@@ -146,7 +93,7 @@ namespace Services
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
             {
-                var aplVM = GetViewModel(a);
+                var aplVM = a.GetViewModel();
                 var friend = GetFriendViewModel(aplVM, userId,
                     ApplicationState.outgoing);
                 if (friend is not null)
@@ -175,13 +122,13 @@ namespace Services
 
             if (application == null) return false;
 
-            application.ApplicationStateUserOne = FriendshipStates.Suspence;
+            application.ApplicationStateUserOne = FriendshipState.Suspence;
             _Friendship.Update(application);
             return true;
         }
 
         // Ответ на входящую заявку
-        private bool TryResponseIncomingFriendship(int id, int receiverId, FriendshipStates responseState)
+        private bool TryResponseIncomingFriendship(int id, int receiverId, FriendshipState responseState)
         {
             var t = _Friendship.Get(id);
             if (t == null) return false;
@@ -197,10 +144,10 @@ namespace Services
         }
 
         public bool TryAllowIncomingFriendship(int id, int receiverId) =>
-            TryResponseIncomingFriendship(id, receiverId, FriendshipStates.Allow);
+            TryResponseIncomingFriendship(id, receiverId, FriendshipState.Allow);
 
         public bool TryDenyIncomingFriendship(int id, int receiverId) =>
-            TryResponseIncomingFriendship(id, receiverId, FriendshipStates.Deny);
+            TryResponseIncomingFriendship(id, receiverId, FriendshipState.Deny);
 
         public bool TrySendFriendshipRequest(int userId, int targetUserId)
         {
@@ -214,9 +161,9 @@ namespace Services
             var t = _Friendship.Add(new FriendshipApplication
             {
                 UserOne = sender,
-                ApplicationStateUserOne = FriendshipStates.Allow,
+                ApplicationStateUserOne = FriendshipState.Allow,
                 UserTwo = receiver,
-                ApplicationStateUserTwo = FriendshipStates.Suspence
+                ApplicationStateUserTwo = FriendshipState.Suspence
             });
             return t != null;
 
