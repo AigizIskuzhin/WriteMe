@@ -1,18 +1,15 @@
-﻿using System;
-using Database.DAL.Entities;
+﻿using Database.DAL.Entities;
 using Database.DAL.Entities.Chats.Base;
-using Database.DAL.Entities.Messages.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
 using Database.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Website.ViewModels.Messenger;
-using Website.ViewModels.Messenger.Preview;
 using Website.ViewModels.Messenger.Preview.Base;
-using Website.ViewModels.Users;
 
 namespace Services
 {
@@ -40,70 +37,19 @@ namespace Services
             if(!chats.Any()) yield break;
             foreach (var chat in chats)
                 if (chat.IsPrivateChat)
-                    yield return new PrivateChatPreviewViewModel
-                    {
-                        Chat = GetChatViewModel(chat, userId, chat.GetReceiverChatParticipant(userId).User),
-                        Receiver = GetUserViewModel(chat.GetReceiverChatParticipant(userId).User)
-                    };
-                //else
-                //    yield return new GroupChatPreviewViewModel
-                //    {
-                //        Chat = get
-                //    };
+                    yield return chat.GetPreviewViewModel(userId);
         }
-
-        public ChatViewModel GetChatViewModel(Chat chat, int userId, User receiver) => new()
-        {
-            Id = chat.Id,
-            History = from message in chat.GetHistory() select GetMessageViewModel(message), 
-            ConnectedUserId = userId,
-            IsPrivateChat = chat.IsPrivateChat,
-            ReceiverName = receiver.Name,
-            ReceiverId = receiver.Id,
-            ReceiverAvatarPath = receiver.AvatarPath
-        };
-
-        public MessageViewModel GetMessageViewModel(IMessage message) =>
-            message switch
-            {
-                ParticipantChatMessage userMessage => new UserMessageViewModel
-                {
-                    Id = message.Id,
-                    ChatParticipantSender = new()
-                    {
-                        User = GetUserViewModel(userMessage.ChatParticipantSender.User),
-                        CreatedDateTime = userMessage.ChatParticipantSender.CreatedDateTime
-                    },
-                    CreatedDateTime = userMessage.CreatedDateTime,
-                    Text = userMessage.Text
-                },
-                GeneratedChatMessage gMessage => new MessageViewModel
-                {
-                    Id = message.Id, CreatedDateTime = message.CreatedDateTime, Text = message.Text
-                },
-                _ => null
-            };
-
-        public static UserViewModel GetUserViewModel(User u) => new()
-        {
-            Id=u.Id,
-            Name = u.Name,
-            Surname = u.Surname,
-            Patronymic = u.Patronymic,
-            Birthday = u.Birthday,
-            AvatarPath = u.AvatarPath
-        };
         public IEnumerable<MessageViewModel> GetPrivateChatHistory(int id)
         {
             var chat = ChatsRepository.Get(id);
             if (chat is null) return null;
-            return from message in chat.GetHistory() select GetMessageViewModel(message);
+            return from message in chat.GetHistory() select message.GetViewModel();
         }
 
         public ChatViewModel GetChat(int id, int userId)
         {
             var c = ChatsRepository.Get(id);
-            return GetChatViewModel(c, userId, c.GetReceiverChatParticipant(userId).User);
+            return c.GetViewModel(userId);
         }
 
         public ChatViewModel GetPrivateChatWithUser(int receiverId, int senderId)
@@ -112,9 +58,7 @@ namespace Services
                 .FirstOrDefault(c => c.MaximumChatParticipants == 2 &&
                                      c.ChatParticipants.Any(p => p.User.Id.Equals(receiverId)) &&
                                      c.ChatParticipants.Any(p => p.User.Id.Equals(senderId)));
-            if (chat is null)
-                return GetNewChatWithUser(receiverId, senderId);
-            return GetChatViewModel(chat, senderId, chat.GetReceiverChatParticipant(senderId).User);
+            return chat is null ? GetNewChatWithUser(receiverId, senderId) : chat.GetViewModel(senderId);
         }
 
         public ChatViewModel GetNewChatWithUser(int receiverUserId, int senderUserId)
@@ -144,7 +88,7 @@ namespace Services
             chat.ChatParticipants.Add(chatParticipantOne);
             chat.ChatParticipants.Add(chatParticipantTwo);
             ChatsRepository.Update(chat);
-            return GetChatViewModel(chat, senderUserId, chat.GetReceiverChatParticipant(senderUserId).User);
+            return chat.GetViewModel(senderUserId);
         }
 
         public async Task SendMessageToChat(int userId, int chatId, string text)
@@ -170,11 +114,11 @@ namespace Services
         {
             var chat = ChatsRepository.Get(chatId);
             var lastMessage = chat.GetHistory().FirstOrDefault(message => message.Id.Equals(lastMessageId));
-            if(lastMessage is null)
-                return from message in chat.GetHistory() select GetMessageViewModel(message);
-            return from message in chat.GetHistory()
+            return lastMessage is null
+                ? ArraySegment<MessageViewModel>.Empty
+                : from message in chat.GetHistory()
                     .Where(message => message.CreatedDateTime > lastMessage.CreatedDateTime)
-                select GetMessageViewModel(message);
+                select message.GetViewModel();
         }
 
         public IEnumerable<string> GetChatParticipantIds(int chatId)

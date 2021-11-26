@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Website.ViewModels.Messenger.Preview.Base;
+using Website.ViewModels.Users;
 
 namespace Website.ViewModels.Messenger
 {
@@ -8,12 +9,10 @@ namespace Website.ViewModels.Messenger
     {
         public int Id { get; set; }
         public IEnumerable<MessageViewModel> History { get; set; }
+        public UserViewModel Receiver { get; set; }
+        public MessageViewModel LastMessage => History.LastOrDefault();
         public bool IsReceiverOnline { get; set; }
         public int ConnectedUserId { get; set; }
-        public int ReceiverId { get; set; }
-        public string ReceiverName { get; set; }
-        public MessageViewModel LastMessage => History.LastOrDefault();
         public bool IsPrivateChat { get; set; }
-        public string ReceiverAvatarPath{get;set;}
     }
 }
