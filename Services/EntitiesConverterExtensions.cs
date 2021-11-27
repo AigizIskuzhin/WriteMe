@@ -252,5 +252,31 @@ namespace Services
         }
         #endregion
 
+        #region MyRegion
+        
+        public static FriendViewModel GetFriendViewModel(this FriendshipApplicationVM application, int userId, ApplicationState state)
+        {
+            var friend = application.UserOne.Id.Equals(userId) ? application.UserTwo : application.UserOne;
+            
+            return state switch
+            {
+                ApplicationState.friend when !application.IsFriend(friend.Id) => null,
+                ApplicationState.incoming when !application.IsIncoming(friend.Id) => null,
+                ApplicationState.outgoing when !application.IsOutgoing(friend.Id) => null,
+                _ => new FriendViewModel
+                {
+                    Id = application.Id,
+                    UserId = friend.Id,
+                    Name = friend.Name,
+                    Surname = friend.Surname ?? "",
+                    Patronymic = friend.Patronymic ?? "",
+                    AvatarPath = friend.AvatarPath,
+                    ApplicationState = state
+                }
+            };
+        }
+
+        #endregion
+
     }
 }
