@@ -12,6 +12,9 @@ namespace Database.DAL.Repositories
 
         public override IQueryable<ChatParticipant> Items => base.Items
             .Include(c => c.User)
+            .ThenInclude(c=>c.Country)
+            .Include(u=>u.User)
+            .ThenInclude(u=>u.Role)
             .Include(c=>c.Chat)
             .Include(c=>c.ChatParticipantMessages);
     }

@@ -57,7 +57,7 @@ namespace Website.Controllers
         public IActionResult TryRemoveFriendship(int target)
         {
             int id = GetConnectedUserID;
-            FriendsService.TryRemoveUserFriendship(target, id);
+            FriendsService.TryRemoveUserFriendship(id, target);
             return RedirectToAction("Friends");
         }
         #endregion

@@ -1,18 +1,26 @@
-﻿@model Website.ViewModels.PostReportViewModel
+﻿@using Website.ViewModels
+@model Website.ViewModels.PostReportViewModel
 @{
     Layout = null;
 }
-<li id="report-@Model.Id" class="report" report-id="@Model.Id"  post-id="@Model.PostId" sender-id="@Model.SenderId">
+<li id="report-@Model.Id" class="report" report-id="@Model.Id"  post-id="@Model.PostId" sender-id="@Model.Sender.Id">
     <div class="report_title">
         <div class="report_sender report_title_item">
-            <a href="/profile?id=@Model.SenderId">
-                Отправитель: @Model.SenderName
+            <a href="/profile?id=@Model.Sender.Id">
+                Отправитель: @Model.Sender.Name
             </a>
         </div>  
         <div class="report_target report_title_item">
-            <a href="/profile?id=@Model.postownerid#post-@Model.PostId">
-                Запись
-            </a>
+            @if (Model.Post is UserPostViewModel userPost)
+            {
+                <a href="/profile?id=@userPost.Owner.Id#post-@Model.PostId">
+                    Запись
+                </a>
+            }
+            else
+            {
+                <div>Write Me</div>
+            }
         </div>
         <div class="report_type report_title_item">
             @Model.ReportType

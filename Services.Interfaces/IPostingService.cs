@@ -11,7 +11,7 @@ namespace Services.Interfaces
         public IEnumerable<SystemPostViewModel> GetSystemPostsWithFilter(string filter);
         public SystemPostViewModel UploadPost(SystemPostViewModel systemPost);
         public SystemPostViewModel EditPost(SystemPostViewModel systemPost);
-        public bool RemovePost(int idPost);
+        public bool RemoveSystemPost(int idPost);
         public void SendReportToPost(int postId, int senderId, int reportTypeId, string msg);
         public IEnumerable<PostReportViewModel> GetPostsReports();
         public IEnumerable<ReportTypeVM> GetReportTypes();

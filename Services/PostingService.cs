@@ -70,10 +70,10 @@ namespace Services
             return postDefault.GetViewModel();
         }
 
-        public bool RemovePost(int idPost)
+        public bool RemoveSystemPost(int idPost)
         { 
-            UserPostsRepository.Remove(idPost);
-            var post = PostReportsRepository.Get(idPost);
+            SystemPostsRepository.Remove(idPost);
+            var post = SystemPostsRepository.Get(idPost);
             return post==null;
         }
 
@@ -108,7 +108,7 @@ namespace Services
         public void CloseReportAndDeletePost(int reportId)
         {
             var report = PostReportsRepository.Get(reportId);
-            RemovePost(report.Post.Id);
+            RemoveSystemPost(report.Post.Id);
             PostReportsRepository.Remove(report.Id);
         }
     }

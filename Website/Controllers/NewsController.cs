@@ -39,7 +39,7 @@ namespace Website.Controllers
         public IActionResult RemovePost(int id)
         {
             if (PostingService.IsAdmin(int.Parse(HttpContext.GetConnectedUserId())))
-                PostingService.RemovePost(id);
+                PostingService.RemoveSystemPost(id);
             return RedirectToAction("News");
         }
     }

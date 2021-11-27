@@ -121,13 +121,13 @@ namespace Database.DAL.Context
 
                 });
 
-            builder.Entity<ReportType>().HasData(
-                new ReportType { Name = "Мат" },
-                new ReportType { Name = "Другое" });
+            ////builder.Entity<ReportType>().HasData(
+            ////    new ReportType { Name = "Мат" },
+            ////    new ReportType { Name = "Другое" });
 
-            builder.Entity<ReportState>().HasData(
-                new ReportState { Name = "В процессе" },
-                new ReportState { Name = "Рассмотрено" }); 
+            ////builder.Entity<ReportState>().HasData(
+            ////    new ReportState { Name = "В процессе" },
+            ////    new ReportState { Name = "Рассмотрено" }); 
             #endregion
         }
     }

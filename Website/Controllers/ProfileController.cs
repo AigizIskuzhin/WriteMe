@@ -67,10 +67,10 @@ namespace Website.Controllers
         #region Upload profile avatar
         [HttpPost]
         public ActionResult UploadAvatar(IFormFile image)
-        {
+         {
             if (image != null)
             {
-                FileService.Upload(image, HttpContext.GetConnectedUserId());
+                FileService.UploadAvatar(image, HttpContext.GetConnectedUserId());
             }
             return RedirectToAction("Profile");
         } 
@@ -78,13 +78,10 @@ namespace Website.Controllers
         
         #region Remove profile avatar
         [HttpPost]
-        public ActionResult RemoveAvatar(IFormFile uploadedFile)
+        public ActionResult RemoveAvatar()
         {
-            if (uploadedFile != null)
-            {
-
-            }
-            return View("Profile");
+            FileService.RemoveAvatar(HttpContext.GetConnectedUserId());
+            return RedirectToAction("Profile");
         } 
         #endregion
         
@@ -161,7 +158,7 @@ namespace Website.Controllers
             FriendsService.TrySendFriendshipRequest(GetConnectedUserID, targetUserId);
             return Redirect("/profile?id="+targetUserId);
         } 
-        public IActionResult RemoveFriend(int targetUserId)
+        public IActionResult RemoveFriend(int id, int targetUserId)
         {
             FriendsService.TryRemoveUserFriendship(GetConnectedUserID, targetUserId);
             return Redirect("/profile?id="+targetUserId);

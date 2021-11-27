@@ -1,8 +1,10 @@
 ﻿@using Website.Infrastructure.Extensions
+@using Website.ViewModels.Users
 @using IProfileService = Services.Interfaces.IProfileService
 @inject IProfileService ProfileService
 @{
-    bool isMod = ProfileService.GetUserAsync(int.Parse(Context.GetConnectedUserId())).Result.IsMode;
+    var level = ProfileService.GetUserAsync(int.Parse(Context.GetConnectedUserId())).Result.AccessLevel;
+    bool isMod = level == AccessLevel.admin || level == AccessLevel.mod;
 }
 <!DOCTYPE html>
 <html lang="en">

@@ -11,6 +11,8 @@ namespace Database.DAL.Repositories
        public FriendshipApplicationsRepository(WriteMeDatabase db) : base(db) { }
         public override IQueryable<FriendshipApplication> Items => base.Items
             .Include(friendship=>friendship.UserOne)
-            .Include(friendship=>friendship.UserTwo);
+            .ThenInclude(u=>u.Role)
+            .Include(friendship=>friendship.UserTwo)
+            .ThenInclude(u=>u.Role);
     }
 }

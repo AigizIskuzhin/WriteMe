@@ -33,6 +33,7 @@ namespace Services
             {
                 var aplVM = a.GetViewModel();
                 var friend = aplVM.GetFriendViewModel(userId, ApplicationState.friend);
+                if(friend is null)continue;
                 yield return friend;
             }
         }
@@ -47,6 +48,7 @@ namespace Services
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
             {
+                if (!a.IsIncoming(a.UserOne.Id == userId ? a.UserTwo.Id : a.UserOne.Id)) continue;
                 var aplVM = a.GetViewModel();
                 var friend =  aplVM.GetFriendViewModel(userId, ApplicationState.incoming);
                 yield return friend;
@@ -59,6 +61,7 @@ namespace Services
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
             {
+                if (!a.IsOutgoing(a.UserOne.Id == userId ? a.UserTwo.Id : a.UserOne.Id)) continue;
                 var aplVM = a.GetViewModel();
                 var friend =  aplVM.GetFriendViewModel(userId, ApplicationState.outgoing);
                 yield return friend;
@@ -75,11 +78,14 @@ namespace Services
         // Удаление друга
         public bool TryRemoveUserFriendship(int id, int targetUserId)
         {
-            var application = _Friendship.Get(id);
+            var application = _Friendship.Items.FirstOrDefault(a =>
+                a.UserOne.Id == id && a.UserTwo.Id == targetUserId ||
+                a.UserOne.Id == targetUserId && a.UserTwo.Id == id);
 
             if (application == null) return false;
-
-            application.ApplicationStateUserOne = FriendshipState.Suspence;
+            if(application.UserOne.Id==id)
+                application.ApplicationStateUserOne = FriendshipState.Suspence;
+            else application.ApplicationStateUserTwo = FriendshipState.Suspence;
             _Friendship.Update(application);
             return true;
         }

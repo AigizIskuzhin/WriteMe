@@ -13,5 +13,6 @@ namespace Website.ViewModels
         public ReportStateVM ReportState { get; set; }
         public string Commentary { get; set; }
         public IEnumerable<ReportTypeVM> ReportTypes { get; set; }
+        public int PostId { get; set; }
     }
 }

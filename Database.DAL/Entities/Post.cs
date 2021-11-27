@@ -12,7 +12,7 @@ namespace Database.DAL.Entities
         public DateTime UpdatedDateTime { get; set; }
     }
     public class SystemPost: Post{}
-    public class UserPost : Post, ICreateUpdateTimeStampedEntity
+    public class UserPost : Post
     {
         public int OwnerId { get; set; }
         public User Owner { get; set; }

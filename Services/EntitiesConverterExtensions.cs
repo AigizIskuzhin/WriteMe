@@ -1,10 +1,9 @@
-﻿using System;
-using System.Linq;
-using Database.DAL.Entities;
+﻿using Database.DAL.Entities;
 using Database.DAL.Entities.Chats.Base;
 using Database.DAL.Entities.Messages.Base;
 using Database.DAL.Entities.Messages.ChatMessage;
-using MySqlConnector.Authentication;
+using System;
+using System.Linq;
 using Website.ViewModels;
 using Website.ViewModels.Friends;
 using Website.ViewModels.Messenger;
@@ -31,7 +30,7 @@ namespace Services
             Patronymic = user.Patronymic??"",
             Birthday = user.Birthday,
             AvatarPath = user.AvatarPath,
-            Country = user.Country.Name,
+            Country = user.Country!=null?user.Country.Name:null,
             AccessLevel = user.Role.Code.Equals("user") ? AccessLevel.user : user.Role.Code.Equals("mod") ? AccessLevel.mod : AccessLevel.admin
         };
         #endregion
@@ -210,6 +209,7 @@ namespace Services
         /// <returns></returns>
         public static FriendshipApplicationVM GetViewModel(this FriendshipApplication apl) => new()
         {
+            Id = apl.Id,
             UserOne = apl.UserOne.GetViewModel(),
             UserTwo = apl.UserTwo.GetViewModel(),
             ApplicationStateUserTwo = apl.ApplicationStateUserTwo.GetViewModel(),
