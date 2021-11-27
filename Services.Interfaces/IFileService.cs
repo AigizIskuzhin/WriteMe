@@ -4,6 +4,7 @@ namespace Services.Interfaces
 {
     public interface IFileService
     {
-        string Upload(IFormFile file, string userId);
+        string UploadAvatar(IFormFile file, string userId);
+        bool RemoveAvatar(string usedId);
     }
 }

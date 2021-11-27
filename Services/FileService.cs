@@ -10,11 +10,6 @@ namespace Services
 {
     public class FileService : IFileService
     {
-        //public interface IWebHostEnvironment : IHostEnvironment
-        //{
-        //    string WebRootPath { get; set; }
-        //    IFileProvider WebRootFileProvider { get; set; }
-        //}
         private readonly IWebHostEnvironment env;
         private readonly IRepository<User> UsersRepository;
 
@@ -24,13 +19,10 @@ namespace Services
             UsersRepository = usersRepository;
         }
 
-        public string Upload(IFormFile file, string userId)
+        public string UploadAvatar(IFormFile file, string userId)
         {
             var uploadDirectory = "uploads/" + userId+"/";
             var uploadPath = Path.Combine(env.WebRootPath, uploadDirectory);
-
-            if(Directory.Exists(uploadPath))
-                Directory.Delete(uploadPath,true);
 
             if (!Directory.Exists(uploadPath))
                 Directory.CreateDirectory(uploadPath);
@@ -45,6 +37,20 @@ namespace Services
             user.AvatarPath = "/"+uploadDirectory+fileName;
             UsersRepository.Update(user);
             return fileName;
+        }
+
+        public bool RemoveAvatar(string userId)
+        {
+            var uploadDirectory = "uploads/" + userId+"/";
+            var uploadPath = Path.Combine(env.WebRootPath, uploadDirectory);
+
+            if (!Directory.Exists(uploadPath)) return false;
+
+            Directory.Delete(uploadPath, true);
+            var user = UsersRepository.Get(int.Parse(userId));
+            user.AvatarPath = null;
+            UsersRepository.Update(user);
+            return true;
         }
     }
 }
