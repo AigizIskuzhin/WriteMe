@@ -1,11 +1,9 @@
-﻿using System;
-using Database.DAL.Entities;
+﻿using Database.DAL.Entities;
 using Database.Interfaces;
 using Services.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
 using Website.ViewModels.Friends;
-using Website.ViewModels.Users;
 
 namespace Services
 {
@@ -17,8 +15,7 @@ namespace Services
         {
             _Friendship = friendship;
             UsersRepository = usersRepository;
-        }
-
+        }   
 
         public FriendViewModel GetFriendViewModel(int currentUserId, int userId)
         {
@@ -29,43 +26,14 @@ namespace Services
             var aplVM = application.GetViewModel();
             return aplVM.GetFriendViewModel(currentUserId);
         }
-        public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId, ApplicationState state)
-        {
-            var friend = GetFriendFromApplication(application, userId);
-            return state switch
-            {
-                ApplicationState.friend when !application.IsFriend(friend.Id) => null,
-                ApplicationState.incoming when !application.IsIncoming(friend.Id) => null,
-                ApplicationState.outgoing when !application.IsOutgoing(friend.Id) => null,
-                _ => new FriendViewModel
-                {
-                    Id = application.Id,
-                    UserId = friend.Id,
-                    Name = friend.Name,
-                    Surname = friend.Surname ?? "",
-                    Patronymic = friend.Patronymic ?? "",
-                    AvatarPath = friend.AvatarPath,
-                    ApplicationState = state
-                }
-            };
-        }
-        private UserViewModel GetFriendFromApplication(FriendshipApplicationVM application, int userId) =>
-            UserOneIsNotSender(application, userId) ? application.UserTwo : application.UserOne;
-        private bool UserOneIsNotSender(FriendshipApplicationVM application, int userId) =>
-            application.UserOne.Id.Equals(userId);
-        private bool UserOneIsNotSender(FriendshipApplication application, int userId) =>
-            application.UserOne.Id.Equals(userId);
-
         public IEnumerable<FriendViewModel> GetUserFriends(int userId)
         {
             var applications = _Friendship.Items.Where(a => a.UserOne.Id.Equals(userId) || a.UserTwo.Id.Equals(userId));
             foreach (var a in applications)
             {
                 var aplVM = a.GetViewModel();
-                var friend = GetFriendViewModel(aplVM, userId,
-                    ApplicationState.friend);
-                if (friend is not null)
-                    yield return friend;
+                var friend = aplVM.GetFriendViewModel(userId, ApplicationState.friend);
+                yield return friend;
             }
         }
 
@@ -80,10 +48,8 @@ namespace Services
             foreach (var a in applications)
             {
                 var aplVM = a.GetViewModel();
-                var friend = GetFriendViewModel(aplVM, userId,
-                    ApplicationState.incoming);
-                if (friend is not null)
-                    yield return friend;
+                var friend =  aplVM.GetFriendViewModel(userId, ApplicationState.incoming);
+                yield return friend;
             }
         }
 
@@ -94,23 +60,14 @@ namespace Services
             foreach (var a in applications)
             {
                 var aplVM = a.GetViewModel();
-                var friend = GetFriendViewModel(aplVM, userId,
-                    ApplicationState.outgoing);
-                if (friend is not null)
-                    yield return friend;
+                var friend =  aplVM.GetFriendViewModel(userId, ApplicationState.outgoing);
+                yield return friend;
             }
         }
 
         // Отмена исходящей заявки
         public bool TryRemoveOutgoingFriendship(int id)
         {
-            //var application = _Friendship.Get(id);
-            //if (application == null) return false;
-
-            //if(application.ApplicationStateUserOne == FriendshipStates.Allow)
-            //    application.ApplicationStateUserOne = FriendshipStates.Suspence;
-            //else application.ApplicationStateUserTwo = FriendshipStates.Suspence;
-            //_Friendship.Update(application);
             _Friendship.Remove(id);
             return true;
         }
@@ -133,7 +90,7 @@ namespace Services
             var t = _Friendship.Get(id);
             if (t == null) return false;
 
-            if (UserOneIsNotSender(t, receiverId))
+            if (t.UserOne.Id.Equals(receiverId))
                 t.ApplicationStateUserOne = responseState;
             else
                 t.ApplicationStateUserTwo = responseState;

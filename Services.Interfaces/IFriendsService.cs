@@ -6,9 +6,9 @@ namespace Services.Interfaces
     public interface IFriendsService
     {
         public FriendViewModel GetFriendViewModel(int currentUserId, int userId);
-        public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId);
-        public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId,
-            ApplicationState state);
+        //public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId);
+        //public FriendViewModel GetFriendViewModel(FriendshipApplicationVM application, int userId,
+            //ApplicationState state);
         public IEnumerable<FriendViewModel> GetUserFriends(int userId);
         public IEnumerable<FriendViewModel> GetUserFriends(int userId, string filter);
         public IEnumerable<FriendViewModel> GetIncomingApplications(int userId);
