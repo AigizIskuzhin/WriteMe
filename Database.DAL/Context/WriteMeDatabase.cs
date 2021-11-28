@@ -69,6 +69,7 @@ namespace Database.DAL.Context
 
         public WriteMeDatabase(DbContextOptions<WriteMeDatabase> options) : base(options)
         { }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
 
