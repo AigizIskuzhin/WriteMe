@@ -90,6 +90,8 @@ namespace Website.Controllers
         public IActionResult GetNewMessages(int chatId, int lastMessageId)
         {
             var newMessages = MessengerService.GetNewMessagesFromLast(chatId, lastMessageId);
+            if (!newMessages.Any())
+                return null;
             var chat = MessengerService.GetChat(chatId, GetConnectedUserID);
             chat.History = newMessages;
             return View("PrivateChat/PrivateChatHistoryView", chat);
